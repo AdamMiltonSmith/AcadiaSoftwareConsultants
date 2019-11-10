@@ -1,12 +1,36 @@
-from kivy.uix.label import Label
-from kivy.app import App
 import kivy
-kivy.require('1.11.1')
+from kivy.app import App
+from kivy.lang import Builder
+from kivy.uix.dropdown import DropDown
+from kivy.uix.label import Label
+from kivy.uix.screenmanager import Screen, ScreenManager
 
 
-class MyApp(App):
+class MainApp(App):
     def build(self):
-        return Label(text='Hello world')
+        self.title = "IGLOO"
+        return sm
 
-if __name__ == '__main__':
-    MyApp().run()
+
+class FileDropDown(DropDown):
+    pass
+
+
+class Main_Window(Screen):
+    pass
+
+
+Builder.load_file("icesat2\\gui\\kv\\gui.kv")
+
+sm = ScreenManager()
+
+screens = [Main_Window(name='main')]
+
+for screen in screens:
+    sm.add_widget(screen)
+
+sm.current = 'main'
+
+
+def main():
+    MainApp().run()
