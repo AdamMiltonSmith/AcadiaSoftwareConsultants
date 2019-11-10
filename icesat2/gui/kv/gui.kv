@@ -1,0 +1,85 @@
+#: kivy 1.11.1
+
+<Main_Window>
+    name: 'main'
+
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: .99,.99,.99,1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        GridLayout:
+            rows: 1
+            size_hint: 1, None
+            height: 35
+            pos_hint: {"x": 0, "top": 1}
+            canvas.before:
+                Color:
+                    rgba: 0,.99,.99,1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            #file
+            Button:
+                id: file_btn
+                text: 'File'
+                on_parent: file_dropdown.dismiss()
+                on_release: file_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint_y: None
+                height: 30
+
+            DropDown:
+                id: file_dropdown
+
+                Button:
+                    text: 'First Item'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.select('First Item')
+
+                Button:
+                    text: 'Second Item'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.select('Second Item')
+
+                Button:
+                    text: 'Third Item'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.select('Third Item')
+
+            #edit
+            Button:
+                id: edit_btn
+                text: 'Edit'
+                on_parent: edit_dropdown.dismiss()
+                on_release: edit_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint_y: None
+                height: 35
+
+            DropDown:
+                id: edit_dropdown
+
+                Button:
+                    text: 'First Item'
+                    size_hint_y: None
+                    height: 35
+                    on_release: edit_dropdown.select('First Item')
+
+                Button:
+                    text: 'Second Item'
+                    size_hint_y: None
+                    height: 35
+                    on_release: edit_dropdown.select('Second Item')
+
+                Button:
+                    text: 'Third Item'
+                    size_hint_y: None
+                    height: 35
+                    on_release: edit_dropdown.select('Third Item')
