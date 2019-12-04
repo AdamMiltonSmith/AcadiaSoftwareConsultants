@@ -28,7 +28,6 @@ class data:
             day = (self.start_date + i*self.day_delta)
             current = '"https://openaltimetry.org/data/api/icesat2/atl06?date='+ day.strftime('%Y-%m-%d') +'&minx='+ self.minx +'&miny='+ self.miny +'&maxx='+ self.maxx +'&maxy='+ self.maxy +'&trackId=705&client=jupyter&outputFormat=csv"'
             command = 'curl -X GET ' + current + ' -H' + " accept: */*"
-            print (command)
             os.system(command + " >> " + self.file_name)
             os.system("echo " + day.strftime('%Y-%m-%d') + " >> " + self.file_name + "_dates")
         return
@@ -44,8 +43,10 @@ class data:
     #     return
     
     def get_differential(self):
-        #
-        #
+        """This function will return a csv file the height differentials, 
+        the differential will be calculate useing all the dates
+        This will be a bit harder to implement 
+        """
         return
 
 #test command input
