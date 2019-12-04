@@ -43,9 +43,9 @@ class data:
             
     #     return
     
-    #This function will return a csv file the height differentials, the differential will be calculate useing all the dates
-    #This will be a bit harder to implement 
     def get_differential(self):
+        #
+        #
         return
 
 #test command input
