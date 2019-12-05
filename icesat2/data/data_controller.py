@@ -24,11 +24,15 @@ class data:
             self.file_name = file_name
 
     def get_data(self):
+        offset = 7
         for i in range((self.end_date - self.start_date).days):
             day = (self.start_date + i*self.day_delta)
             current = '"https://openaltimetry.org/data/api/icesat2/atl06?date='+ day.strftime('%Y-%m-%d') +'&minx='+ self.minx +'&miny='+ self.miny +'&maxx='+ self.maxx +'&maxy='+ self.maxy +'&trackId=705&client=jupyter&outputFormat=csv"'
             command = 'curl -X GET ' + current + ' -H' + " accept: */*"
             os.system(command + " >> " + self.file_name)
+            
+            # with open(self.file_name) as f:
+            #     f.seek()
             os.system("echo " + day.strftime('%Y-%m-%d') + " >> " + self.file_name + "_dates")
         return
     
@@ -50,5 +54,6 @@ class data:
         return
 
 #test command input
+x = data(date(2018, 11, 13), date(2018, 11, 15), '105.25', '49.48', '106.06', '50.43', "test")
 x = data(date(2018, 11, 13), date(2018, 11, 15), '105.25', '49.48', '106.06', '50.43', "resources\\csv_data_collection\\test")
 x.get_data()
