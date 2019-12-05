@@ -50,5 +50,5 @@ class data:
         return
 
 #test command input
-x = data(date(2018, 11, 13), date(2018, 11, 15), '105.25', '49.48', '106.06', '50.43', "test")
+x = data(date(2018, 11, 13), date(2018, 11, 15), '105.25', '49.48', '106.06', '50.43', "resources\\csv_data_collection\\test")
 x.get_data()
