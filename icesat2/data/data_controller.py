@@ -29,10 +29,11 @@ class data:
             day = (self.start_date + i*self.day_delta)
             current = '"https://openaltimetry.org/data/api/icesat2/atl06?date='+ day.strftime('%Y-%m-%d') +'&minx='+ self.minx +'&miny='+ self.miny +'&maxx='+ self.maxx +'&maxy='+ self.maxy +'&trackId=705&client=jupyter&outputFormat=csv"'
             command = 'curl -X GET ' + current + ' -H' + " accept: */*"
+            print(i)
             os.system(command + " >> " + self.file_name)
+            os.system("echo " + day.strftime('%Y-%m-%d') + " >> test_date" )
             # with open(self.file_name) as f:
             #     f.seek()
-        return
     
     #This function will return a csv file of the difference in height from the start date to the end date
 
@@ -52,5 +53,5 @@ class data:
         return
 
 #test command input
-x = data(date(2018, 11, 13), date(2018, 11, 15), '105.25', '49.48', '106.06', '50.43', "test")
+x = data(date(2018, 11, 13), date(2018, 11, 15), '105.25', '49.48', '106.06', '50.43', "test1")
 x.get_data()
