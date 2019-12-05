@@ -4,6 +4,7 @@ from kivy.lang import Builder
 from kivy.uix.dropdown import DropDown
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
+#from icesat2.gui import graph
 
 
 class MainApp(App):
@@ -14,10 +15,8 @@ class MainApp(App):
 class FileDropDown(DropDown):
     pass
 
-
 class Main_Window(Screen):
     pass
-
 
 Builder.load_file("icesat2\\gui\\kv\\gui.kv")
 
