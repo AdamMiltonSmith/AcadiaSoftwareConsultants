@@ -10,43 +10,43 @@ import kivy.properties as prop
 #from icesat2.gui import graph
 
 
-def pre_init_screen():
-    import sys
+# def pre_init_screen():
+#     import sys
 
 
-    """
-    returns Monitor size x and y in pixels for desktop platforms, or None for
-    mobile platforms
-    Found at:
-    https://groups.google.com/forum/#!topic/kivy-users/uZYrghb87g0
-    """
-    if sys.platform == 'linux2':
-        import subprocess
-        output = subprocess.Popen(
-            'xrandr | grep "\*" | cut -d" " -f4',
-            shell=True,
-            stdout=subprocess.PIPE).communicate()[0]
-        screenx = int(output.replace('\n', '').split('x')[0])
-        screeny = int(output.replace('\n', '').split('x')[1])
-    elif sys.platform == 'win32':
-        from pywin32 import GetSystemMetrics
-        screenx = GetSystemMetrics(0)
-        screeny = GetSystemMetrics(1)
-    elif sys.platform == 'darwin':
-        from AppKit import NSScreen
-        frame_size = NSScreen.mainScreen().frame().size
-        return frame_size.width, frame_size.height
-    else:
-        # For mobile devices, use full screen
-        screenx, screeny = 800, 600  # return something
+#     """
+#     returns Monitor size x and y in pixels for desktop platforms, or None for
+#     mobile platforms
+#     Found at:
+#     https://groups.google.com/forum/#!topic/kivy-users/uZYrghb87g0
+#     """
+#     if sys.platform == 'linux2':
+#         import subprocess
+#         output = subprocess.Popen(
+#             'xrandr | grep "\*" | cut -d" " -f4',
+#             shell=True,
+#             stdout=subprocess.PIPE).communicate()[0]
+#         screenx = int(output.replace('\n', '').split('x')[0])
+#         screeny = int(output.replace('\n', '').split('x')[1])
+#     elif sys.platform == 'win32':
+#         from pywin32 import GetSystemMetrics
+#         screenx = GetSystemMetrics(0)
+#         screeny = GetSystemMetrics(1)
+#     elif sys.platform == 'darwin':
+#         from AppKit import NSScreen
+#         frame_size = NSScreen.mainScreen().frame().size
+#         return frame_size.width, frame_size.height
+#     else:
+#         # For mobile devices, use full screen
+#         screenx, screeny = 800, 600  # return something
 
 class MainApp(App):
     def build(self):
         self.title = "IGLOO"
-
+        
         b = Builder.load_file("icesat2\\gui\\kv\\gui.kv")
 
-        Window.size = (1920, 1080)
+        #Window.size = (1920, 1080)
 
         return b
 
@@ -90,7 +90,8 @@ class Main_Window(Screen):
 
 
 class ScreenManagement(ScreenManager):
-    pre_init_screen()
+    #pre_init_screen()
+    pass
 
 class WindowSplitter(Splitter):
     border_size = prop.NumericProperty(5)
