@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import csv 
 
 #Reads from CSV file and adds them to a list csvInput
-with open('tests\\graph\\foo.txt') as csv_file:
+with open('foo.txt') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter= ',')
     csvInput = []
     for row in csv_reader:
