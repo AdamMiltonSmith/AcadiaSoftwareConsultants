@@ -18,7 +18,7 @@ class FileDropDown(DropDown):
 class Main_Window(Screen):
     pass
 
-Builder.load_file("icesat2\\gui\\kv\\gui.kv")
+Builder.load_file("icesat2/gui/kv/gui.kv")
 
 sm = ScreenManager()
 
