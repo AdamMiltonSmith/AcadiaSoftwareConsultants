@@ -2,32 +2,109 @@ import kivy
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.dropdown import DropDown
-from kivy.uix.label import Label
+from kivy.uix.button import Button
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.splitter import Splitter
+from kivy.core.window import Window
+import kivy.properties as prop
 #from icesat2.gui import graph
 
+
+# def pre_init_screen():
+#     import sys
+
+
+#     """
+#     returns Monitor size x and y in pixels for desktop platforms, or None for
+#     mobile platforms
+#     Found at:
+#     https://groups.google.com/forum/#!topic/kivy-users/uZYrghb87g0
+#     """
+#     if sys.platform == 'linux2':
+#         import subprocess
+#         output = subprocess.Popen(
+#             'xrandr | grep "\*" | cut -d" " -f4',
+#             shell=True,
+#             stdout=subprocess.PIPE).communicate()[0]
+#         screenx = int(output.replace('\n', '').split('x')[0])
+#         screeny = int(output.replace('\n', '').split('x')[1])
+#     elif sys.platform == 'win32':
+#         from pywin32 import GetSystemMetrics
+#         screenx = GetSystemMetrics(0)
+#         screeny = GetSystemMetrics(1)
+#     elif sys.platform == 'darwin':
+#         from AppKit import NSScreen
+#         frame_size = NSScreen.mainScreen().frame().size
+#         return frame_size.width, frame_size.height
+#     else:
+#         # For mobile devices, use full screen
+#         screenx, screeny = 800, 600  # return something
 
 class MainApp(App):
     def build(self):
         self.title = "IGLOO"
-        return sm
+        
+        b = Builder.load_file("icesat2\\gui\\kv\\gui.kv")
 
-class FileDropDown(DropDown):
-    pass
+        #Window.size = (1920, 1080)
+
+        return b
+
+
+class TopButton(Button):
+    font_size = prop.NumericProperty(14)
+    back_color = prop.ColorProperty([0.9, 0.9, 0.9, 1.0])
+    #back_normal = prop.ColorProperty([1.0, 1.0, 1.0, 1.0])
+    text_color = prop.ColorProperty([0.0, 0.0, 0.0, 1.0])
+    btn_height = prop.NumericProperty(35)
+    btn_width = prop.NumericProperty(70)
+    side_width_buffer = prop.NumericProperty(20)
+
+
+class TopButtonDropDown(DropDown):
+    font_size = prop.NumericProperty(14)
+
+
+class TopButtonDropDownButton(Button):
+    font_size = prop.NumericProperty(14)
+    back_color = prop.ListProperty([0.9, 0.9, 0.9, 1.0])
+    back_normal = prop.ListProperty([0.0, 0.0, 0.0, 1.0])
+    btn_height = prop.NumericProperty(35)
+    btn_width = prop.NumericProperty(70)
+    side_width_buffer = prop.NumericProperty(20)
+
+
+class DefaultButton(Button):
+    font_size = prop.NumericProperty(14)
+    back_color = prop.ColorProperty([0.5, 0.5, 0.5, 1.0])
+
+    text_color = prop.ColorProperty([1.0, 1.0, 1.0, 1.0])
+    btn_height = prop.NumericProperty(20)
+    #btn_width = prop.NumericProperty(70)
+    side_width_buffer = prop.NumericProperty(20)
+
 
 class Main_Window(Screen):
+    def __init__(self, **kw):
+        super(Main_Window, self).__init__(**kw)
+
+
+class ScreenManagement(ScreenManager):
+    #pre_init_screen()
     pass
 
-Builder.load_file("icesat2/gui/kv/gui.kv")
+class WindowSplitter(Splitter):
+    border_size = prop.NumericProperty(5)
 
-sm = ScreenManager()
 
-screens = [Main_Window(name='main')]
+# sm = ScreenManager()
 
-for screen in screens:
-    sm.add_widget(screen)
+# screens = [Main_Window(name='main')]
 
-sm.current = 'main'
+# for screen in screens:
+#     sm.add_widget(screen)
+
+# sm.current = 'main'
 
 
 def main():

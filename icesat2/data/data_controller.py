@@ -37,7 +37,7 @@ class data:
             os.makedirs(self.path)
 
     def get_data(self):
-        offset = 7
+        #offset = 7
         for i in range((self.end_date - self.start_date).days + 1):
             day = (self.start_date + i*self.day_delta)
             current = '"https://openaltimetry.org/data/api/icesat2/atl06?date='+ day.strftime('%Y-%m-%d') +'&minx='+ self.minx +'&miny='+ self.miny +'&maxx='+ self.maxx +'&maxy='+ self.maxy +'&trackId=705&client=jupyter&outputFormat=csv"'
@@ -79,9 +79,9 @@ class data:
         return
     
     def get_differential(self):
-        """This function will return a csv file the height differentials, 
+        """This function will return a csv file the height differentials,
         the differential will be calculate useing all the dates
-        This will be a bit harder to implement 
+        This will be a bit harder to implement
         """
         return
 
