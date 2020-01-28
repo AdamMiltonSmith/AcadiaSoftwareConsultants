@@ -43,7 +43,7 @@ import kivy.properties as prop
 class MainApp(App):
     def build(self):
         self.title = "IGLOO"
-        
+
         b = Builder.load_file("icesat2\\gui\\kv\\gui.kv")
 
         #Window.size = (1920, 1080)

@@ -1,6 +1,43 @@
 #:kivy 1.11.1
+#:import Factory kivy.factory.Factory
 ScreenManagement:
     Main_Window:
+
+<CoordinatePopup@Popup>:
+    title: "Input coordinates"
+    size: 500, 500
+    size_hint: None, None
+    auto_dismiss: False
+    FloatLayout:
+        TextInput:
+            text: "Minimum x (e/w) coordinate"
+            multiline: False
+            size: 200, 50
+            size_hint: None, None
+            pos_hint: {"x": 0, "top": .6}
+            font_size: 11
+        TextInput:
+            text: "Maximum x (e/w) coordinate"
+            multiline: False
+            size: 200, 50
+            size_hint: None, None
+            pos_hint: {"x": .575, "top": .6}
+            font_size: 11
+        TextInput:
+            text: "Minimum y (e/w) coordinate"
+            multiline: False
+            size: 200, 50
+            size_hint: None, None
+            pos_hint: {"x": 0, "top": .4}
+            font_size: 11
+        TextInput:
+            text: "Maximum y (e/w) coordinate"
+            multiline: False
+            size: 200, 50
+            size_hint: None, None
+            pos_hint: {"x": .575, "top": .4}
+            font_size: 11
+
 
 <Main_Window>
     name: 'main'
@@ -169,6 +206,32 @@ ScreenManagement:
                     size_hint_y: None
                     height: 35
                     on_release: window_dropdown.select('data_sets')
+
+            #Map Button
+            TopButton:
+                id: map_btn
+                text: 'Map'
+                on_parent: map_dropdown.dismiss()
+                on_release: map_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * window_btn.side_width_buffer
+                height: window_btn.btn_height
+                background_normal: ''
+                background_color: window_btn.back_color
+                color: window_btn.text_color
+                font_size: window_btn.font_size
+
+            TopButtonDropDown:
+                id: map_dropdown
+                auto_width: False
+                width: 115
+
+                TopButtonDropDownButton:
+                    text: 'Reset'
+                    size_hint_y: None
+                    height: 35
+                    on_release: Factory.CoordinatePopup().open()
 
             #help button
             TopButton:
