@@ -4,40 +4,72 @@ ScreenManagement:
     Main_Window:
 
 <CoordinatePopup@Popup>:
+    id: coordpopup
     title: "Input coordinates"
     size: 500, 500
     size_hint: None, None
     auto_dismiss: False
     FloatLayout:
-        TextInput:
+        Label:
             text: "Minimum x (e/w) coordinate"
+            size: 200, 50
+            size_hint: None, None
+            pos_hint: {"x": 0, "top": .8}
+        TextInput:
+            text: "Format xx.xx"
             multiline: False
+            size: 100, 25
+            size_hint: None, None
+            pos_hint: {"x": .1, "top": .7}
+            font_size: 11
+        Label:
+            text: "Maximum x (e/w) coordinate"
+            size: 200, 50
+            size_hint: None, None
+            pos_hint: {"x": .575, "top": .8}
+        TextInput:
+            text: "Format xx.xx"
+            multiline: False
+            size: 100, 25
+            size_hint: None, None
+            pos_hint: {"x": .675, "top": .7}
+            font_size: 11
+        Label:
+            text: "Minimum y (e/w) coordinate"
             size: 200, 50
             size_hint: None, None
             pos_hint: {"x": 0, "top": .6}
-            font_size: 11
         TextInput:
-            text: "Maximum x (e/w) coordinate"
+            text: "Format xx.xx"
             multiline: False
+            size: 100, 25
+            size_hint: None, None
+            pos_hint: {"x": .1, "top": .5}
+            font_size: 11
+        Label:
+            text: "Maximum y (e/w) coordinate"
             size: 200, 50
             size_hint: None, None
             pos_hint: {"x": .575, "top": .6}
-            font_size: 11
         TextInput:
-            text: "Minimum y (e/w) coordinate"
+            text: "Format xx.xx"
             multiline: False
-            size: 200, 50
+            size: 100, 25
             size_hint: None, None
-            pos_hint: {"x": 0, "top": .4}
+            pos_hint: {"x": .675, "top": .5}
             font_size: 11
-        TextInput:
-            text: "Maximum y (e/w) coordinate"
-            multiline: False
-            size: 200, 50
+        Button:
+            text: "Cancel"
             size_hint: None, None
-            pos_hint: {"x": .575, "top": .4}
-            font_size: 11
-
+            size: 75, 40
+            pos_hint: {"x": 0, "y": 0}
+            on_release: coordpopup.dismiss()
+        Button:
+            text: "Confirm"
+            size_hint: None, None
+            size: 75, 40
+            pos_hint: {"right": 1, "y": 0}
+            on_release: coordpopup.dismiss()
 
 <Main_Window>
     name: 'main'
@@ -225,13 +257,14 @@ ScreenManagement:
             TopButtonDropDown:
                 id: map_dropdown
                 auto_width: False
-                width: 115
+                width: 140
 
                 TopButtonDropDownButton:
-                    text: 'Reset'
+                    text: 'Choose coordinates'
                     size_hint_y: None
                     height: 35
                     on_release: Factory.CoordinatePopup().open()
+                    on_release: map_dropdown.dismiss()
 
             #help button
             TopButton:
