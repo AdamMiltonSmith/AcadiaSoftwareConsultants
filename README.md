@@ -4,4 +4,7 @@
 
 Requires Python v3.7.5
 
-Must run ```garden install matplotlib```
+Must run ```garden install matplotlib --kivy```
+
+Must run ```garden install mapview --kivy```
+

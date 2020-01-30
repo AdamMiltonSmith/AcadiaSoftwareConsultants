@@ -1,6 +1,75 @@
 #:kivy 1.11.1
+#:import Factory kivy.factory.Factory
 ScreenManagement:
     Main_Window:
+
+<CoordinatePopup@Popup>:
+    id: coordpopup
+    title: "Input coordinates"
+    size: 500, 500
+    size_hint: None, None
+    auto_dismiss: False
+    FloatLayout:
+        Label:
+            text: "Minimum x (e/w) coordinate"
+            size: 200, 50
+            size_hint: None, None
+            pos_hint: {"x": 0, "top": .8}
+        TextInput:
+            text: "Format xx.xx"
+            multiline: False
+            size: 100, 25
+            size_hint: None, None
+            pos_hint: {"x": .1, "top": .7}
+            font_size: 11
+        Label:
+            text: "Maximum x (e/w) coordinate"
+            size: 200, 50
+            size_hint: None, None
+            pos_hint: {"x": .575, "top": .8}
+        TextInput:
+            text: "Format xx.xx"
+            multiline: False
+            size: 100, 25
+            size_hint: None, None
+            pos_hint: {"x": .675, "top": .7}
+            font_size: 11
+        Label:
+            text: "Minimum y (e/w) coordinate"
+            size: 200, 50
+            size_hint: None, None
+            pos_hint: {"x": 0, "top": .6}
+        TextInput:
+            text: "Format xx.xx"
+            multiline: False
+            size: 100, 25
+            size_hint: None, None
+            pos_hint: {"x": .1, "top": .5}
+            font_size: 11
+        Label:
+            text: "Maximum y (e/w) coordinate"
+            size: 200, 50
+            size_hint: None, None
+            pos_hint: {"x": .575, "top": .6}
+        TextInput:
+            text: "Format xx.xx"
+            multiline: False
+            size: 100, 25
+            size_hint: None, None
+            pos_hint: {"x": .675, "top": .5}
+            font_size: 11
+        Button:
+            text: "Cancel"
+            size_hint: None, None
+            size: 75, 40
+            pos_hint: {"x": 0, "y": 0}
+            on_release: coordpopup.dismiss()
+        Button:
+            text: "Confirm"
+            size_hint: None, None
+            size: 75, 40
+            pos_hint: {"right": 1, "y": 0}
+            on_release: coordpopup.dismiss()
 
 <Main_Window>
     name: 'main'
@@ -169,6 +238,33 @@ ScreenManagement:
                     size_hint_y: None
                     height: 35
                     on_release: window_dropdown.select('data_sets')
+
+            #Map Button
+            TopButton:
+                id: map_btn
+                text: 'Map'
+                on_parent: map_dropdown.dismiss()
+                on_release: map_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * window_btn.side_width_buffer
+                height: window_btn.btn_height
+                background_normal: ''
+                background_color: window_btn.back_color
+                color: window_btn.text_color
+                font_size: window_btn.font_size
+
+            TopButtonDropDown:
+                id: map_dropdown
+                auto_width: False
+                width: 140
+
+                TopButtonDropDownButton:
+                    text: 'Choose coordinates'
+                    size_hint_y: None
+                    height: 35
+                    on_release: Factory.CoordinatePopup().open()
+                    on_release: map_dropdown.dismiss()
 
             #help button
             TopButton:
