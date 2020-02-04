@@ -26,7 +26,7 @@ def plot_graph(csv_input: list) -> plt.plot:
 class MyApp(App):
     def build(self):
         box = BoxLayout()
-        plot_graph(read_data('tests\\graph\\foo.txt'))
+        plot_graph(read_data('icesat2\\gui\\kv\\graphValues.txt'))
         box.add_widget(FigureCanvasKivyAgg(plt.gcf()))
         return box
 
