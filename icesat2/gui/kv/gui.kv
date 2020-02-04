@@ -542,17 +542,14 @@ ScreenManagement:
                             spacing: 0, 5
                             padding: 0, 0
                             height: self.minimum_height
+                            on_parent:
+                                for i in range(10): strId = "B{0}".format(i+1); i=Button(text="ass",id=strId); self.add_widget(i);
+                            
+                                
 
-                            DefaultButton:
-                                id: btn_a
-                                text: 'Data Set a'
-                                size_hint_y: None
-                                #width: self.texture_size[0] + 2 * btn_a.side_width_buffer
-                                height: btn_a.btn_height
-                                background_normal: ''
-                                background_color: btn_a.back_color
-                                color: btn_a.text_color
-                                font_size: btn_a.font_size
+  
+                     
+                                
 
 <Graph_Window>:
     name: 'graph'
