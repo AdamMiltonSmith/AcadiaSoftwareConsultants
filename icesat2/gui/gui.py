@@ -8,14 +8,8 @@ from kivy.uix.splitter import Splitter
 from kivy.core.window import Window
 import kivy.properties as prop
 from kivy.config import Config
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.scrollview import ScrollView
-from kivy.uix.label import Label
-from kivy.properties import ObjectProperty
-
-
-
 #from icesat2.gui import graph
+
 
 def pre_init_screen():
     import tkinter as tk
@@ -32,24 +26,6 @@ class MainApp(App):
 
         return b
 
-#testing stuff ignore      
-class DataSetsThing(GridLayout):
-    grid = ObjectProperty(None)
-
-#testing stuff ignore
-class DataSets(App):
-    g = DataSetsThing()
-    def build(self):
-        #for filesname in os.listdir("icesat2\\resources\\csv_data_collection")
-        Strings = ["one", "two", "three"]
-        for x in Strings:
-            g.add_widget(Button(text = "Xd"))
-            #g.add_widget(Button(text=filename))
-
-            
-#testing stuff ignore
-class DataSetButton(Button):
-    text = "asdf"
 
 class TopButton(Button):
     font_size = prop.NumericProperty(14)
