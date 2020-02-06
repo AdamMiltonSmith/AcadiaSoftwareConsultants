@@ -77,7 +77,9 @@ class data:
             while line:
                 if(split[0] in height_diff):
                     height_diff[split[0]][2] = float(height_diff[split[0]][2]) - float(split[3])
-                    
+                else:
+                    del(height_diff[split[0]])
+                      
                 line = ef.readline()
                 split = line.split(',')
 
