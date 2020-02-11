@@ -13,6 +13,11 @@ from kivy.garden.graph import Graph, MeshLinePlot
 from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty  
 #from icesat2.gui import graph
+from os import listdir
+from os.path import isfile, join
+import glob
+import os
+
 
 
 def pre_init_screen():
@@ -29,6 +34,7 @@ class MainApp(App):
         b = Builder.load_file("icesat2\\gui\\kv\\gui.kv")
 
         return b
+
 
 
 class TopButton(Button):
@@ -64,9 +70,29 @@ class DefaultButton(Button):
     side_width_buffer = prop.NumericProperty(20)
 
 
+    container = ObjectProperty(None) #container the buttons are added to
+    def add_buttons(self):
+        datasetPath = "resources\\csv_data_collection"
+        files = listdir(datasetPath)
+        print(files)
+        for f in files:
+            self.container.add_widget(Button(text=f, id=str(f)))
+
+    # Currently, the refresh button gets replaced by a duplicate of the last button
+    # after the first refresh
+    def remove_buttons(self):
+        skipfirst = 0 #prevents the refresh button from being removed
+        for child in [child for child in self.container.children]:
+            if skipfirst != 0:
+                self.container.remove_widget(child)
+            else:
+                skipfirst += 1
+
+
 class Main_Window(Screen):
     def __init__(self, **kw):
         super(Main_Window, self).__init__(**kw)
+
         
 class Graph_Window(Screen):
     def __init__(self, **kw):
