@@ -235,6 +235,13 @@ BoxLayout:
                 height: 35
                 on_release: window_dropdown.select('data_sets')
 
+            TopButtonDropDownButton:
+                text: 'Map View'
+                size_hint_y: None
+                height: 35
+                on_release: window_dropdown.select('map_view')
+                on_release: sm.current = 'map'
+
         #Map Button
         TopButton:
             id: map_btn
@@ -287,7 +294,6 @@ BoxLayout:
                 size_hint_y: None
                 height: 35
                 on_release: help_dropdown.select('help')
-    
     ScreenManagement:
         id: sm
         Main_Window:
@@ -370,3 +376,13 @@ BoxLayout:
                     ymax:1
                     pos: 0, root.height / 6
                     size: root.width * 2 / 3 , root.height * 18 / 24
+        Map_Window:
+            name: 'map'
+            BoxLayout:
+                orientation: 'vertical'
+                canvas.before:
+                    Color:
+                        rgba: .99,.99,.99,1
+                Label:
+                    text: 'Fullscreen Map'
+                    color: (0.0,0.0,0.0,1.0)
