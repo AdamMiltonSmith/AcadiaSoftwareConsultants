@@ -5,9 +5,9 @@
     transition: SwapTransition()
     Registers:
         on_enter:
-            self.add_buttons(app.root.total_button)
+            self.add_buttons()
         on_leave:
-            self.remove_buttons(app.root.total_button)
+            self.remove_buttons()
     Welcome:
 
 <Login>:
@@ -43,7 +43,7 @@
 
 <Registers>:
     name:'registers'
-    container: asspenis
+    container: btn_a
 
     BoxLayout:
         id: bl
@@ -60,7 +60,7 @@
         ScrollView:
             size: self.size
             GridLayout:
-                id: asspenis
+                id: btn_a
                 size_hint_y: None
                 cols: 1
                 row_default_height: '20dp'
