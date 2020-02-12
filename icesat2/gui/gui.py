@@ -11,7 +11,7 @@ from kivy.config import Config
 from math import sin
 from kivy.garden.graph import Graph, MeshLinePlot
 from kivy.uix.widget import Widget
-from kivy.properties import ObjectProperty  
+from kivy.properties import ObjectProperty
 #from icesat2.gui import graph
 from os import listdir
 from os.path import isfile, join
@@ -22,9 +22,9 @@ import os
 
 def pre_init_screen():
     import tkinter as tk
-    
+
     screen = tk.Tk()
-    
+
     screenx, screeny = screen.winfo_screenwidth(), screen.winfo_screenheight()
 
 class MainApp(App):
@@ -93,11 +93,13 @@ class Main_Window(Screen):
     def __init__(self, **kw):
         super(Main_Window, self).__init__(**kw)
 
-        
 class Graph_Window(Screen):
     def __init__(self, **kw):
         super(Graph_Window, self).__init__(**kw)
 
+class Map_Window(Screen):
+    def __init__(self, **kw):
+        super(Map_Window, self).__init__(**kw)
 
 class ScreenManagement(ScreenManager):
     pre_init_screen()
