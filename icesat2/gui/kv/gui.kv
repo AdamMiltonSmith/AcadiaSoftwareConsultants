@@ -2,6 +2,7 @@
 #:import Factory kivy.factory.Factory
 #:import MeshLinePlot kivy.garden.graph.MeshLinePlot
 
+
 <CoordinatePopup@Popup>:
     id: coordpopup
     title: "Input coordinates"
@@ -338,7 +339,8 @@ BoxLayout:
 
                                 DefaultButton:
                                     id: btn_a
-                                    text: 'Data Set a'
+                                    container: layout_content
+                                    text: 'Refresh List'
                                     size_hint_y: None
                                     #width: self.texture_size[0] + 2 * btn_a.side_width_buffer
                                     height: btn_a.btn_height
@@ -346,6 +348,9 @@ BoxLayout:
                                     background_color: btn_a.back_color
                                     color: btn_a.text_color
                                     font_size: btn_a.font_size
+                                    on_press:
+                                        self.remove_buttons()
+                                        self.add_buttons()
 
         Graph_Window:
             name: 'graph'
