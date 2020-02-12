@@ -8,17 +8,17 @@ from kivy.uix.splitter import Splitter
 from kivy.core.window import Window
 import kivy.properties as prop
 from kivy.config import Config
-from math import sin
 from kivy.garden.graph import Graph, MeshLinePlot
 from kivy.uix.widget import Widget
-from kivy.properties import ObjectProperty  
-#from icesat2.gui import graph
+from kivy.properties import ObjectProperty
 from os import listdir
 from os.path import isfile, join
 import glob
 import os
+import matplotlib.pyplot as plt
+import icesat2.gui.graphPngExport as graphPngExport
 
-
+graphPngExport.plot_graph(graphPngExport.read_data('icesat2\\gui\\graph_data\\foo.csv'))
 
 def pre_init_screen():
     import tkinter as tk
@@ -108,6 +108,8 @@ class WindowSplitter(Splitter):
 
 class SetGraph(Widget):
     testGraph = ObjectProperty(None)
+
+
 
 # sm = ScreenManager()
 

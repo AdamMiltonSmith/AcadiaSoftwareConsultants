@@ -348,32 +348,12 @@ BoxLayout:
 
         Graph_Window:
             name: 'graph'
-            BoxLayout:
-                orientation: 'vertical'
+            Image:
+                source: 'icesat2\\gui\\graph_images\\foo.png'
+                allow_stretch: True
                 canvas.before:
                     Color:
                         rgba: .99,.99,.99,1
-                Label:
-                    text: 'Fullscreen Graph'
-                    color: (0.0,0.0,0.0,1.0)
-                Graph:
-                    id: graph_test
-                    plot: MeshLinePlot
-                    xlabel:'X'
-                    ylabel:'Y'
-                    x_ticks_minor:5
-                    x_tics_major:25
-                    y_ticks_major:1
-                    y_grid_label:True
-                    x_grid_label:True
-                    padding:5
-                    x_grid:True
-                    y_grid:True
-                    xmin:-0
-                    xmax:100
-                    ymin:-1
-                    ymax:1
-                    pos: 0, root.height / 6
-                    size: root.width * 2 / 3 , root.height * 18 / 24
+
 					
                 

@@ -20,15 +20,4 @@ def plot_graph(csv_input: list) -> plt.plot:
     plt.title('IGLOO TESTS')
     plt.ylabel('Y Axis')
     plt.xlabel('X Axis')
-
-#Adds the app to a Kivy app
-
-class MyApp(App):
-    def build(self):
-        box = BoxLayout()
-        plot_graph(read_data('icesat2\\gui\\kv\\graphValues.txt'))
-        box.add_widget(FigureCanvasKivyAgg(plt.gcf()))
-        return box
-
-if __name__ == "__main__":
-    MyApp().run()
+    plt.savefig('icesat2\\gui\\graph_images\\foo.png', dpi = 100)
