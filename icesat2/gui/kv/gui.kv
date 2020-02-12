@@ -2,11 +2,95 @@
 ScreenManagement:
     Main_Window:
 
+<<<<<<< Updated upstream
 <Main_Window>
     name: 'main'
 
     BoxLayout:
         orientation: 'vertical'
+=======
+
+<CoordinatePopup@Popup>:
+    id: coordpopup
+    title: "Input coordinates"
+    size: 500, 500
+    size_hint: None, None
+    auto_dismiss: False
+    FloatLayout:
+        Label:
+            text: "Minimum x (e/w) coordinate"
+            size: 200, 50
+            size_hint: None, None
+            pos_hint: {"x": 0, "top": .8}
+        TextInput:
+            text: "Format xx.xx"
+            multiline: False
+            size: 100, 25
+            size_hint: None, None
+            pos_hint: {"x": .1, "top": .7}
+            font_size: 11
+        Label:
+            text: "Maximum x (e/w) coordinate"
+            size: 200, 50
+            size_hint: None, None
+            pos_hint: {"x": .575, "top": .8}
+        TextInput:
+            text: "Format xx.xx"
+            multiline: False
+            size: 100, 25
+            size_hint: None, None
+            pos_hint: {"x": .675, "top": .7}
+            font_size: 11
+        Label:
+            text: "Minimum y (e/w) coordinate"
+            size: 200, 50
+            size_hint: None, None
+            pos_hint: {"x": 0, "top": .6}
+        TextInput:
+            text: "Format xx.xx"
+            multiline: False
+            size: 100, 25
+            size_hint: None, None
+            pos_hint: {"x": .1, "top": .5}
+            font_size: 11
+        Label:
+            text: "Maximum y (e/w) coordinate"
+            size: 200, 50
+            size_hint: None, None
+            pos_hint: {"x": .575, "top": .6}
+        TextInput:
+            text: "Format xx.xx"
+            multiline: False
+            size: 100, 25
+            size_hint: None, None
+            pos_hint: {"x": .675, "top": .5}
+            font_size: 11
+        Button:
+            text: "Cancel"
+            size_hint: None, None
+            size: 75, 40
+            pos_hint: {"x": 0, "y": 0}
+            on_release: coordpopup.dismiss()
+        Button:
+            text: "Confirm"
+            size_hint: None, None
+            size: 75, 40
+            pos_hint: {"right": 1, "y": 0}
+            on_release: coordpopup.dismiss()
+BoxLayout:
+    orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgba: .99,.99,.99,1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    GridLayout:
+        rows: 1
+        size_hint: 1, None
+        height: 35
+        pos_hint: {"x": 0, "top": 1}
+>>>>>>> Stashed changes
         canvas.before:
             Color:
                 rgba: .99,.99,.99,1
@@ -207,6 +291,55 @@ ScreenManagement:
                     Label:
                         text: 'Graph'
                         color: (0.0,0.0,0.0,1.0)
+<<<<<<< Updated upstream
+=======
+                WindowSplitter:
+                    id: scroll_splitter
+                    sizable_from: 'left'
+                    layout_content: layout_content
+                    strip_size: scroll_splitter.border_size
+                    BoxLayout:
+                        id: bl
+                        orientation: 'vertical'
+                        padding: 50, 40
+                        row_default_height: '48dp'
+                        row_force_default: True
+                        spacing: 10, 10
+                        ScrollView:
+                            size: self.size
+                            GridLayout:
+                                id: layout_content
+                                size_hint_y: None
+                                cols: 1
+                                row_default_height: '20dp'
+                                row_force_default: True
+                                spacing: 0, 5
+                                padding: 0, 0
+                                height: self.minimum_height
+
+                                DefaultButton:
+                                    id: btn_a
+                                    container: layout_content
+                                    text: 'Refresh List'
+                                    size_hint_y: None
+                                    #width: self.texture_size[0] + 2 * btn_a.side_width_buffer
+                                    height: btn_a.btn_height
+                                    background_normal: ''
+                                    background_color: btn_a.back_color
+                                    color: btn_a.text_color
+                                    font_size: btn_a.font_size
+                                    on_press:
+                                        self.remove_buttons()
+                                        self.add_buttons()
+
+        Graph_Window:
+            name: 'graph'
+            BoxLayout:
+                orientation: 'vertical'
+                canvas.before:
+                    Color:
+                        rgba: .99,.99,.99,1
+>>>>>>> Stashed changes
                 Label:
                     text: 'Map'
                     color: (0.0,0.0,0.0,1.0)
