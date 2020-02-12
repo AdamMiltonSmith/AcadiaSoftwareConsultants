@@ -112,14 +112,11 @@ class DefaultButton(Button):
 class Main_Window(Screen):
     def __init__(self, **kw):
         super(Main_Window, self).__init__(**kw)
-<<<<<<< Updated upstream
-=======
 
         
 class Graph_Window(Screen):
     def __init__(self, **kw):
         super(Graph_Window, self).__init__(**kw)
->>>>>>> Stashed changes
 
 
 class ScreenManagement(ScreenManager):
