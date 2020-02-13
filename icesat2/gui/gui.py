@@ -12,7 +12,7 @@ from os import listdir
 from os.path import isfile, join
 import glob
 import os
-
+import icesat2.graph.graphPngExport as graphPngExport
 
 
 # def pre_init_screen():
@@ -44,6 +44,11 @@ import os
 #     else:
 #         # For mobile devices, use full screen
 #         screenx, screeny = 800, 600  # return something
+
+# Calls the plot_graph function on the sample data foo.csv which is located in the
+# graph_data folder, graphPngExport then creates a png of the graph which is stored
+# in graph_png to be displayed later.
+graphPngExport.plot_graph(read_data('icesat2\\graph\\graph_data\\foo.csv')
 
 class MainApp(App):
     def build(self):

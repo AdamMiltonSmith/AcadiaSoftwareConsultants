@@ -334,6 +334,10 @@ BoxLayout:
             name: 'graph'
             BoxLayout:
                 orientation: 'vertical'
+                #Displays the image of the sample graph
+                Image:
+                    source: 'icesat2\\graph\\graph_png\\foo.png'
+                    allow_stretch: True
                 canvas.before:
                     Color:
                         rgba: .99,.99,.99,1
