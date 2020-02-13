@@ -383,11 +383,18 @@ BoxLayout:
                     size: root.width * 2 / 3 , root.height * 18 / 24
         Map_Window:
             name: 'map'
+            #on_enter: self.create_map()
             BoxLayout:
+                id: map_layout
                 orientation: 'vertical'
                 canvas.before:
                     Color:
                         rgba: .99,.99,.99,1
-                Label:
-                    text: 'Fullscreen Map'
-                    color: (0.0,0.0,0.0,1.0)
+                # Label:
+                #     text: 'Fullscreen Map'
+                #     color: (0.0,0.0,0.0,1.0)
+                Map:
+                    zoom: 1
+                    lat: 67
+                    long: 42
+                

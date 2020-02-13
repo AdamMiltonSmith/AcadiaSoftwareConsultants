@@ -10,6 +10,7 @@ import kivy.properties as prop
 from kivy.config import Config
 from math import sin
 from kivy.garden.graph import Graph, MeshLinePlot
+from kivy.garden.mapview import MapView
 from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty
 #from icesat2.gui import graph
@@ -34,8 +35,6 @@ class MainApp(App):
         b = Builder.load_file("icesat2\\gui\\kv\\gui.kv")
 
         return b
-
-
 
 class TopButton(Button):
     font_size = prop.NumericProperty(14)
@@ -100,6 +99,9 @@ class Graph_Window(Screen):
 class Map_Window(Screen):
     def __init__(self, **kw):
         super(Map_Window, self).__init__(**kw)
+        
+class Map(MapView):
+    pass
 
 class ScreenManagement(ScreenManager):
     pre_init_screen()
