@@ -99,7 +99,7 @@ class Graph_Window(Screen):
 class Map_Window(Screen):
     def __init__(self, **kw):
         super(Map_Window, self).__init__(**kw)
-        
+
 class Map(MapView):
     pass
 
