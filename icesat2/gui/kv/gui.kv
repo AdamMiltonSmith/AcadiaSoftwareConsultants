@@ -325,6 +325,22 @@ BoxLayout:
                         row_default_height: '48dp'
                         row_force_default: True
                         spacing: 10, 10
+                        DataSetRefreshButton:
+                            id: btn_refresh
+                            container: layout_content
+                            text: 'Refresh List'
+                            size_hint_y: None
+                            #width: self.texture_size[0] + 2 * btn_refresh.side_width_buffer
+                            height: btn_refresh.btn_height
+                            background_normal: ''
+                            background_color: btn_refresh.back_color
+                            color: btn_refresh.text_color
+                            font_size: btn_refresh.font_size
+                            on_release:
+                                self.remove_buttons()
+                                self.add_buttons()
+                                #app.assign(self)
+
                         ScrollView:
                             size: self.size
                             GridLayout:
@@ -336,21 +352,6 @@ BoxLayout:
                                 spacing: 0, 5
                                 padding: 0, 0
                                 height: self.minimum_height
-
-                                DefaultButton:
-                                    id: btn_a
-                                    container: layout_content
-                                    text: 'Refresh List'
-                                    size_hint_y: None
-                                    #width: self.texture_size[0] + 2 * btn_a.side_width_buffer
-                                    height: btn_a.btn_height
-                                    background_normal: ''
-                                    background_color: btn_a.back_color
-                                    color: btn_a.text_color
-                                    font_size: btn_a.font_size
-                                    on_press:
-                                        self.remove_buttons()
-                                        self.add_buttons()
 
         Graph_Window:
             name: 'graph'
