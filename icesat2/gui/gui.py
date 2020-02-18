@@ -37,7 +37,7 @@ class MainApp(App):
         b = Builder.load_file("icesat2\\gui\\kv\\gui.kv")
 
 
-        Clock.schedule_interval(self.update, 1)
+        #Clock.schedule_interval(self.update, 1)
         return b
     
     # def update(self, *args):
