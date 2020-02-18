@@ -49,7 +49,7 @@ class Welcome(Screen):
 
 
 class TestApp(App):
-    title = "ScreenManager - Add Widgets Dynamically"
+    title = "Xd"
 
     def build(self):
         return MyScreenManager()
