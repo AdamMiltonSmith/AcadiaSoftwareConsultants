@@ -3,61 +3,113 @@
 #:import MeshLinePlot kivy.garden.graph.MeshLinePlot
 
 
-<CoordinatePopup@Popup>:
+<CoordinatePopup>:
     id: coordpopup
     title: "Input coordinates"
     size: 500, 500
     size_hint: None, None
     auto_dismiss: False
     FloatLayout:
+        id: popup_layout
         Label:
             text: "Minimum x (e/w) coordinate"
             size: 200, 50
             size_hint: None, None
             pos_hint: {"x": 0, "top": .8}
-        TextInput:
+        CoordinateTextInput:
+            id: topleft
             text: "Format xx.xx"
             multiline: False
+            coord_dir: "-e/w"
             size: 100, 25
             size_hint: None, None
             pos_hint: {"x": .1, "top": .7}
             font_size: 11
+            on_text_validate: self.on_enter()
+            on_focus: self.check_text()
         Label:
             text: "Maximum x (e/w) coordinate"
             size: 200, 50
             size_hint: None, None
             pos_hint: {"x": .575, "top": .8}
-        TextInput:
+        CoordinateTextInput:
+            id: bottomleft
             text: "Format xx.xx"
             multiline: False
+            coord_dir: "+e/w"
             size: 100, 25
             size_hint: None, None
             pos_hint: {"x": .675, "top": .7}
             font_size: 11
+            on_text_validate: self.on_enter()
         Label:
-            text: "Minimum y (e/w) coordinate"
+            text: "Minimum y (n/s) coordinate"
             size: 200, 50
             size_hint: None, None
             pos_hint: {"x": 0, "top": .6}
-        TextInput:
+        CoordinateTextInput:
             text: "Format xx.xx"
             multiline: False
+            coord_dir: "-n/s"
             size: 100, 25
             size_hint: None, None
             pos_hint: {"x": .1, "top": .5}
             font_size: 11
+            on_text_validate: self.on_enter(text)
         Label:
-            text: "Maximum y (e/w) coordinate"
+            text: "Maximum y (n/s) coordinate"
             size: 200, 50
             size_hint: None, None
             pos_hint: {"x": .575, "top": .6}
-        TextInput:
+        CoordinateTextInput:
             text: "Format xx.xx"
             multiline: False
+            coord_dir: "+n/s"
             size: 100, 25
             size_hint: None, None
             pos_hint: {"x": .675, "top": .5}
             font_size: 11
+            on_text_validate: self.on_enter()
+        DateChooseButton:
+            id: end_date_year_button
+            text: "yyyy"
+            size_hint: None, None
+            pos_hint: {"x": .675, "top": .3}
+            font_size: 11
+            on_parent: end_date_year_dd.dismiss()
+            on_release: #end_date_year_dd.create_buttons("year")
+            on_release: end_date_year_dd.open(self)
+            size: 40, 20
+            background_normal: ''
+            background_color: end_date_year_button.back_color
+            color: end_date_year_button.text_color
+            font_size: end_date_year_button.font_size
+
+        YearDD:
+            id: end_date_year_dd
+            auto_width: False
+            width: 40
+            parent_widget: end_date_year_button
+
+        #     DateChooseDropDownButton:
+        #         id: dropdown_button_2018
+        #         text: '2018'
+        #         size_hint_y: None
+        #         height: 20
+        #         on_release: end_date_year_button.text = '2019'
+        #         font_size: end_date_year_dropdown.font_size
+        #         background_normal: ''
+        #         background_color: end_date_year_button.back_color
+        #         color: end_date_year_button.text_color
+        #         font_size: end_date_year_button.font_size
+        #     DateChooseDropDownButton:
+        #         id: dropdown_button_2019
+        #         text: '2019'
+        #         size_hint_y: None
+        #         height: 20
+        #         on_release: end_date_year_button.text = '2019'
+        #         font_size: end_date_year_dropdown.font_size
+
         Button:
             text: "Cancel"
             size_hint: None, None
@@ -69,6 +121,7 @@
             size_hint: None, None
             size: 75, 40
             pos_hint: {"right": 1, "y": 0}
+            on_release: root.process_input()
             on_release: coordpopup.dismiss()
 BoxLayout:
     orientation: 'vertical'
@@ -398,4 +451,4 @@ BoxLayout:
                     zoom: 1
                     lat: 67
                     long: 42
-                
+
