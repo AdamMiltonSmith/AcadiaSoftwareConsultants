@@ -23,9 +23,9 @@ import os
 
 def pre_init_screen():
     import tkinter as tk
-    
+
     screen = tk.Tk()
-    
+
     screenx, screeny = screen.winfo_screenwidth(), screen.winfo_screenheight()
 
 class MainApp(App):
@@ -116,11 +116,13 @@ class Main_Window(Screen):
     def __init__(self, **kw):
         super(Main_Window, self).__init__(**kw)
 
-        
 class Graph_Window(Screen):
     def __init__(self, **kw):
         super(Graph_Window, self).__init__(**kw)
 
+class Map_Window(Screen):
+    def __init__(self, **kw):
+        super(Map_Window, self).__init__(**kw)
 
 class ScreenManagement(ScreenManager):
     pre_init_screen()
@@ -143,5 +145,4 @@ class SetGraph(Widget):
 
 
 def main():
-    print("Jimmy is a total chad")
     MainApp().run()
