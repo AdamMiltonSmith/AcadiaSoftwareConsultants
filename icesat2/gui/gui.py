@@ -181,13 +181,13 @@ class YearDD(DropDown):
 
         #need to make these the button below, these need a lot of work
         for index in range(2018, 2023):
-            btn = Button(text=f"{index}", size_hint_y=None,
-                         width=40, height=25)
+            btn = DateChooseDropDownButton(text=f"{index}", size_hint_y=None,
+                         width=40, height=25, background_color = [0, 0, 0, 1.0], text_color = [0, 0, 0, 1.0], background_normal = '')
 
             btn.bind(on_release=lambda btn: self.set_and_dismiss(btn.text))
 
             self.add_widget(btn)
-
+            
         #self.bind(on_select=lambda instance, x: setattr(self, 'text', x))
 
     def set_and_dismiss(self, value):
@@ -198,7 +198,7 @@ class YearDD(DropDown):
 class DateChooseDropDownButton(Button):
     font_size = prop.NumericProperty(14)
     side_width_buffer = prop.NumericProperty(20)
-    back_color = prop.ColorProperty([0.9, 0.9, 0.9, 1.0])
+    #back_color = prop.ColorProperty([0.9, 0.9, 0.9, 1.0])
     #back_normal = prop.ColorProperty([1.0, 1.0, 1.0, 1.0])
     text_color = prop.ColorProperty([0.0, 0.0, 0.0, 1.0])
 

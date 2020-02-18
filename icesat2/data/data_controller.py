@@ -91,7 +91,9 @@ class Data:
         """
         return
 
+
 def createData(start_date, end_date, file_name, day_delta=None):
+    """Data creation request for backend"""
     data = Data(start_date, end_date, file_name, day_delta=None)
 
     return data
