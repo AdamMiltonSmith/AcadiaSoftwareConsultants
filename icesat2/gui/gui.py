@@ -18,7 +18,7 @@ from os.path import isfile, join
 import glob
 import os
 import matplotlib.pyplot as plt
-import icesat2.gui.graphPngExport as graphPngExport
+import icesat2.graph.graphPngExport as graphPngExport
 
 graphPngExport.plot_graph(graphPngExport.read_data('icesat2\\graph\\graph_data\\foo.csv'))
 
