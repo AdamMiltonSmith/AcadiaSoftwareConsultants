@@ -22,6 +22,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.popup import Popup
+from kivy.uix.scrollview import ScrollView
 import re
 
 
@@ -38,6 +39,7 @@ class MainApp(App):
     carrot = prop.ObjectProperty(None)
     def build(self):
         self.title = "IGLOO"
+
         b = Builder.load_file("icesat2\\gui\\kv\\gui.kv")
 
 
@@ -65,6 +67,25 @@ class TopButton(Button):
 
 
 class TopButtonDropDown(DropDown):
+    font_size = prop.NumericProperty(14)
+
+class FileDropDown(DropDown):
+    font_size = prop.NumericProperty(14)
+
+
+class EditDropDown(DropDown):
+    font_size = prop.NumericProperty(14)
+
+
+class WindowDropDown(DropDown):
+    font_size = prop.NumericProperty(14)
+
+
+class MapDropDown(DropDown):
+    font_size = prop.NumericProperty(14)
+
+
+class HelpDropDown(DropDown):
     font_size = prop.NumericProperty(14)
 
 
@@ -120,57 +141,62 @@ class CoordinateTextInput(TextInput):
         else:
             pass
 
+
 class DateChooseButton(Button):
+    time_def = prop.StringProperty("")
     font_size = prop.NumericProperty(12)
     back_color = prop.ColorProperty([0.9, 0.9, 0.9, 1.0])
     #back_normal = prop.ColorProperty([1.0, 1.0, 1.0, 1.0])
     text_color = prop.ColorProperty([0.0, 0.0, 0.0, 1.0])
     side_width_buffer = prop.NumericProperty(20)
 
-    # def create_buttons(self, date_id, widget_id):
-    #     dropdown = self.parent.ids.end_date_year_dropdown
-
-    #     for index in range(10):
-    #         btn = Button(text=f"{index}", size_hint_y=None, width = 40, height=25)
-
-    #         btn.bind(on_release=lambda btn: dropdown.select(btn.text))
-
-    #         dropdown.add_widget(btn)
-
-    #     dropdown.bind(on_select=lambda instance, x: setattr(self, 'text', x))
-
 
 class DayDD(DropDown):
     font_size = prop.NumericProperty(12)
 
-    def create_buttons(self, date_id):
-        dropdown = self
+    def __init__(self, **kwargs):
 
-        for index in range(10):
-            btn = Button(text=f"{index}", size_hint_y=None, width = 40, height=25)
+        super(DayDD, self).__init__(**kwargs)
 
-            btn.bind(on_release=lambda btn: dropdown.select(btn.text))
+        for index in range(2018, 2023):
+            btn = DateChooseDropDownButton(text=f"{index}", size_hint_y=None,
+                                           width=40, height=25,
+                                           background_color=[
+                                               1.0, 1.0, 1.0, 1.0],
+                                           color=[0.0, 0.0, 0.0, 1.0], background_normal='')
 
-            dropdown.add_widget(btn)
+            btn.bind(on_release=lambda btn: self.set_and_dismiss(btn.text))
 
-        dropdown.bind(on_select=lambda instance, x: setattr(self, 'text', x))
+            self.add_widget(btn)
+
+    def set_and_dismiss(self, value):
+        self.parent_widget.text = value
+        self.dismiss()
+
 
 
 class MonthDD(DropDown):
     font_size = prop.NumericProperty(12)
 
-    def create_buttons(self, date_id):
-        dropdown = self
+    def __init__(self, **kwargs):
 
-        for index in range(10):
-            btn = Button(text=f"{index}", size_hint_y=None,
-                         width=40, height=25)
+        super(MonthDD, self).__init__(**kwargs)
 
-            btn.bind(on_release=lambda btn: dropdown.select(btn.text))
+        for index in range(1, 13):
+            btn = DateChooseDropDownButton(text=f"{index}", size_hint_y=None,
+                                           width=40, height=25,
+                                           background_color=[
+                                               1.0, 1.0, 1.0, 1.0],
+                                           color=[0.0, 0.0, 0.0, 1.0], background_normal='')
 
-            dropdown.add_widget(btn)
+            btn.bind(on_release=lambda btn: self.set_and_dismiss(btn.text))
 
-        dropdown.bind(on_select=lambda instance, x: setattr(self, 'text', x))
+            self.add_widget(btn)
+
+    def set_and_dismiss(self, value):
+        self.parent_widget.text = value
+        self.dismiss()
+
 
 class YearDD(DropDown):
     font_size = prop.NumericProperty(12)
@@ -182,13 +208,13 @@ class YearDD(DropDown):
         #need to make these the button below, these need a lot of work
         for index in range(2018, 2023):
             btn = DateChooseDropDownButton(text=f"{index}", size_hint_y=None,
-                         width=40, height=25, background_color = [0, 0, 0, 1.0], text_color = [0, 0, 0, 1.0], background_normal = '')
+                         width=40, height=25,
+                         background_color = [1.0, 1.0,1.0, 1.0],
+                         color = [0.0, 0.0, 0.0, 1.0], background_normal = '')
 
             btn.bind(on_release=lambda btn: self.set_and_dismiss(btn.text))
 
             self.add_widget(btn)
-            
-        #self.bind(on_select=lambda instance, x: setattr(self, 'text', x))
 
     def set_and_dismiss(self, value):
         self.parent_widget.text = value
@@ -200,18 +226,43 @@ class DateChooseDropDownButton(Button):
     side_width_buffer = prop.NumericProperty(20)
     #back_color = prop.ColorProperty([0.9, 0.9, 0.9, 1.0])
     #back_normal = prop.ColorProperty([1.0, 1.0, 1.0, 1.0])
-    text_color = prop.ColorProperty([0.0, 0.0, 0.0, 1.0])
+    #text_color = prop.ColorProperty([0.0, 0.0, 0.0, 1.0])
 
 class CoordinatePopup(Popup):
-    def process_input(self):
+
+    def check_input(self):
         coord_input = []
-        print(self.ids.popup_layout.children)
+        start_date_input = []
+        end_date_input = []
         for child in self.ids.popup_layout.children:
             if isinstance(child, CoordinateTextInput):
                 coord_input.append(child)
+            elif isinstance(child, DateChooseButton):
+                if "start" in child.time_def:
+                    start_date_input.append(child)
+                else:
+                    end_date_input.append(child)
         for widget in coord_input:
             print(widget.text)
+        for widget in start_date_input:
+            print(widget.text)
+        for widget in end_date_input:
+            print(widget.text)
 
+
+
+    def process_input(self):
+        coord_input = []
+        start_date_input = []
+        end_date_input = []
+        for child in self.ids.popup_layout.children:
+            if isinstance(child, CoordinateTextInput):
+                coord_input.append(child)
+            elif isinstance(child, DateChooseButton):
+                if "start" in child.time_def:
+                    start_date_input.append(child)
+                else:
+                    end_date_input.append(child)
 
 class DataSetRefreshButton(Button):
     font_size = prop.NumericProperty(14)
@@ -256,7 +307,6 @@ class Map(MapView):
     pass
 
 class ScreenManagement(ScreenManager):
-    pre_init_screen()
     pass
 
 class WindowSplitter(Splitter):
@@ -264,15 +314,6 @@ class WindowSplitter(Splitter):
 
 class SetGraph(Widget):
     testGraph = prop.ObjectProperty(None)
-
-# sm = ScreenManager()
-
-# screens = [Main_Window(name='main')]
-
-# for screen in screens:
-#     sm.add_widget(screen)
-
-# sm.current = 'main'
 
 
 def main():
