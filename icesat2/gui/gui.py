@@ -8,24 +8,23 @@ from kivy.uix.splitter import Splitter
 from kivy.core.window import Window
 import kivy.properties as prop
 from kivy.config import Config
-from math import sin
 from kivy.garden.graph import Graph, MeshLinePlot
 from kivy.uix.widget import Widget
-from kivy.properties import ObjectProperty  
-from kivy.clock import Clock
+from kivy.properties import ObjectProperty
 from os import listdir
 from os.path import isfile, join
 import glob
 import os
-import icesat2.graph.graphPngExport as graphPngExport
+import matplotlib.pyplot as plt
+import icesat2.gui.graphPngExport as graphPngExport
 
-
+graphPngExport.plot_graph(graphPngExport.read_data('icesat2\\gui\\graph_data\\foo.csv'))
 
 def pre_init_screen():
     import tkinter as tk
-
+    
     screen = tk.Tk()
-
+    
     screenx, screeny = screen.winfo_screenwidth(), screen.winfo_screenheight()
 
 class MainApp(App):
@@ -35,7 +34,6 @@ class MainApp(App):
     def build(self):
         self.title = "IGLOO"
         b = Builder.load_file("icesat2\\gui\\kv\\gui.kv")
-
 
         #Clock.schedule_interval(self.update, 1)
         return b
@@ -51,6 +49,7 @@ class MainApp(App):
     #         carrot.doTheThing()
         
         
+
 
 
 class TopButton(Button):
@@ -112,10 +111,30 @@ class DataSetRefreshButton(Button):
         print("Doing the thing")
 
 
+    container = ObjectProperty(None) #container the buttons are added to
+    def add_buttons(self):
+        datasetPath = "resources\\csv_data_collection"
+        files = listdir(datasetPath)
+        print(files)
+        for f in files:
+            self.container.add_widget(Button(text=f, id=str(f)))
+
+    # Currently, the refresh button gets replaced by a duplicate of the last button
+    # after the first refresh
+    def remove_buttons(self):
+        skipfirst = 0 #prevents the refresh button from being removed
+        for child in [child for child in self.container.children]:
+            if skipfirst != 0:
+                self.container.remove_widget(child)
+            else:
+                skipfirst += 1
+
+
 class Main_Window(Screen):
     def __init__(self, **kw):
         super(Main_Window, self).__init__(**kw)
 
+        
 class Graph_Window(Screen):
     def __init__(self, **kw):
         super(Graph_Window, self).__init__(**kw)
@@ -133,6 +152,8 @@ class WindowSplitter(Splitter):
 
 class SetGraph(Widget):
     testGraph = ObjectProperty(None)
+
+
 
 # sm = ScreenManager()
 

@@ -69,11 +69,19 @@ class data:
                 line = sf.readline()
                 split = line.split(',')
 
-        # with open(end_file) as ef:
-        #     line = sf.readline()
-        #     split = line.split(',')
-        #     while line:
-        #         if(split[0] in height_diff):
+        with open(end_file) as ef:
+            line = ef.readline()
+            line = ef.readline()
+            split = line.split(',')
+
+            while line:
+                if(split[0] in height_diff):
+                    height_diff[split[0]][2] = float(height_diff[split[0]][2]) - float(split[3])
+                else:
+                    del(height_diff[split[0]])
+                      
+                line = ef.readline()
+                split = line.split(',')
 
         print(height_diff)
         return
