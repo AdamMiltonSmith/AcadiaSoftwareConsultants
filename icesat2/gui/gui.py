@@ -20,7 +20,7 @@ import os
 import matplotlib.pyplot as plt
 import icesat2.gui.graphPngExport as graphPngExport
 
-graphPngExport.plot_graph(graphPngExport.read_data('icesat2\\gui\\graph_data\\foo.csv'))
+graphPngExport.plot_graph(graphPngExport.read_data('icesat2\\graph\\graph_data\\foo.csv'))
 
 def pre_init_screen():
     import tkinter as tk
