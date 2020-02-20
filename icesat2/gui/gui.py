@@ -25,6 +25,20 @@ from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
 import re
 
+from kivy.core.window import Window
+from kivy.config import Config
+from kivy.garden.graph import Graph, MeshLinePlot
+from kivy.uix.widget import Widget
+from kivy.clock import Clock
+#from icesat2.gui import graph
+from os import listdir
+from os.path import isfile, join
+import glob
+import os
+import matplotlib.pyplot as plt
+import icesat2.graph.graphPngExport as graphPngExport
+
+graphPngExport.plot_graph(graphPngExport.read_data('icesat2\\graph\\graph_data\\foo.csv'))
 
 def pre_init_screen():
     import tkinter as tk
@@ -43,7 +57,7 @@ class MainApp(App):
         b = Builder.load_file("icesat2\\gui\\kv\\gui.kv")
 
 
-        Clock.schedule_interval(self.update, 1)
+        #Clock.schedule_interval(self.update, 1)
         return b
 
     def update(self, *args):
@@ -314,6 +328,15 @@ class WindowSplitter(Splitter):
 
 class SetGraph(Widget):
     testGraph = prop.ObjectProperty(None)
+
+# sm = ScreenManager()
+
+# screens = [Main_Window(name='main')]
+
+# for screen in screens:
+#     sm.add_widget(screen)
+
+# sm.current = 'main'
 
 
 def main():

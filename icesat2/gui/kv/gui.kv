@@ -551,33 +551,13 @@ ScreenManager:
                             height: self.minimum_height
 
 <Graph_Window>:
-    name: 'graph'
-    BoxLayout:
-        orientation: 'vertical'
-        canvas.before:
-            Color:
-                rgba: .99,.99,.99,1
-            Rectangle:
-                pos: self.pos
-                size: self.size
-        GridLayout:
-            rows: 1
-            size_hint: 1, None
-            height: 35
-            pos_hint: {"x": 0, "top": 1}
-
-            file_dropdown: file_dropdown.__self__
-            edit_dropdown: edit_dropdown.__self__
-            window_dropdown: window_dropdown.__self__
-            map_dropdown: map_dropdown.__self__
-            help_dropdown: help_dropdown.__self__
-
-            canvas.before:
-                Color:
-                    rgba: 0.9, 0.9, 0.9, 1.0
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+  name: 'graph'
+      Image:
+            source: 'icesat2\\graph\\graph_images\\foo.png'
+          allow_stretch: True
+          canvas.before:
+              Color:
+                  rgba: .99,.99,.99,1
             #file
             TopButton:
                 id: file_btn
