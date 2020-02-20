@@ -9,7 +9,7 @@ from datetime import date
 #   segment_id, longitude, latitude, height, quality, track_id, beam, file_name
 
 path = "resources\\csv_data_collection"
-class data:
+class Data:
     day_delta = datetime.timedelta(days=1)
     file_name = "Untitled"
 
@@ -42,7 +42,7 @@ class data:
             command = 'curl -X GET ' + current + ' -H' + " accept: */*"
 
             os.system(command + " >> " + self.path + self.file_name + day.strftime('%Y-%m-%d'))
-    
+
     """
     get_height, will subtract height at lat x at time b from height at lat x from time a
     where a and b are start and end
@@ -50,7 +50,7 @@ class data:
     def get_height_diff(self, start_date, end_date):
         onlyfiles = [f for f in listdir(self.path) if isfile(join(self.path, f))]
 
-        
+
         start_file = self.path + '/' + self.file_name + start_date.strftime('%Y-%m-%d')
         end_file = self.path + '/' + self.file_name + end_date.strftime('%Y-%m-%d')
 
@@ -77,13 +77,13 @@ class data:
                     height_diff[split[0]][2] = float(height_diff[split[0]][2]) - float(split[3])
                 else:
                     del(height_diff[split[0]])
-                      
+
                 line = ef.readline()
                 split = line.split(',')
 
         print(height_diff)
         return
-    
+
     def get_differential(self):
         """This function will return a csv file the height differentials,
         the differential will be calculate useing all the dates
@@ -91,7 +91,9 @@ class data:
         """
         return
 
+
 def createData(start_date, end_date, file_name, day_delta=None):
+    """Data creation request for backend"""
     data = Data(start_date, end_date, file_name, day_delta=None)
 
     return data

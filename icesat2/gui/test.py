@@ -30,7 +30,7 @@ class Registers(Screen):
 
     def on_enter(self):
         Window.size = (800, 600)
-        
+
 
     def add_buttons(self):
         datasetPath = "resources\\csv_data_collection"
@@ -41,7 +41,7 @@ class Registers(Screen):
     def remove_buttons(self):
         for child in [child for child in self.container.children]:
             self.container.remove_widget(child)
-    
+
 
 
 class Welcome(Screen):
