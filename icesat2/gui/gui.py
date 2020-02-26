@@ -1,12 +1,13 @@
 import glob
 import os
+import re
 from math import sin
-#from icesat2.gui import graph
 from os import listdir
 from os.path import isfile, join
 
 import kivy
 import kivy.properties as prop
+import matplotlib.pyplot as plt
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
@@ -16,26 +17,14 @@ from kivy.garden.mapview import MapView
 from kivy.lang import Builder
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.splitter import Splitter
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.popup import Popup
-from kivy.uix.scrollview import ScrollView
-import re
 
-from kivy.core.window import Window
-from kivy.config import Config
-from kivy.garden.graph import Graph, MeshLinePlot
-from kivy.uix.widget import Widget
-from kivy.clock import Clock
-#from icesat2.gui import graph
-from os import listdir
-from os.path import isfile, join
-import glob
-import os
-import matplotlib.pyplot as plt
 import icesat2.graph.graphPngExport as graphPngExport
 
 graphPngExport.plot_graph(graphPngExport.read_data('icesat2\\graph\\graph_data\\foo.csv'))
@@ -139,7 +128,7 @@ class DataSetRefreshButton(Button):
     #btn_width = prop.NumericProperty(70)
     side_width_buffer = prop.NumericProperty(20)
 
-    container = ObjectProperty(None) #container the buttons are added to
+    container = prop.ObjectProperty(None) #container the buttons are added to
     def add_buttons(self):
         datasetPath = "resources"
         #files = listdir(datasetPath)
