@@ -41,7 +41,7 @@ import icesat2.graph.graphPngExport as graphPngExport
 graphPngExport.plot_graph(graphPngExport.read_data('icesat2\\graph\\graph_data\\foo.csv'))
 
 
-currentDataSet = ""  
+currentDataSet = "No data set selected"  
 
 
 def pre_init_screen():
@@ -133,7 +133,7 @@ class ListButton(Button):
     side_width_buffer = prop.NumericProperty(20)
 
     def on_release(Button):
-        currentDataSet = Button.text
+        currentDataSet = "resources\\" + Button.text
         print(currentDataSet)
     
 
