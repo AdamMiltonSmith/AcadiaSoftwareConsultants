@@ -24,31 +24,24 @@ class Login(Screen):
             instance.current = "registers"
 
 
+
 class Registers(Screen):
     container = ObjectProperty(None)
 
     def on_enter(self):
         Window.size = (800, 600)
-        
 
-    def add_buttons(self, n):
+
+    def add_buttons(self):
         datasetPath = "resources\\csv_data_collection"
         files = listdir(datasetPath)
-        print(files)
-        #print(glob.glob('C:/Users/Joshua Schaff/Desktop/Shit/icesat2/gui'))
-        #files = [f for f in listdir(datasetPath) if isfile(join(datasetPath, f))]        
-        #mypath = 'C:/Users/Joshua Schaff/Desktop/Shit/icesat2/gui'
-            
-
-        #for i in range(n):
         for f in files:
-            #tmp = os.path.splittext("resources\\csv_data_collection\\empty_file.text")[0]
-            #print(f)
             self.container.add_widget(Button(text=f, id=str(f)))
 
-    def remove_buttons(self, *args):
+    def remove_buttons(self):
         for child in [child for child in self.container.children]:
             self.container.remove_widget(child)
+
 
 
 class Welcome(Screen):
@@ -56,7 +49,7 @@ class Welcome(Screen):
 
 
 class TestApp(App):
-    title = "ScreenManager - Add Widgets Dynamically"
+    title = "Xd"
 
     def build(self):
         return MyScreenManager()
