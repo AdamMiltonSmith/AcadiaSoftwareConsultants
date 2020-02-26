@@ -28,6 +28,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 
 import icesat2.graph.graphPngExport as graphPngExport
+from kivy.properties import ObjectProperty
 
 
 def pre_init_screen():
