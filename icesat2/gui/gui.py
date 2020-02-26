@@ -40,6 +40,10 @@ import icesat2.graph.graphPngExport as graphPngExport
 
 graphPngExport.plot_graph(graphPngExport.read_data('icesat2\\graph\\graph_data\\foo.csv'))
 
+
+currentDataSet = ""  
+
+
 def pre_init_screen():
     import tkinter as tk
 
@@ -48,27 +52,13 @@ def pre_init_screen():
     screenx, screeny = screen.winfo_screenwidth(), screen.winfo_screenheight()
 
 class MainApp(App):
-
-    assigned = False
-    carrot = prop.ObjectProperty(None)
     def build(self):
         self.title = "IGLOO"
-
         b = Builder.load_file("icesat2\\gui\\kv\\gui.kv")
-
 
         #Clock.schedule_interval(self.update, 1)
         return b
 
-    def update(self, *args):
-        pass
-
-    # def assign(self, booten):
-    #     if assigned == False:
-    #         print("<Assigning Shit")
-    #         carrot = booten
-    #         assigned = True
-    #         carrot.doTheThing()
 
 class TopButton(Button):
     font_size = prop.NumericProperty(14)
@@ -120,6 +110,46 @@ class DefaultButton(Button):
     btn_height = prop.NumericProperty(20)
     #btn_width = prop.NumericProperty(70)
     side_width_buffer = prop.NumericProperty(20)
+
+class ListButton(Button):
+    font_size = prop.NumericProperty(14)
+    back_color = prop.ColorProperty([0.5, 0.5, 0.5, 1.0])
+
+    text_color = prop.ColorProperty([1.0, 1.0, 1.0, 1.0])
+    btn_height = prop.NumericProperty(20)
+    #btn_width = prop.NumericProperty(70)
+    side_width_buffer = prop.NumericProperty(20)
+
+    def on_release(Button):
+        currentDataSet = Button.text
+        print(currentDataSet)
+    
+
+class DataSetRefreshButton(Button):
+    font_size = prop.NumericProperty(14)
+    back_color = prop.ColorProperty([0.5, 0.5, 0.5, 1.0])
+
+    text_color = prop.ColorProperty([1.0, 1.0, 1.0, 1.0])
+    btn_height = prop.NumericProperty(20)
+    #btn_width = prop.NumericProperty(70)
+    side_width_buffer = prop.NumericProperty(20)
+
+    container = prop.ObjectProperty(None) #container the buttons are added to
+    def add_buttons(self):
+        datasetPath = "resources"
+        #files = listdir(datasetPath)
+        files = next(os.walk(datasetPath))[1]
+        print(files)
+        for f in files:
+            tempButton = ListButton()
+            tempButton.text = f
+            self.container.add_widget(tempButton)
+    #remove buttons
+    def remove_buttons(self):
+        for child in [child for child in self.container.children]:
+                self.container.remove_widget(child)
+    def doTheThing(self):
+        print("Doing the thing")
 
 
 class CoordinateTextInput(TextInput):
@@ -338,6 +368,11 @@ class SetGraph(Widget):
 
 # sm.current = 'main'
 
+# Calls the plot_graph function on the sample data foo.csv which is located in the
+# graph_data folder, graphPngExport then creates a png of the graph which is stored
+# in graph_png to be displayed later.
+
+graphPngExport.plot_graph(graphPngExport.read_data('icesat2\\graph\\graph_data\\foo.csv'))
 
 def main():
     MainApp().run()

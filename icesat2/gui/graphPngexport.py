@@ -20,4 +20,4 @@ def plot_graph(csv_input: list) -> plt.plot:
     plt.title('IGLOO TESTS')
     plt.ylabel('Y Axis')
     plt.xlabel('X Axis')
-    plt.savefig('icesat2\\graph\\graph_images\\foo.png', dpi = 100)
+    plt.savefig('icesat2\\gui\\graph_images\\foo.png', dpi = 100)
