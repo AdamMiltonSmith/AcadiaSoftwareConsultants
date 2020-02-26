@@ -23,6 +23,13 @@ ScreenManager:
     auto_dismiss: False
     FloatLayout:
         id: popup_layout
+        end_date_day_dd: end_date_day_dd.__self__
+        end_date_month_dd: end_date_month_dd.__self__
+        end_date_year_dd: end_date_year_dd.__self__
+        start_date_day_dd: start_date_day_dd.__self__
+        start_date_month_dd: start_date_month_dd.__self__
+        start_date_year_dd: start_date_year_dd.__self__
+
         Label:
             text: "Minimum x (e/w) coordinate"
             size: 200, 50
@@ -82,86 +89,16 @@ ScreenManager:
             pos_hint: {"x": .675, "top": .5}
             font_size: 11
             on_text_validate: self.on_enter()
-        DateChooseButton:
-            id: end_date_day_button
-            time_def: "end_day"
-            text: "dd"
-            size_hint: None, None
-            pos_hint: {"x": .575, "top": .3}
-            font_size: 11
-            on_parent: end_date_day_dd.dismiss()
-            on_release: #end_date_year_dd.create_buttons("year")
-            on_release: end_date_day_dd.open(self)
-            size: 30, 30
-            background_normal: ''
-            background_color: end_date_day_button.back_color
-            color: end_date_day_button.text_color
-            font_size: end_date_day_button.font_size
-
-        DayDD:
-            id: end_date_day_dd
-            auto_width: False
-            width: 30
-            parent_widget: end_date_day_button
-            max_height: 100
-
-        DateChooseButton:
-            id: end_date_month_button
-            time_def: "end_month"
-            text: "mm"
-            size_hint: None, None
-            pos_hint: {"x": .675, "top": .3}
-            font_size: 11
-            on_parent: end_date_month_dd.dismiss()
-            on_release: #end_date_year_dd.create_buttons("year")
-            on_release: end_date_month_dd.open(self)
-            size: 30, 30
-            background_normal: ''
-            background_color: end_date_month_button.back_color
-            color: end_date_month_button.text_color
-            font_size: end_date_month_button.font_size
-
-        MonthDD:
-            id: end_date_month_dd
-            auto_width: False
-            width: 30
-            parent_widget: end_date_month_button
-            max_height: 100
-            time_def: "end"
-
-        DateChooseButton:
-            id: end_date_year_button
-            time_def: "end_year"
-            text: "yyyy"
-            size_hint: None, None
-            pos_hint: {"x": .775, "top": .3}
-            font_size: 11
-            on_parent: end_date_year_dd.dismiss()
-            on_release: #end_date_year_dd.create_buttons("year")
-            on_release: end_date_year_dd.open(self)
-            size: 60, 30
-            background_normal: ''
-            background_color: end_date_year_button.back_color
-            color: end_date_year_button.text_color
-            font_size: end_date_year_button.font_size
-
-        YearDD:
-            id: end_date_year_dd
-            auto_width: False
-            width: 60
-            parent_widget: end_date_year_button
-            max_height: 100
-            time_def: "end"
-
+        #start day
         DateChooseButton:
             id: start_date_day_button
             time_def: "start_day"
-            text: "dd"
+            text: "1"
             size_hint: None, None
             pos_hint: {"x": .075, "top": .3}
             font_size: 11
             on_parent: start_date_day_dd.dismiss()
-            on_release: #end_date_year_dd.create_buttons("year")
+            on_release: start_date_day_dd.create_buttons(start_date_month_button.text, start_date_year_button.text)
             on_release: start_date_day_dd.open(self)
             size: 30, 30
             background_normal: ''
@@ -176,11 +113,11 @@ ScreenManager:
             parent_widget: start_date_day_button
             max_height: 100
             time_def: "start"
-
+        #start month
         DateChooseButton:
             id: start_date_month_button
             time_def: "start_month"
-            text: "mm"
+            text: "1"
             size_hint: None, None
             pos_hint: {"x": .175, "top": .3}
             font_size: 11
@@ -200,11 +137,11 @@ ScreenManager:
             parent_widget: start_date_month_button
             max_height: 100
             time_def: "start"
-
+        #start year
         DateChooseButton:
             id: start_date_year_button
             time_def: "start_year"
-            text: "yyyy"
+            text: "2018"
             size_hint: None, None
             pos_hint: {"x": .275, "top": .3}
             font_size: 11
@@ -224,25 +161,76 @@ ScreenManager:
             parent_widget: start_date_year_button
             max_height: 100
             time_def: "start"
+        #end day
+        DateChooseButton:
+            id: end_date_day_button
+            time_def: "end_day"
+            text: "1"
+            size_hint: None, None
+            pos_hint: {"x": .575, "top": .3}
+            font_size: 11
+            on_parent: end_date_day_dd.dismiss()
+            on_release: end_date_day_dd.create_buttons(end_date_month_button.text, end_date_year_button.text)
+            on_release: end_date_day_dd.open(self)
+            size: 30, 30
+            background_normal: ''
+            background_color: end_date_day_button.back_color
+            color: end_date_day_button.text_color
+            font_size: end_date_day_button.font_size
 
-        #     DateChooseDropDownButton:
-        #         id: dropdown_button_2018
-        #         text: '2018'
-        #         size_hint_y: None
-        #         height: 20
-        #         on_release: end_date_year_button.text = '2019'
-        #         font_size: end_date_year_dropdown.font_size
-        #         background_normal: ''
-        #         background_color: end_date_year_button.back_color
-        #         color: end_date_year_button.text_color
-        #         font_size: end_date_year_button.font_size
-        #     DateChooseDropDownButton:
-        #         id: dropdown_button_2019
-        #         text: '2019'
-        #         size_hint_y: None
-        #         height: 20
-        #         on_release: end_date_year_button.text = '2019'
-        #         font_size: end_date_year_dropdown.font_size
+        DayDD:
+            id: end_date_day_dd
+            auto_width: False
+            width: 30
+            parent_widget: end_date_day_button
+            max_height: 100
+        #end month
+        DateChooseButton:
+            id: end_date_month_button
+            time_def: "end_month"
+            text: "1"
+            size_hint: None, None
+            pos_hint: {"x": .675, "top": .3}
+            font_size: 11
+            on_parent: end_date_month_dd.dismiss()
+            on_release: end_date_month_dd.open(self)
+            size: 30, 30
+            background_normal: ''
+            background_color: end_date_month_button.back_color
+            color: end_date_month_button.text_color
+            font_size: end_date_month_button.font_size
+
+        MonthDD:
+            id: end_date_month_dd
+            auto_width: False
+            width: 30
+            parent_widget: end_date_month_button
+            max_height: 100
+            time_def: "end"
+        #end year
+        DateChooseButton:
+            id: end_date_year_button
+            time_def: "end_year"
+            text: "2020"
+            size_hint: None, None
+            pos_hint: {"x": .775, "top": .3}
+            font_size: 11
+            on_parent: end_date_year_dd.dismiss()
+            on_release: #end_date_year_dd.create_buttons("year")
+            on_release: end_date_year_dd.open(self)
+            size: 60, 30
+            background_normal: ''
+            background_color: end_date_year_button.back_color
+            color: end_date_year_button.text_color
+            font_size: end_date_year_button.font_size
+
+        YearDD:
+            id: end_date_year_dd
+            auto_width: False
+            width: 60
+            parent_widget: end_date_year_button
+            max_height: 100
+            time_def: "end"
 
         Button:
             text: "Cancel"
