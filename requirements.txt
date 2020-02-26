@@ -31,7 +31,7 @@ jupyter-client==5.3.3
 jupyter-console==6.0.0
 jupyter-core==4.5.0
 Kivy==1.11.1
-kivy-deps.angle==0.2.0
+
 kivy-deps.glew==0.1.12
 kivy-deps.gstreamer==0.1.17
 kivy-deps.sdl2==0.1.22
