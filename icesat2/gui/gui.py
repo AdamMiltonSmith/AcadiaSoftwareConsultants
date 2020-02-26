@@ -207,7 +207,24 @@ class DayDD(DropDown):
 
         super(DayDD, self).__init__(**kwargs)
 
-        for index in range(2018, 2023):
+        self.month_day = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+    def set_and_dismiss(self, value):
+        self.parent_widget.text = value
+        self.dismiss()
+
+    def create_buttons(self, _month, _year):
+        self.clear_widgets()
+
+        month = int(_month)
+        year = int(_year)
+
+        if month == 2 and year % 4 == 0:
+            max_day = 29
+        else:
+            max_day = self.month_day[month-1]
+
+        for index in range(1, max_day + 1):
             btn = DateChooseDropDownButton(text=f"{index}", size_hint_y=None,
                                            width=40, height=25,
                                            background_color=[
@@ -216,12 +233,9 @@ class DayDD(DropDown):
 
             btn.bind(on_release=lambda btn: self.set_and_dismiss(btn.text))
 
+            #self.dd_buttons.append(btn)
+
             self.add_widget(btn)
-
-    def set_and_dismiss(self, value):
-        self.parent_widget.text = value
-        self.dismiss()
-
 
 
 class MonthDD(DropDown):
@@ -253,7 +267,7 @@ class YearDD(DropDown):
     def __init__(self, **kwargs):
 
         super(YearDD, self).__init__(**kwargs)
-
+        self.dd_buttons = []
         #need to make these the button below, these need a lot of work
         for index in range(2018, 2023):
             btn = DateChooseDropDownButton(text=f"{index}", size_hint_y=None,
@@ -262,6 +276,8 @@ class YearDD(DropDown):
                          color = [0.0, 0.0, 0.0, 1.0], background_normal = '')
 
             btn.bind(on_release=lambda btn: self.set_and_dismiss(btn.text))
+
+            self.dd_buttons.append(btn)
 
             self.add_widget(btn)
 
@@ -298,8 +314,6 @@ class CoordinatePopup(Popup):
         for widget in end_date_input:
             print(widget.text)
 
-
-
     def process_input(self):
         coord_input = []
         start_date_input = []
@@ -312,6 +326,10 @@ class CoordinatePopup(Popup):
                     start_date_input.append(child)
                 else:
                     end_date_input.append(child)
+        print(coord_input)
+        print(start_date_input)
+        print(end_date_input)
+
 
 class DataSetRefreshButton(Button):
     font_size = prop.NumericProperty(14)
