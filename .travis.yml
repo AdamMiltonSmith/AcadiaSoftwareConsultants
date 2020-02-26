@@ -11,7 +11,6 @@ os:
 
 install:
   pip install -r requirements.txt
-  pip install pytest
 
 script:
   pytest
