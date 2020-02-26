@@ -1,6 +1,7 @@
 import os
 import datetime
 import re
+import pandas as pd
 from os import listdir
 from os.path import isfile, join
 from datetime import date
@@ -9,7 +10,7 @@ from datetime import date
 #   segment_id, longitude, latitude, height, quality, track_id, beam, file_name
 
 path = "resources\\csv_data_collection"
-class data:
+class Data:
     day_delta = datetime.timedelta(days=1)
     file_name = "Untitled"
 
@@ -29,7 +30,7 @@ class data:
         if(file_name != None):
             self.file_name = file_name
 
-        self.path = "resources/csv_data_collection/" + self.file_name + "/"
+        self.path = "resources/csv_data_collection/" + self.file_name
 
         if not os.path.exists(self.path):
             os.makedirs(self.path)
@@ -41,7 +42,10 @@ class data:
             current = '"https://openaltimetry.org/data/api/icesat2/atl06?date='+ day.strftime('%Y-%m-%d') +'&minx='+ minx +'&miny='+ miny +'&maxx='+ maxx +'&maxy='+ maxy +'&trackId=705&client=jupyter&outputFormat=csv"'
             command = 'curl -X GET ' + current + ' -H' + " accept: */*"
 
-            os.system(command + " >> " + self.path + self.file_name + day.strftime('%Y-%m-%d'))
+            os.system(command + " >> " + self.path + self.file_name)
+        
+        #Get the dates
+        os.system(self.start_date + " " + self.end_date + " >> dates")
     
     """
     get_height, will subtract height at lat x at time b from height at lat x from time a
@@ -90,9 +94,24 @@ class data:
         This will be a bit harder to implement
         """
         return
+    
+    def get_dates(self):
+        
+        with open(self.path + "dates") as df:
+            dates = df.readline.split()
+            self.start_date = dates[0]
+            self.end_date = dates[0]
+
 
 def createData(start_date, end_date, file_name, day_delta=None):
     data = Data(start_date, end_date, file_name, day_delta=None)
 
     return data
 
+def fetchData(file_name):
+    data = Data(None, None, file_name)
+    data.get_dates()
+
+    return data
+x = Data(date(2018, 11, 13), date(2018, 11, 15), "test")
+test = pd.read_csv("resources/csv_data_collection/test", index_col=None)
