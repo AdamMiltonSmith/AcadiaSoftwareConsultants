@@ -17,7 +17,7 @@ ScreenManager:
 
 <CoordinatePopup>:
     id: coordpopup
-    title: "Input coordinates"
+    title: "Input coordinates"  
     size: 500, 500
     size_hint: None, None
     auto_dismiss: False
@@ -307,10 +307,14 @@ ScreenManager:
             size_hint: None, None
             size: 75, 40
             pos_hint: {"right": 1, "y": 0}
-            on_release: root.process_input()
-            on_release: coordpopup.dismiss()
-
-
+            on_release: root.check_input()
+        ErrorDateLabel:
+            id: error_label
+            text: self.t
+            color: 
+            size_hint: None, None
+            size: 200, 50
+            pos_hint: {"x": .3, "y": 0}
 
 # ScreenManagement:
 #     id: sm
