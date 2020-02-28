@@ -17,7 +17,7 @@ ScreenManager:
 
 <CoordinatePopup>:
     id: coordpopup
-    title: "Input coordinates"
+    title: "Input coordinates"  
     size: 500, 500
     size_hint: None, None
     auto_dismiss: False
@@ -34,7 +34,7 @@ ScreenManager:
             text: "Minimum x (e/w) coordinate"
             size: 200, 50
             size_hint: None, None
-            pos_hint: {"x": 0, "top": .8}
+            pos_hint: {"x": 0, "top": .9}
         CoordinateTextInput:
             id: topleft
             text: "Format xx.xx"
@@ -42,7 +42,7 @@ ScreenManager:
             coord_dir: "-e/w"
             size: 100, 25
             size_hint: None, None
-            pos_hint: {"x": .1, "top": .7}
+            pos_hint: {"x": .1, "top": .8}
             font_size: 11
             on_text_validate: self.on_enter()
             on_focus: self.check_text()
@@ -50,7 +50,7 @@ ScreenManager:
             text: "Maximum x (e/w) coordinate"
             size: 200, 50
             size_hint: None, None
-            pos_hint: {"x": .575, "top": .8}
+            pos_hint: {"x": .575, "top": .9}
         CoordinateTextInput:
             id: bottomleft
             text: "Format xx.xx"
@@ -58,37 +58,101 @@ ScreenManager:
             coord_dir: "+e/w"
             size: 100, 25
             size_hint: None, None
-            pos_hint: {"x": .675, "top": .7}
+            pos_hint: {"x": .675, "top": .8}
             font_size: 11
             on_text_validate: self.on_enter()
         Label:
             text: "Minimum y (n/s) coordinate"
             size: 200, 50
             size_hint: None, None
-            pos_hint: {"x": 0, "top": .6}
+            pos_hint: {"x": 0, "top": .7}
         CoordinateTextInput:
             text: "Format xx.xx"
             multiline: False
             coord_dir: "-n/s"
             size: 100, 25
             size_hint: None, None
-            pos_hint: {"x": .1, "top": .5}
+            pos_hint: {"x": .1, "top": .6}
             font_size: 11
             on_text_validate: self.on_enter()
         Label:
             text: "Maximum y (n/s) coordinate"
             size: 200, 50
             size_hint: None, None
-            pos_hint: {"x": .575, "top": .6}
+            pos_hint: {"x": .575, "top": .7}
         CoordinateTextInput:
             text: "Format xx.xx"
             multiline: False
             coord_dir: "+n/s"
             size: 100, 25
             size_hint: None, None
-            pos_hint: {"x": .675, "top": .5}
+            pos_hint: {"x": .675, "top": .6}
             font_size: 11
             on_text_validate: self.on_enter()
+
+        Label:
+            text: "Start date"
+            size: 100, 50
+            size_hint: None, None
+            pos_hint: {"x": .125, "top": .475}
+        
+        Label:
+            text: "End date"
+            size: 100, 50
+            size_hint: None, None
+            pos_hint: {"x": .625, "top": .475}
+
+        Label:
+            text: "dd"
+            size: 30, 30
+            size_hint: None, None
+            pos_hint: {"x": .075, "top": .365}
+        Label:
+            text: "mm"
+            size: 30, 30
+            size_hint: None, None
+            pos_hint: {"x": .175, "top": .365}
+        Label:
+            text: "yyyy"
+            size: 60, 30
+            size_hint: None, None
+            pos_hint: {"x": .275, "top": .365}
+        Label:
+            text: "dd"
+            size: 30, 30
+            size_hint: None, None
+            pos_hint: {"x": .575, "top": .365}
+        Label:
+            text: "mm"
+            size: 30, 30
+            size_hint: None, None
+            pos_hint: {"x": .675, "top": .365}
+        Label:
+            text: "yyyy"
+            size: 60, 30
+            size_hint: None, None
+            pos_hint: {"x": .775, "top": .365}
+        Label:
+            text: "-"
+            size: 10, 10
+            size_hint: None, None
+            pos_hint: {"x": .145, "top": .275}
+        Label:
+            text: "-"
+            size: 10, 10
+            size_hint: None, None
+            pos_hint: {"x": .245, "top": .275}
+        Label:
+            text: "-"
+            size: 10, 10
+            size_hint: None, None
+            pos_hint: {"x": .645, "top": .275}
+        Label:
+            text: "-"
+            size: 10, 10
+            size_hint: None, None
+            pos_hint: {"x": .745, "top": .275}
+        
         #start day
         DateChooseButton:
             id: start_date_day_button
@@ -243,10 +307,14 @@ ScreenManager:
             size_hint: None, None
             size: 75, 40
             pos_hint: {"right": 1, "y": 0}
-            on_release: root.process_input()
-            on_release: coordpopup.dismiss()
-
-
+            on_release: root.check_input()
+        ErrorDateLabel:
+            id: error_label
+            text: self.t
+            color: 
+            size_hint: None, None
+            size: 200, 50
+            pos_hint: {"x": .3, "y": 0}
 
 # ScreenManagement:
 #     id: sm

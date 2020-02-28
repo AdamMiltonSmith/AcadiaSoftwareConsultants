@@ -1,12 +1,13 @@
 import glob
 import os
+import re
 from math import sin
-#from icesat2.gui import graph
 from os import listdir
 from os.path import isfile, join
 
 import kivy
 import kivy.properties as prop
+import matplotlib.pyplot as plt
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
@@ -16,26 +17,15 @@ from kivy.garden.mapview import MapView
 from kivy.lang import Builder
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.splitter import Splitter
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.popup import Popup
-from kivy.uix.scrollview import ScrollView
-import re
 
-from kivy.core.window import Window
-from kivy.config import Config
-from kivy.garden.graph import Graph, MeshLinePlot
-from kivy.uix.widget import Widget
-from kivy.clock import Clock
-#from icesat2.gui import graph
-from os import listdir
-from os.path import isfile, join
-import glob
-import os
-import matplotlib.pyplot as plt
 import icesat2.graph.graphPngExport as graphPngExport
 
 graphPngExport.plot_graph(graphPngExport.read_data('icesat2\\graph\\graph_data\\foo.csv'))
@@ -240,10 +230,14 @@ class DayDD(DropDown):
 
             btn.bind(on_release=lambda btn: self.set_and_dismiss(btn.text))
 
-            #self.dd_buttons.append(btn)
-
             self.add_widget(btn)
 
+class ErrorDateLabel(Label):
+    t = prop.StringProperty("yer")
+    def set_text(text):
+        print(t)
+        t = text
+        print(t)
 
 class MonthDD(DropDown):
     font_size = prop.NumericProperty(12)
@@ -274,8 +268,7 @@ class YearDD(DropDown):
     def __init__(self, **kwargs):
 
         super(YearDD, self).__init__(**kwargs)
-        self.dd_buttons = []
-        #need to make these the button below, these need a lot of work
+        
         for index in range(2018, 2023):
             btn = DateChooseDropDownButton(text=f"{index}", size_hint_y=None,
                          width=40, height=25,
@@ -283,8 +276,6 @@ class YearDD(DropDown):
                          color = [0.0, 0.0, 0.0, 1.0], background_normal = '')
 
             btn.bind(on_release=lambda btn: self.set_and_dismiss(btn.text))
-
-            self.dd_buttons.append(btn)
 
             self.add_widget(btn)
 
@@ -306,6 +297,7 @@ class CoordinatePopup(Popup):
         coord_input = []
         start_date_input = []
         end_date_input = []
+        error_label = None
         for child in self.ids.popup_layout.children:
             if isinstance(child, CoordinateTextInput):
                 coord_input.append(child)
@@ -314,29 +306,35 @@ class CoordinatePopup(Popup):
                     start_date_input.append(child)
                 else:
                     end_date_input.append(child)
+            elif isinstance(child, ErrorDateLabel):
+                error_label = child
         for widget in coord_input:
-            print(widget.text)
+            if not is_float(widget.text):
+                #spawnErrorPopup("Incorrect coordinates entered")
+                pass
+        print(error_label)
+        error_label.t = "Incorrect value entered"
+        
         for widget in start_date_input:
             print(widget.text)
         for widget in end_date_input:
             print(widget.text)
+            
+        
+        
+        #self.process_input(coord_input, start_date_input, end_date_input)
 
-    def process_input(self):
-        coord_input = []
-        start_date_input = []
-        end_date_input = []
-        for child in self.ids.popup_layout.children:
-            if isinstance(child, CoordinateTextInput):
-                coord_input.append(child)
-            elif isinstance(child, DateChooseButton):
-                if "start" in child.time_def:
-                    start_date_input.append(child)
-                else:
-                    end_date_input.append(child)
-        print(coord_input)
-        print(start_date_input)
-        print(end_date_input)
+    def process_input(self, coord_input, start_date, end_date):
 
+        #pass data to eli here
+        self.dismiss()
+
+def is_float(input):
+    try:
+        float(input)
+        return True
+    except:
+        return False
 
 class DataSetRefreshButton(Button):
     font_size = prop.NumericProperty(14)
