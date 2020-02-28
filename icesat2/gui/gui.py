@@ -31,7 +31,7 @@ import icesat2.graph.graphPngExport as graphPngExport
 graphPngExport.plot_graph(graphPngExport.read_data('icesat2\\graph\\graph_data\\foo.csv'))
 
 
-currentDataSet = "No data set selected"  
+currentDataSet = "No data set selected"
 
 
 def pre_init_screen():
@@ -39,7 +39,7 @@ def pre_init_screen():
 
     screen = tk.Tk()
 
-    screenx, screeny = screen.winfo_screenwidth(), screen.winfo_screenheight()
+    # screenx, screeny = screen.winfo_screenwidth(), screen.winfo_screenheight()
 
 class MainApp(App):
     def build(self):
@@ -48,18 +48,18 @@ class MainApp(App):
 
         #Clock.schedule_interval(self.update, 1)
         return b
-    
+
     # def update(self, *args):
     #     print("test")
-        
+
     # def assign(self, booten):
     #     if assigned == False:
     #         print("<Assigning Shit")
     #         carrot = booten
     #         assigned = True
     #         carrot.doTheThing()
-        
-        
+
+
 
 
 class TopButton(Button):
@@ -122,36 +122,9 @@ class ListButton(Button):
     #btn_width = prop.NumericProperty(70)
     side_width_buffer = prop.NumericProperty(20)
 
-    def on_release(Button):
+    def on_release(self, Button):
         currentDataSet = "resources\\" + Button.text
         print(currentDataSet)
-    
-
-class DataSetRefreshButton(Button):
-    font_size = prop.NumericProperty(14)
-    back_color = prop.ColorProperty([0.5, 0.5, 0.5, 1.0])
-
-    text_color = prop.ColorProperty([1.0, 1.0, 1.0, 1.0])
-    btn_height = prop.NumericProperty(20)
-    #btn_width = prop.NumericProperty(70)
-    side_width_buffer = prop.NumericProperty(20)
-
-    container = prop.ObjectProperty(None) #container the buttons are added to
-    def add_buttons(self):
-        datasetPath = "resources"
-        #files = listdir(datasetPath)
-        files = next(os.walk(datasetPath))[1]
-        print(files)
-        for f in files:
-            tempButton = ListButton()
-            tempButton.text = f
-            self.container.add_widget(tempButton)
-    #remove buttons
-    def remove_buttons(self):
-        for child in [child for child in self.container.children]:
-                self.container.remove_widget(child)
-    def doTheThing(self):
-        print("Doing the thing")
 
 
 class CoordinateTextInput(TextInput):
@@ -232,12 +205,14 @@ class DayDD(DropDown):
 
             self.add_widget(btn)
 
+
 class ErrorDateLabel(Label):
-    t = prop.StringProperty("yer")
-    def set_text(text):
-        print(t)
-        t = text
-        print(t)
+    t = prop.StringProperty("")
+
+    def set_text(self, text):
+        print(self.t)
+        self.t = text
+        print(self.t)
 
 class MonthDD(DropDown):
     font_size = prop.NumericProperty(12)
@@ -268,7 +243,7 @@ class YearDD(DropDown):
     def __init__(self, **kwargs):
 
         super(YearDD, self).__init__(**kwargs)
-        
+
         for index in range(2018, 2023):
             btn = DateChooseDropDownButton(text=f"{index}", size_hint_y=None,
                          width=40, height=25,
@@ -314,14 +289,14 @@ class CoordinatePopup(Popup):
                 pass
         print(error_label)
         error_label.t = "Incorrect value entered"
-        
+
         for widget in start_date_input:
             print(widget.text)
         for widget in end_date_input:
             print(widget.text)
-            
-        
-        
+
+
+
         #self.process_input(coord_input, start_date_input, end_date_input)
 
     def process_input(self, coord_input, start_date, end_date):
