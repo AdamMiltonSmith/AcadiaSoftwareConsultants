@@ -31,8 +31,11 @@ jupyter-client==5.3.3
 jupyter-console==6.0.0
 jupyter-core==4.5.0
 Kivy==1.11.1
-
-
+kivy-deps.angle==0.1.9
+kivy-deps.glew==0.1.12
+kivy-deps.gstreamer==0.1.17
+kivy-deps.sdl2==0.1.22
+Kivy-Garden==0.1.4
 kivymd==0.103.0
 kiwisolver==1.1.0
 lazy-object-proxy==1.4.2
@@ -66,7 +69,7 @@ pyrsistent==0.15.4
 pytest==5.2.2
 python-dateutil==2.8.0
 pytz==2019.3
-
+pywin32==225
 pywinpty==0.5.5
 pyzmq==18.1.0
 qtconsole==4.5.5
@@ -88,3 +91,4 @@ widgetsnbextension==3.5.1
 wincertstore==0.2
 wrapt==1.11.2
 zipp==0.6.0
+
