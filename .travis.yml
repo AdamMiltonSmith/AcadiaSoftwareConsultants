@@ -10,7 +10,7 @@ matrix:
       - choco install python3
       - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
     install:
-      - choco python3 pip install -r requirements.txt
+      - python3 -m pip install -r requirements.txt
 
   - os: osx
     langauge: shell
