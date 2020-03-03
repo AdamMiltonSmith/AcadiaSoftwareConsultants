@@ -89,6 +89,7 @@ class Data:
     """
     def get_height_diff(self, start_date, end_date):
         start_file = self.path + "/" + self.file_name + '' + start_date
+        end_file = self.path + "/" + self.file_name + '' + end_date
 
         return
     
@@ -129,5 +130,3 @@ def fetchData(file_name):
 
     return data
 
-x = Data(date(2018, 11, 13), date(2018, 11, 15), min_x, min_y, max_x, max_y, "test")
-x.get_data()
