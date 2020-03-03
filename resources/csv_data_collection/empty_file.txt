@@ -1,3 +1,0 @@
-This file is to push the folder but not the files.
-
-This will be fixed later with a os.checkdir
