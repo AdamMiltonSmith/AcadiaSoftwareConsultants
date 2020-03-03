@@ -2,7 +2,6 @@ import os
 import datetime
 import re
 import pandas as pd
-import numpy as np
 import requests
 
 from os import listdir
@@ -67,48 +66,30 @@ class Data:
                 for line in r.text:
                     f.write(line)
 
-        #Get the dates
-        #os.system(self.start_date + " " + self.end_date + " >> " + self.path + self.file_name + "_info")
+        
+        write_file = self.path + "/" + self.file_name + "object_info"
+
+        """
+        This chunk of code will save needed object info in plain txt
+        This will help with allowing front-end interfaces fetch data objects
+        Hopefully serialize in the future
+        """
+        with open(write_file, "w") as f:
+            f.write(self.start_date.strftime('%Y-%m-%d') + ",")
+            f.write(self.end_date.strftime('%Y-%m-%d') + ",")
+            
+            f.write(self.min_x + ",")
+            f.write(self.min_y + ",")
+            f.write(self.max_x + ",")
+            f.write(self.max_y + ",")
     
     """
     get_height, will subtract height at lat x at time b from height at lat x from time a
     where a and b are start and end
     """
     def get_height_diff(self, start_date, end_date):
-        onlyfiles = [f for f in listdir(self.path) if isfile(join(self.path, f))]
+        start_file = self.path + "/" + self.file_name + '' + start_date
 
-        
-        start_file = self.path + '/' + self.file_name + start_date.strftime('%Y-%m-%d')
-        end_file = self.path + '/' + self.file_name + end_date.strftime('%Y-%m-%d')
-
-        #csv format:
-        #   segment_id, longitude, latitude, height, quality, track_id, beam, file_name
-
-        height_diff = {}
-
-        with open(start_file) as sf:
-            line = sf.readline()
-            split = line.split(',')
-            while line:
-                height_diff[split[0]] =  split[1:7]
-                line = sf.readline()
-                split = line.split(',')
-
-        with open(end_file) as ef:
-            line = ef.readline()
-            line = ef.readline()
-            split = line.split(',')
-
-            while line:
-                if(split[0] in height_diff):
-                    height_diff[split[0]][2] = float(height_diff[split[0]][2]) - float(split[3])
-                else:
-                    del(height_diff[split[0]])
-                      
-                line = ef.readline()
-                split = line.split(',')
-
-        print(height_diff)
         return
     
     def get_differential(self):
@@ -118,12 +99,23 @@ class Data:
         """
         return
     
-    def get_dates(self):
-        
-        with open(self.path + "dates") as df:
-            dates = df.readline.split()
-            self.start_date = dates[0]
-            self.end_date = dates[0]
+    """
+    This function will allow the front-end to create a data object
+    with only an already existing name.
+    Need to include error checks to ensure there are no runtime errors
+    """
+    def restore_members(self):
+        write_file = self.path + "/" + self.file_name + "object_info"
+
+        with open(write_file) as f:
+            members = f.readline.split(',')
+            self.start_date = members[0]
+            self.end_date = members[1]
+            
+            self.min_x = members[2]
+            self.min_y = members[3]
+            self.max_x = members[4]
+            self.max_y = members[5]
 
 
 def createData(start_date, end_date, file_name, day_delta=None):
@@ -133,7 +125,7 @@ def createData(start_date, end_date, file_name, day_delta=None):
 
 def fetchData(file_name):
     data = Data(None, None, file_name)
-    data.get_dates()
+    data.restore_members()
 
     return data
 
