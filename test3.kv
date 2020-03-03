@@ -1,0 +1,59 @@
+#:kivy 1.10.0
+#:import Factory kivy.factory.Factory
+
+<CustomDropDown>:
+    on_select: app.root.ids.Notes.ids.mainbutton.text = '{}'.format(args[1])
+
+    Button:
+        id: button1
+        text: 'First Item'
+        size_hint_y: None
+        height: 40
+        font_size: 18
+        on_release: root.select(self.text)
+
+    Button:
+        id: button2
+        text: 'Second Item'
+        size_hint_y: None
+        height: 40
+        font_size: 18
+        on_release: root.select(self.text)
+
+    Button:
+        id: button3
+        text: 'Third Item'
+        size_hint_y: None
+        height: 40
+        font_size: 18
+        on_release: root.select(self.text)
+
+<MyScreenManager>:
+    canvas.before:
+        Color:
+            rgba: 0.5, 0.5, 0.5, 0.5
+        Rectangle:
+            pos: 0,0
+            size: 800, 480
+    Notes:
+        id:Notes
+        name: 'Notes'
+
+<Notes>:
+    orientation: "vertical"
+
+    FloatLayout:
+        size_hint: None, None
+
+        canvas.before:
+            Color:
+                rgba: 1, 1, 0, 1
+
+        Button:
+            id: mainbutton
+            text: "Menu name"
+            font_size: 20
+            size_hint: None, None
+            size: 150, 50
+            pos: 20,400
+            on_release: Factory.CustomDropDown().open(self)
