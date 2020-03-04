@@ -28,7 +28,7 @@ from kivy.uix.widget import Widget
 
 import icesat2.graph.graphPngExport as graphPngExport
 
-graphPngExport.plot_graph(graphPngExport.read_data('icesat2\\graph\\graph_data\\foo.csv'))
+graphPngExport.plot_graph(graphPngExport.read_data('resources\\csv_data_collection\\foo.csv'))
 
 
 currentDataSet = "No data set selected"
@@ -122,8 +122,8 @@ class ListButton(Button):
     #btn_width = prop.NumericProperty(70)
     side_width_buffer = prop.NumericProperty(20)
 
-    def on_release(self, Button):
-        currentDataSet = "resources\\" + Button.text
+    def on_release(self):
+        currentDataSet = "resources\\" + Button.text.name
         print(currentDataSet)
 
 
@@ -327,7 +327,7 @@ class DataSetRefreshButton(Button):
         files = next(os.walk(datasetPath))[1]
         print(files)
         for f in files:
-            tempButton = DefaultButton()
+            tempButton = ListButton()
             tempButton.text = f
             self.container.add_widget(tempButton)
     #remove buttons
@@ -372,10 +372,10 @@ class SetGraph(Widget):
 # sm.current = 'main'
 
 # Calls the plot_graph function on the sample data foo.csv which is located in the
-# graph_data folder, graphPngExport then creates a png of the graph which is stored
-# in graph_png to be displayed later.
+# csv_data_collection folder, graphPngExport then creates a png of the graph which is stored
+# in graph_images to be displayed later.
 
-graphPngExport.plot_graph(graphPngExport.read_data('icesat2\\graph\\graph_data\\foo.csv'))
+graphPngExport.plot_graph(graphPngExport.read_data('resources\\csv_data_collection\\foo.csv'))
 
 def main():
     MainApp().run()
