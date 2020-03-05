@@ -123,7 +123,9 @@ class ListButton(Button):
     side_width_buffer = prop.NumericProperty(20)
 
     def on_release(self):
-        currentDataSet = "resources\\" + Button.text.name
+        fileName = Button.text
+        print(fileName)
+        currentDataSet = "resources\\" + fileName
         print(currentDataSet)
 
 
