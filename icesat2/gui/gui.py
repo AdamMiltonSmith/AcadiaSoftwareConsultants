@@ -287,15 +287,38 @@ class CoordinatePopup(Popup):
                 error_label = child
         for widget in coord_input:
             if not is_float(widget.text):
-                #spawnErrorPopup("Incorrect coordinates entered")
+                error_label.t = "Incorrect coordinate entry"
+                return
+        if float(coord_input[0].text) < float(coord_input[1].text):
+            error_label.t = "Incorrect coordinate entry"
+            return
+        elif float(coord_input[2].text) < float(coord_input[3].text):
+            error_label.t = "Incorrect coordinate entry"
+            return
+        if int(end_date_input[0].text) > int(start_date_input[0].text):
+            pass
+        elif int(end_date_input[0].text) == int(start_date_input[0].text):
+            if int(end_date_input[1].text) > int(start_date_input[1].text):
                 pass
+            elif int(end_date_input[1].text) == int(start_date_input[1].text):
+                if int(end_date_input[2].text) >= int(start_date_input[2].text):
+                    pass
+                elif int(end_date_input[2].text) < int(start_date_input[2].text):
+                    error_label.t = "Incorrect day entered"
+                    return
+            elif int(end_date_input[1].text) < int(start_date_input[1].text):
+                error_label.t = "Incorrect month entered"
+        elif int(end_date_input[0].text) == int(start_date_input[0].text):
+            error_label.t = "Incorrect year entered"
+
+
         print(error_label)
         error_label.t = "Incorrect value entered"
 
-        for widget in start_date_input:
-            print(widget.text)
-        for widget in end_date_input:
-            print(widget.text)
+        # for widget in start_date_input:
+        #     print(widget.text)
+        # for widget in end_date_input:
+        #     print(widget.text)
 
 
 
