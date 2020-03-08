@@ -25,6 +25,8 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.splitter import Splitter
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
+import shutil
+
 
 import icesat2.graph.graphPngExport as graphPngExport
 
@@ -306,6 +308,22 @@ class CoordinatePopup(Popup):
         #pass data to eli here
         self.dismiss()
 
+
+class SavePopup(Popup):
+    def doASomething(self):
+        print(">> A Something being done.")
+
+    def save(self, path, filename):
+        print (">> Copying")
+        newName = path + "\\" + filename + ".png"
+        shutil.copy('resources\\graph_images\\foo.png', newName)
+        
+
+        #with open(os.path.join(path, filename), 'w') as stream:
+            #stream.write(self.text_input.text)
+            
+
+
 def is_float(input):
     try:
         float(input)
@@ -324,9 +342,9 @@ class DataSetRefreshButton(Button):
 
     container = prop.ObjectProperty(None) #container the buttons are added to
     def add_buttons(self):
-        datasetPath = "resources"
-        #files = listdir(datasetPath)
-        files = next(os.walk(datasetPath))[1]
+        datasetPath = "resources\\csv_data_collection"
+        files = listdir(datasetPath)
+        #files = next(os.walk(datasetPath))[1]
         print(files)
         for f in files:
             tempButton = ListButton()
@@ -343,6 +361,9 @@ class DataSetRefreshButton(Button):
 class Main_Window(Screen):
     def __init__(self, **kw):
         super(Main_Window, self).__init__(**kw)
+    def openManual(self):
+        print(">> Opening Manual")
+        os.startfile("resources\\manuals\\user_manual.pdf")
 
 class Graph_Window(Screen):
     def __init__(self, **kw):
