@@ -8,7 +8,7 @@ matrix:
     python: "3.7"
     before_install: 
       - choco install python --version 3.7
-
+      - python -m pip install -U pip
     install:
       - python -m pip install -r requirements.txt
 
