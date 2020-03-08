@@ -8,7 +8,7 @@ matrix:
     python: "3.7"
     before_install: 
       - choco install python3
-      - python -m install -U pip
+      - python3 -m install -U pip
       - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
     install:
       - python3 -m pip install -r requirements.txt
@@ -16,4 +16,4 @@ matrix:
   - os: osx
     langauge: shell
 script:
-  - python -m pytest
+  - python3 -m pytest
