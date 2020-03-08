@@ -13,7 +13,7 @@ matrix:
     install:
       - python -m pip install -r requirements.txt
     
-  - os: osx
+  - os: osx 
     langauge: shell
 script:
   - pytest
