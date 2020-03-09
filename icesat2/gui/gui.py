@@ -30,8 +30,6 @@ import shutil
 
 import icesat2.graph.graph_png_export as graph_png_export
 
-graph_png_export.plot_graph(graph_png_export.read_data('resources\\csv_data_collection\\foo.csv'))
-
 
 currentDataSet = "No data set selected"
 #Josh - if when I implement clock scheduled refreshing of the data list I will use two variables
@@ -135,7 +133,6 @@ class ListButton(Button):
 
     def on_release(self):
         currentDataSet = "resources/" + self.text
-        print(currentDataSet)
 
 
 class CoordinateTextInput(TextInput):
@@ -402,7 +399,7 @@ class DeletePopup(Popup):
             #setCurrentDataSet() 
             print('Folder is Not Empty')
         
-
+#Converts to float without crashing on error
 def is_float(input):
     try:
         float(input)
@@ -475,9 +472,9 @@ class SetGraph(Widget):
 
 # sm.current = 'main'
 
-# Calls the plot_graph function on the sample data foo.csv which is located in the
-# csv_data_collection folder, graph_png_export then creates a png of the graph which is stored
-# in graph_images to be displayed later.
+"""Calls the plot_graph function on the sample data foo.csv which is located in
+ the csv_data_collection folder, graph_png_export then creates a png of the 
+ graph which is stored in graph_images to be displayed later."""
 
 graph_png_export.plot_graph(graph_png_export.read_data('resources\\csv_data_collection\\foo.csv'))
 
