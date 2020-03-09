@@ -28,9 +28,9 @@ from kivy.uix.widget import Widget
 import shutil
 
 
-import icesat2.graph.graphPngExport as graphPngExport
+import icesat2.graph.graph_png_export as graph_png_export
 
-graphPngExport.plot_graph(graphPngExport.read_data('resources\\csv_data_collection\\foo.csv'))
+graph_png_export.plot_graph(graph_png_export.read_data('resources\\csv_data_collection\\foo.csv'))
 
 
 currentDataSet = "No data set selected"
@@ -124,7 +124,7 @@ class DefaultButton(Button):
     #btn_width = prop.NumericProperty(70)
     side_width_buffer = prop.NumericProperty(20)
 
-class ListButton(Button, foo):
+class ListButton(Button):
     font_size = prop.NumericProperty(14)
     back_color = prop.ColorProperty([0.5, 0.5, 0.5, 1.0])
 
@@ -476,10 +476,10 @@ class SetGraph(Widget):
 # sm.current = 'main'
 
 # Calls the plot_graph function on the sample data foo.csv which is located in the
-# csv_data_collection folder, graphPngExport then creates a png of the graph which is stored
+# csv_data_collection folder, graph_png_export then creates a png of the graph which is stored
 # in graph_images to be displayed later.
 
-graphPngExport.plot_graph(graphPngExport.read_data('resources\\csv_data_collection\\foo.csv'))
+graph_png_export.plot_graph(graph_png_export.read_data('resources\\csv_data_collection\\foo.csv'))
 
 def main():
     MainApp().run()
