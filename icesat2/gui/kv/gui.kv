@@ -347,6 +347,29 @@ ScreenManager:
                 on_release: root.save(filechooser.path, text_input.text)
                 on_release: savepopup.dismiss()
 
+<DeletePopup>:
+    id: deletepopup
+    title: "Delete current dataset"
+    size: 600, 200
+    size_hint: None, None
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        Label:
+            text: "Are you sure you want to delete the current data set? This cannot be undone."
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: deletepopup.dismiss()
+
+            Button:
+                text: "Delete"
+                on_release: root.delete()
+                on_release: deletepopup.dismiss()
+
 
 
 # ScreenManagement:
@@ -437,7 +460,8 @@ ScreenManager:
                     text: 'Delete'
                     size_hint_y: None
                     height: 30
-                    on_release: file_dropdown.select('delete')
+                    on_release: file_dropdown.dismiss()
+                    on_release: Factory.DeletePopup().open()
 
             #edit
             TopButton:
