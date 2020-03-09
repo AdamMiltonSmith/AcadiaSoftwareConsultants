@@ -132,8 +132,7 @@ class ListButton(Button):
     side_width_buffer = prop.NumericProperty(20)
 
     def on_release(self):
-        currentDataSet = "resources\\" + self.text
-        print(currentDataSet)
+        currentDataSet = "resources/" + self.text
 
 
 class CoordinateTextInput(TextInput):
@@ -304,8 +303,8 @@ class CoordinatePopup(Popup):
         max_y = float(coord_input[0].text)
 
         end_year = int(end_date_input[0].text)
-        end_month = int(end_date_input[0].text)
-        end_day = int(end_date_input[0].text)
+        end_month = int(end_date_input[1].text)
+        end_day = int(end_date_input[2].text)
         start_year = int(start_date_input[0].text)
         start_month = int(start_date_input[1].text)
         start_day = int(start_date_input[2].text)
