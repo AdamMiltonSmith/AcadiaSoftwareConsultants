@@ -113,19 +113,17 @@ class DefaultButton(Button):
     #btn_width = prop.NumericProperty(70)
     side_width_buffer = prop.NumericProperty(20)
 
-class ListButton(Button):
+class ListButton(Button, foo):
     font_size = prop.NumericProperty(14)
     back_color = prop.ColorProperty([0.5, 0.5, 0.5, 1.0])
 
     text_color = prop.ColorProperty([1.0, 1.0, 1.0, 1.0])
     btn_height = prop.NumericProperty(20)
-    #btn_width = prop.NumericProperty(70)
+    #btn_width = prop.NumericProperty(70)000
     side_width_buffer = prop.NumericProperty(20)
 
     def on_release(self):
-        fileName = Button.text
-        print(fileName)
-        currentDataSet = "resources\\" + fileName
+        currentDataSet = "resources\\"
         print(currentDataSet)
 
 
@@ -330,7 +328,7 @@ class DataSetRefreshButton(Button):
         print(files)
         for f in files:
             tempButton = ListButton()
-            tempButton.text = f
+            tempButton.text = str(f)
             self.container.add_widget(tempButton)
     #remove buttons
     def remove_buttons(self):
