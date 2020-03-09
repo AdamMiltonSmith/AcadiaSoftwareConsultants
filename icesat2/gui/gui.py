@@ -25,6 +25,8 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.splitter import Splitter
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
+import shutil
+
 
 import icesat2.graph.graphPngExport as graphPngExport
 
@@ -32,7 +34,16 @@ graphPngExport.plot_graph(graphPngExport.read_data('resources\\csv_data_collecti
 
 
 currentDataSet = "No data set selected"
+#Josh - if when I implement clock scheduled refreshing of the data list I will use two variables
+currDataSetPath = "No path"
 
+def getCurrDataSet():
+    #print(">> The current data set is: " + str(currentDataSet))
+    print(currentDataSet)
+    return currentDataSet
+
+def setCurrentDataSet(dataSet):
+    currentDataSet = dataSet
 
 def pre_init_screen():
     import tkinter as tk
@@ -361,6 +372,39 @@ class CoordinatePopup(Popup):
         #pass data to eli here
         self.dismiss()
 
+
+class SavePopup(Popup):
+    def doASomething(self):
+        print(">> A Something being done.")
+
+    #needs to be converted for dynamic naming system of images
+    def save(self, path, filename):
+        print (">> Copying")
+        newName = path + "\\" + filename + ".png"
+        shutil.copy('resources\\graph_images\\foo.png', newName)
+            
+class DeletePopup(Popup):
+    def delete(self):
+        print(">> Deleting")
+        dataSets = os.listdir('resources\\csv_data_collection')
+        if getCurrDataSet() == "No data set select":
+           print(">>> Nothing to delete") 
+        elif len(dataSets) == 1:
+            temp = getCurrDataSet()
+            setCurrentDataSet("No data set selected")
+            os.remove(temp)
+            #currentDataSet
+            print('No more datasets')
+        else:
+            newPath = os.listdir('resources\\csv_data_collection')[0]
+            print(newPath)
+            temp = getCurrDataSet()
+            setCurrentDataSet(newPath)
+            os.remove(temp)
+            #setCurrentDataSet() 
+            print('Folder is Not Empty')
+        
+
 def is_float(input):
     try:
         float(input)
@@ -379,9 +423,9 @@ class DataSetRefreshButton(Button):
 
     container = prop.ObjectProperty(None) #container the buttons are added to
     def add_buttons(self):
-        datasetPath = "resources"
-        #files = listdir(datasetPath)
-        files = next(os.walk(datasetPath))[1]
+        datasetPath = "resources\\csv_data_collection"
+        files = listdir(datasetPath)
+        #files = next(os.walk(datasetPath))[1]
         print(files)
         for f in files:
             tempButton = ListButton()
@@ -398,6 +442,11 @@ class DataSetRefreshButton(Button):
 class Main_Window(Screen):
     def __init__(self, **kw):
         super(Main_Window, self).__init__(**kw)
+    def openManual(self):
+        print(">> Opening Manual")
+        os.startfile("resources\\manuals\\user_manual.pdf")
+    def deleteCurrent(self):
+        os.remove("resources\\csv")
 
 class Graph_Window(Screen):
     def __init__(self, **kw):
