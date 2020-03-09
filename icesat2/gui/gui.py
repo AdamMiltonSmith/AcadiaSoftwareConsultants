@@ -285,24 +285,79 @@ class CoordinatePopup(Popup):
                     end_date_input.append(child)
             elif isinstance(child, ErrorDateLabel):
                 error_label = child
+
         for widget in coord_input:
             if not is_float(widget.text):
-                #spawnErrorPopup("Incorrect coordinates entered")
+                error_label.t = "Incorrect coordinate entry"
+                return
+
+        min_x = float(coord_input[3].text)
+        max_x = float(coord_input[2].text)
+        min_y = float(coord_input[1].text)
+        max_y = float(coord_input[0].text)
+
+        end_year = int(end_date_input[0].text)
+        end_month = int(end_date_input[0].text)
+        end_day = int(end_date_input[0].text)
+        start_year = int(start_date_input[0].text)
+        start_month = int(start_date_input[1].text)
+        start_day = int(start_date_input[2].text)
+
+        if max_y < min_y:
+            error_label.t = "Incorrect coordinate entry"
+            return
+        elif max_x < min_x:
+            error_label.t = "Incorrect coordinate entry"
+            return
+        elif max_y == min_y or max_x == min_x:
+            error_label.t = "No effective area chosen"
+            return
+        elif max_y > 90 or max_y < -90:
+            error_label.t = "Coordinate not within bounds"
+            return
+        elif min_y > 90 or min_y < -90:
+            error_label.t = "Coordinate not within bounds"
+            return
+        elif max_x > 180 or max_x < -180:
+            error_label.t = "Coordinate not within bounds"
+            return
+        elif min_x > 180 or min_x < -180:
+            error_label.t = "Coordinate not within bounds"
+            return
+
+        if end_year > start_year:
+            pass
+        elif end_year == start_year:
+            if end_month > start_month:
                 pass
-        print(error_label)
-        error_label.t = "Incorrect value entered"
+            elif end_month == start_month:
+                if end_day >= start_day:
+                    pass
+                elif end_day < start_day:
+                    error_label.t = "Incorrect day entered"
+                    return
+            elif end_month < start_month:
+                error_label.t = "Incorrect month entered"
+        elif end_year == start_year:
+            error_label.t = "Incorrect year entered"
 
-        for widget in start_date_input:
-            print(widget.text)
-        for widget in end_date_input:
-            print(widget.text)
+        error_label.t = ""
 
+        # for widget in coord_input:
+        #     print(widget.coord_dir)
 
+        coord = [min_x, max_x, min_y, max_y]
 
-        #self.process_input(coord_input, start_date_input, end_date_input)
+        start_date = [start_day, start_month, start_year]
+        end_date = [end_day, end_month, end_year]
 
-    def process_input(self, coord_input, start_date, end_date):
+        self.process_input(coord, start_date, end_date)
 
+    def process_input(self, coord, start_date, end_date):
+        from icesat2.data.data_controller import Data
+
+        d = Data(start_date = start_date, end_date=end_date, min_x = coord[0],
+                 min_y = coord[2], max_x = coord[1], max_y = coord[3])
         #pass data to eli here
         self.dismiss()
 
