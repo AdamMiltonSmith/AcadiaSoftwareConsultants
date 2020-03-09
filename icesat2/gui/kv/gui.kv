@@ -315,6 +315,63 @@ ScreenManager:
             size: 200, 50
             pos_hint: {"x": .3, "y": 0}
 
+
+<SavePopup>:
+    id: savepopup
+    title: "Save Image"
+    size: 500, 400
+    size_hint: None, None
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            on_selection: text_input.text = self.selection and self.selection[0] or ''
+
+        TextInput:
+            id: text_input
+            size_hint_y: None
+            height: 30
+            multiline: False
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: savepopup.dismiss()
+
+            Button:
+                text: "Save"
+                on_release: root.save(filechooser.path, text_input.text)
+                on_release: savepopup.dismiss()
+
+<DeletePopup>:
+    id: deletepopup
+    title: "Delete current dataset"
+    size: 600, 200
+    size_hint: None, None
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        Label:
+            text: "Are you sure you want to delete the current data set? This cannot be undone."
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: deletepopup.dismiss()
+
+            Button:
+                text: "Delete"
+                on_release: root.delete()
+                on_release: deletepopup.dismiss()
+
+
+
 # ScreenManagement:
 #     id: sm
 <Main_Window>:
@@ -389,7 +446,9 @@ ScreenManager:
                     text: 'Save As'
                     size_hint_y: None
                     height: 30
-                    on_release: file_dropdown.select('save_as')
+                    #on_release: file_dropdown.select('save_as')
+                    on_release: file_dropdown.dismiss()
+                    on_release: Factory.SavePopup().open()
 
                 TopButtonDropDownButton:
                     text: 'Import Data'
@@ -401,7 +460,8 @@ ScreenManager:
                     text: 'Delete'
                     size_hint_y: None
                     height: 30
-                    on_release: file_dropdown.select('delete')
+                    on_release: file_dropdown.dismiss()
+                    on_release: Factory.DeletePopup().open()
 
             #edit
             TopButton:
@@ -551,6 +611,8 @@ ScreenManager:
                     size_hint_y: None
                     height: 35
                     on_release: help_dropdown.select('help')
+                    on_release: help_dropdown.dismiss()
+                    on_release: root.openManual()
 
         BoxLayout:
             orientation: 'horizontal'

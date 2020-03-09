@@ -16,7 +16,6 @@ min_y = '49.48'
 max_x = '106.06'
 max_y = '50.43'
 
-path = "resources\\csv_data_collection"
 class Data:
     day_delta = datetime.timedelta(days=1)
     file_name = "Untitled"
