@@ -2,62 +2,300 @@
 #:import Factory kivy.factory.Factory
 #:import MeshLinePlot kivy.garden.graph.MeshLinePlot
 
+ScreenManager:
+    id: screen_manager
+    #transition: FadeTransition()
+    Main_Window:
+        id: main
+        name: 'main'
+    Graph_Window:
+        id: graph
+        name: 'graph'
+    Map_Window:
+        id: loadgame_screen
+        name: 'map'
 
-<CoordinatePopup@Popup>:
+<CoordinatePopup>:
     id: coordpopup
     title: "Input coordinates"
     size: 500, 500
     size_hint: None, None
     auto_dismiss: False
     FloatLayout:
+        id: popup_layout
+        end_date_day_dd: end_date_day_dd.__self__
+        end_date_month_dd: end_date_month_dd.__self__
+        end_date_year_dd: end_date_year_dd.__self__
+        start_date_day_dd: start_date_day_dd.__self__
+        start_date_month_dd: start_date_month_dd.__self__
+        start_date_year_dd: start_date_year_dd.__self__
+
         Label:
             text: "Minimum x (e/w) coordinate"
             size: 200, 50
             size_hint: None, None
-            pos_hint: {"x": 0, "top": .8}
-        TextInput:
+            pos_hint: {"x": 0, "top": .9}
+        CoordinateTextInput:
+            id: topleft
             text: "Format xx.xx"
             multiline: False
+            coord_dir: "-e/w"
             size: 100, 25
             size_hint: None, None
-            pos_hint: {"x": .1, "top": .7}
+            pos_hint: {"x": .1, "top": .8}
             font_size: 11
+            on_text_validate: self.on_enter()
+            on_focus: self.check_text()
         Label:
             text: "Maximum x (e/w) coordinate"
             size: 200, 50
             size_hint: None, None
-            pos_hint: {"x": .575, "top": .8}
-        TextInput:
+            pos_hint: {"x": .575, "top": .9}
+        CoordinateTextInput:
+            id: bottomleft
             text: "Format xx.xx"
             multiline: False
+            coord_dir: "+e/w"
             size: 100, 25
             size_hint: None, None
-            pos_hint: {"x": .675, "top": .7}
+            pos_hint: {"x": .675, "top": .8}
             font_size: 11
+            on_text_validate: self.on_enter()
         Label:
-            text: "Minimum y (e/w) coordinate"
+            text: "Minimum y (n/s) coordinate"
             size: 200, 50
             size_hint: None, None
-            pos_hint: {"x": 0, "top": .6}
-        TextInput:
+            pos_hint: {"x": 0, "top": .7}
+        CoordinateTextInput:
             text: "Format xx.xx"
             multiline: False
+            coord_dir: "-n/s"
             size: 100, 25
             size_hint: None, None
-            pos_hint: {"x": .1, "top": .5}
+            pos_hint: {"x": .1, "top": .6}
             font_size: 11
+            on_text_validate: self.on_enter()
         Label:
-            text: "Maximum y (e/w) coordinate"
+            text: "Maximum y (n/s) coordinate"
             size: 200, 50
             size_hint: None, None
-            pos_hint: {"x": .575, "top": .6}
-        TextInput:
+            pos_hint: {"x": .575, "top": .7}
+        CoordinateTextInput:
             text: "Format xx.xx"
             multiline: False
+            coord_dir: "+n/s"
             size: 100, 25
             size_hint: None, None
-            pos_hint: {"x": .675, "top": .5}
+            pos_hint: {"x": .675, "top": .6}
             font_size: 11
+            on_text_validate: self.on_enter()
+
+        Label:
+            text: "Start date"
+            size: 100, 50
+            size_hint: None, None
+            pos_hint: {"x": .125, "top": .475}
+
+        Label:
+            text: "End date"
+            size: 100, 50
+            size_hint: None, None
+            pos_hint: {"x": .625, "top": .475}
+
+        Label:
+            text: "dd"
+            size: 30, 30
+            size_hint: None, None
+            pos_hint: {"x": .075, "top": .365}
+        Label:
+            text: "mm"
+            size: 30, 30
+            size_hint: None, None
+            pos_hint: {"x": .175, "top": .365}
+        Label:
+            text: "yyyy"
+            size: 60, 30
+            size_hint: None, None
+            pos_hint: {"x": .275, "top": .365}
+        Label:
+            text: "dd"
+            size: 30, 30
+            size_hint: None, None
+            pos_hint: {"x": .575, "top": .365}
+        Label:
+            text: "mm"
+            size: 30, 30
+            size_hint: None, None
+            pos_hint: {"x": .675, "top": .365}
+        Label:
+            text: "yyyy"
+            size: 60, 30
+            size_hint: None, None
+            pos_hint: {"x": .775, "top": .365}
+        Label:
+            text: "-"
+            size: 10, 10
+            size_hint: None, None
+            pos_hint: {"x": .145, "top": .275}
+        Label:
+            text: "-"
+            size: 10, 10
+            size_hint: None, None
+            pos_hint: {"x": .245, "top": .275}
+        Label:
+            text: "-"
+            size: 10, 10
+            size_hint: None, None
+            pos_hint: {"x": .645, "top": .275}
+        Label:
+            text: "-"
+            size: 10, 10
+            size_hint: None, None
+            pos_hint: {"x": .745, "top": .275}
+
+        #start day
+        DateChooseButton:
+            id: start_date_day_button
+            time_def: "start_day"
+            text: "1"
+            size_hint: None, None
+            pos_hint: {"x": .075, "top": .3}
+            font_size: 11
+            on_parent: start_date_day_dd.dismiss()
+            on_release: start_date_day_dd.create_buttons(start_date_month_button.text, start_date_year_button.text)
+            on_release: start_date_day_dd.open(self)
+            size: 30, 30
+            background_normal: ''
+            background_color: start_date_day_button.back_color
+            color: start_date_day_button.text_color
+            font_size: start_date_day_button.font_size
+
+        DayDD:
+            id: start_date_day_dd
+            auto_width: False
+            width: 30
+            parent_widget: start_date_day_button
+            max_height: 100
+            time_def: "start"
+        #start month
+        DateChooseButton:
+            id: start_date_month_button
+            time_def: "start_month"
+            text: "1"
+            size_hint: None, None
+            pos_hint: {"x": .175, "top": .3}
+            font_size: 11
+            on_parent: start_date_month_dd.dismiss()
+            on_release: #end_date_year_dd.create_buttons("year")
+            on_release: start_date_month_dd.open(self)
+            size: 30, 30
+            background_normal: ''
+            background_color: start_date_month_button.back_color
+            color: start_date_month_button.text_color
+            font_size: start_date_month_button.font_size
+
+        MonthDD:
+            id: start_date_month_dd
+            auto_width: False
+            width: 30
+            parent_widget: start_date_month_button
+            max_height: 100
+            time_def: "start"
+        #start year
+        DateChooseButton:
+            id: start_date_year_button
+            time_def: "start_year"
+            text: "2018"
+            size_hint: None, None
+            pos_hint: {"x": .275, "top": .3}
+            font_size: 11
+            on_parent: start_date_year_dd.dismiss()
+            on_release: #end_date_year_dd.create_buttons("year")
+            on_release: start_date_year_dd.open(self)
+            size: 60, 30
+            background_normal: ''
+            background_color: start_date_year_button.back_color
+            color: start_date_year_button.text_color
+            font_size: start_date_year_button.font_size
+
+        YearDD:
+            id: start_date_year_dd
+            auto_width: False
+            width: 60
+            parent_widget: start_date_year_button
+            max_height: 100
+            time_def: "start"
+        #end day
+        DateChooseButton:
+            id: end_date_day_button
+            time_def: "end_day"
+            text: "1"
+            size_hint: None, None
+            pos_hint: {"x": .575, "top": .3}
+            font_size: 11
+            on_parent: end_date_day_dd.dismiss()
+            on_release: end_date_day_dd.create_buttons(end_date_month_button.text, end_date_year_button.text)
+            on_release: end_date_day_dd.open(self)
+            size: 30, 30
+            background_normal: ''
+            background_color: end_date_day_button.back_color
+            color: end_date_day_button.text_color
+            font_size: end_date_day_button.font_size
+
+        DayDD:
+            id: end_date_day_dd
+            auto_width: False
+            width: 30
+            parent_widget: end_date_day_button
+            max_height: 100
+        #end month
+        DateChooseButton:
+            id: end_date_month_button
+            time_def: "end_month"
+            text: "1"
+            size_hint: None, None
+            pos_hint: {"x": .675, "top": .3}
+            font_size: 11
+            on_parent: end_date_month_dd.dismiss()
+            on_release: end_date_month_dd.open(self)
+            size: 30, 30
+            background_normal: ''
+            background_color: end_date_month_button.back_color
+            color: end_date_month_button.text_color
+            font_size: end_date_month_button.font_size
+
+        MonthDD:
+            id: end_date_month_dd
+            auto_width: False
+            width: 30
+            parent_widget: end_date_month_button
+            max_height: 100
+            time_def: "end"
+        #end year
+        DateChooseButton:
+            id: end_date_year_button
+            time_def: "end_year"
+            text: "2020"
+            size_hint: None, None
+            pos_hint: {"x": .775, "top": .3}
+            font_size: 11
+            on_parent: end_date_year_dd.dismiss()
+            on_release: #end_date_year_dd.create_buttons("year")
+            on_release: end_date_year_dd.open(self)
+            size: 60, 30
+            background_normal: ''
+            background_color: end_date_year_button.back_color
+            color: end_date_year_button.text_color
+            font_size: end_date_year_button.font_size
+
+        YearDD:
+            id: end_date_year_dd
+            auto_width: False
+            width: 60
+            parent_widget: end_date_year_button
+            max_height: 100
+            time_def: "end"
+
         Button:
             text: "Cancel"
             size_hint: None, None
@@ -69,325 +307,555 @@
             size_hint: None, None
             size: 75, 40
             pos_hint: {"right": 1, "y": 0}
-            on_release: coordpopup.dismiss()
-BoxLayout:
-    orientation: 'vertical'
-    canvas.before:
-        Color:
-            rgba: .99,.99,.99,1
-        Rectangle:
-            pos: self.pos
-            size: self.size
-    GridLayout:
-        rows: 1
-        size_hint: 1, None
-        height: 35
-        pos_hint: {"x": 0, "top": 1}
+            on_release: root.check_input()
+        ErrorDateLabel:
+            id: error_label
+            text: self.t
+            size_hint: None, None
+            size: 200, 50
+            pos_hint: {"x": .3, "y": 0}
+
+# ScreenManagement:
+#     id: sm
+<Main_Window>:
+    name: 'main'
+    BoxLayout:
+        orientation: 'vertical'
+
         canvas.before:
             Color:
-                rgba: 0.9, 0.9, 0.9, 1.0
+                rgba: .99,.99,.99,1
             Rectangle:
                 pos: self.pos
                 size: self.size
-        #file
-        TopButton:
-            id: file_btn
-            text: 'File'
-            on_parent: file_dropdown.dismiss()
-            on_release: file_dropdown.open(self)
+        GridLayout:
+            rows: 1
+            size_hint: 1, None
+            height: 35
             pos_hint: {"x": 0, "top": 1}
-            size_hint: None, None
-            width: self.texture_size[0] + 2 * file_btn.side_width_buffer
-            height: file_btn.btn_height
-            background_normal: ''
-            background_color: file_btn.back_color
-            color: file_btn.text_color
-            font_size: file_btn.font_size
 
-        TopButtonDropDown:
-            id: file_dropdown
-            auto_width: False
-            width: 100
+            file_dropdown: file_dropdown.__self__
+            edit_dropdown: edit_dropdown.__self__
+            window_dropdown: window_dropdown.__self__
+            map_dropdown: map_dropdown.__self__
+            help_dropdown: help_dropdown.__self__
 
-            TopButtonDropDownButton:
-                text: 'New...'
-                size_hint_y: None
-                height: 30
-                on_release: file_dropdown.select('new')
-                font_size: file_dropdown.font_size
+            canvas.before:
+                Color:
+                    rgba: 0.9, 0.9, 0.9, 1.0
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            #file
+            TopButton:
+                id: file_btn
+                text: 'File'
+                on_parent: file_dropdown.dismiss()
+                on_release: file_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * file_btn.side_width_buffer
+                height: file_btn.btn_height
+                background_normal: ''
+                background_color: file_btn.back_color
+                color: file_btn.text_color
 
-            TopButtonDropDownButton:
-                text: 'Create'
-                size_hint_y: None
-                height: 30
-                on_release: file_dropdown.select('create')
 
-            TopButtonDropDownButton:
-                text: 'Save'
-                size_hint_y: None
-                height: 30
-                on_release: file_dropdown.select('save')
+            FileDropDown:
+                id: file_dropdown
+                auto_width: False
+                width: 100
 
-            TopButtonDropDownButton:
-                text: 'Save As'
-                size_hint_y: None
-                height: 30
-                on_release: file_dropdown.select('save_as')
+                TopButtonDropDownButton:
+                    text: 'New...'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.select('new')
+                    font_size: file_dropdown.font_size
 
-            TopButtonDropDownButton:
-                text: 'Import Data'
-                size_hint_y: None
-                height: 30
-                on_release: file_dropdown.select('import_data')
+                TopButtonDropDownButton:
+                    text: 'Create'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.select('create')
 
-            TopButtonDropDownButton:
-                text: 'Delete'
-                size_hint_y: None
-                height: 30
-                on_release: file_dropdown.select('delete')
+                TopButtonDropDownButton:
+                    text: 'Save'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.select('save')
 
-        #edit
-        TopButton:
-            id: edit_btn
-            text: 'Edit'
-            on_parent: edit_dropdown.dismiss()
-            on_release: edit_dropdown.open(self)
-            pos_hint: {"x": 0, "top": 1}
-            size_hint: None, None
-            width: self.texture_size[0] + 2 * edit_btn.side_width_buffer
-            height: edit_btn.btn_height
-            background_normal: ''
-            background_color: edit_btn.back_color
-            color: edit_btn.text_color
-            font_size: edit_btn.font_size
+                TopButtonDropDownButton:
+                    text: 'Save As'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.select('save_as')
 
-        TopButtonDropDown:
-            id: edit_dropdown
-            auto_width: False
-            width: 100
+                TopButtonDropDownButton:
+                    text: 'Import Data'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.select('import_data')
 
-            TopButtonDropDownButton:
-                text: 'Preferences'
-                size_hint_y: None
-                height: 30
-                on_release: edit_dropdown.select('preferences')
+                TopButtonDropDownButton:
+                    text: 'Delete'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.select('delete')
 
-            TopButtonDropDownButton:
-                text: 'Cut'
-                size_hint_y: None
-                height: 30
-                on_release: edit_dropdown.select('cut')
+            #edit
+            TopButton:
+                id: edit_btn
+                text: 'Edit'
+                on_parent: edit_dropdown.dismiss()
+                on_release: edit_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * edit_btn.side_width_buffer
+                height: edit_btn.btn_height
+                background_normal: ''
+                background_color: edit_btn.back_color
+                color: edit_btn.text_color
+                font_size: edit_btn.font_size
 
-            TopButtonDropDownButton:
-                text: 'Copy'
-                size_hint_y: None
-                height: 30
-                on_release: edit_dropdown.select('copy')
+            EditDropDown:
+                id: edit_dropdown
+                auto_width: False
+                width: 100
 
-            TopButtonDropDownButton:
-                text: 'Paste'
-                size_hint_y: None
-                height: 35
-                on_release: edit_dropdown.select('paste')
+                TopButtonDropDownButton:
+                    text: 'Preferences'
+                    size_hint_y: None
+                    height: 30
+                    on_release: edit_dropdown.select('preferences')
 
-        #window
-        TopButton:
-            id: window_btn
-            text: 'Window'
-            on_parent: window_dropdown.dismiss()
-            on_release: window_dropdown.open(self)
-            pos_hint: {"x": 0, "top": 1}
-            size_hint: None, None
-            width: self.texture_size[0] + 2 * window_btn.side_width_buffer
-            height: window_btn.btn_height
-            background_normal: ''
-            background_color: window_btn.back_color
-            color: window_btn.text_color
-            font_size: window_btn.font_size
+                TopButtonDropDownButton:
+                    text: 'Cut'
+                    size_hint_y: None
+                    height: 30
+                    on_release: edit_dropdown.select('cut')
 
-        TopButtonDropDown:
-            id: window_dropdown
-            auto_width: False
-            width: 115
+                TopButtonDropDownButton:
+                    text: 'Copy'
+                    size_hint_y: None
+                    height: 30
+                    on_release: edit_dropdown.select('copy')
 
-            TopButtonDropDownButton:
-                text: 'Main View'
-                size_hint_y: None
-                height: 35
-                on_release: window_dropdown.select('reset')
-                on_release: sm.current = 'main'
+                TopButtonDropDownButton:
+                    text: 'Paste'
+                    size_hint_y: None
+                    height: 35
+                    on_release: edit_dropdown.select('paste')
 
-            TopButtonDropDownButton:
-                text: 'Graph View'
-                size_hint_y: None
-                height: 35
-                on_release: window_dropdown.select('graph_view')
-                on_release: sm.current = 'graph'
+            #window
+            TopButton:
+                id: window_btn
+                text: 'Window'
+                on_parent: window_dropdown.dismiss()
+                on_release: window_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * window_btn.side_width_buffer
+                height: window_btn.btn_height
+                background_normal: ''
+                background_color: window_btn.back_color
+                color: window_btn.text_color
+                font_size: window_btn.font_size
 
-            TopButtonDropDownButton:
-                text: 'Data Selection'
-                size_hint_y: None
-                height: 35
-                on_release: window_dropdown.select('data_selection')
 
-            TopButtonDropDownButton:
-                text: 'Data Sets'
-                size_hint_y: None
-                height: 35
-                on_release: window_dropdown.select('data_sets')
+            WindowDropDown:
+                id: window_dropdown
+                auto_width: False
+                width: 115
 
-            TopButtonDropDownButton:
-                text: 'Map View'
-                size_hint_y: None
-                height: 35
-                on_release: window_dropdown.select('map_view')
-                on_release: sm.current = 'map'
+                TopButtonDropDownButton:
+                    text: 'Main View'
+                    size_hint_y: None
+                    height: 35
+                    on_release: window_dropdown.select('reset')
+                    on_release: root.manager.current = 'main'
 
-        #Map Button
-        TopButton:
-            id: map_btn
-            text: 'Map'
-            on_parent: map_dropdown.dismiss()
-            on_release: map_dropdown.open(self)
-            pos_hint: {"x": 0, "top": 1}
-            size_hint: None, None
-            width: self.texture_size[0] + 2 * window_btn.side_width_buffer
-            height: window_btn.btn_height
-            background_normal: ''
-            background_color: window_btn.back_color
-            color: window_btn.text_color
-            font_size: window_btn.font_size
+                TopButtonDropDownButton:
+                    text: 'Graph View'
+                    size_hint_y: None
+                    height: 35
+                    on_release: window_dropdown.select('graph_view')
+                    on_release: root.manager.current = 'graph'
 
-        TopButtonDropDown:
-            id: map_dropdown
-            auto_width: False
-            width: 140
+                TopButtonDropDownButton:
+                    text: 'Data Selection'
+                    size_hint_y: None
+                    height: 35
+                    on_release: window_dropdown.select('data_selection')
 
-            TopButtonDropDownButton:
-                text: 'Choose coordinates'
-                size_hint_y: None
-                height: 35
-                on_release: Factory.CoordinatePopup().open()
-                on_release: map_dropdown.dismiss()
+                TopButtonDropDownButton:
+                    text: 'Data Sets'
+                    size_hint_y: None
+                    height: 35
+                    on_release: window_dropdown.select('data_sets')
 
-        #help button
-        TopButton:
-            id: help_btn
-            text: 'Help'
-            on_parent: help_dropdown.dismiss()
-            on_release: help_dropdown.open(self)
-            pos_hint: {"x": 0, "top": 1}
-            size_hint: None, None
-            width: self.texture_size[0] + 2 * help_btn.side_width_buffer
-            height: help_btn.btn_height
-            background_normal: ''
-            background_color: help_btn.back_color
-            color: help_btn.text_color
-            font_size: help_btn.font_size
+                TopButtonDropDownButton:
+                    text: 'Map View'
+                    size_hint_y: None
+                    height: 35
+                    on_release: window_dropdown.select('map_view')
+                    on_release: root.manager.current = 'map'
+            #Map Button
+            TopButton:
+                id: map_btn
+                text: 'Map'
+                on_parent: map_dropdown.dismiss()
+                on_release: map_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * map_btn.side_width_buffer
+                height: map_btn.btn_height
+                background_normal: ''
+                background_color: map_btn.back_color
+                color: map_btn.text_color
+                font_size: map_btn.font_size
 
-        TopButtonDropDown:
-            id: help_dropdown
-            auto_width: False
-            width: 200
+            MapDropDown:
+                id: map_dropdown
+                auto_width: False
+                width: 140
 
-            TopButtonDropDownButton:
-                text: 'What would you like help with?'
-                size_hint_y: None
-                height: 35
-                on_release: help_dropdown.select('help')
-    ScreenManagement:
-        id: sm
-        Main_Window:
-            name: 'main'
+                TopButtonDropDownButton:
+                    text: 'Choose coordinates'
+                    size_hint_y: None
+                    height: 35
+                    on_release: map_dropdown.dismiss()
+                    on_release: Factory.CoordinatePopup().open()
+            #help button
+            TopButton:
+                id: help_btn
+                text: 'Help'
+                on_parent: help_dropdown.dismiss()
+                on_release: help_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * help_btn.side_width_buffer
+                height: help_btn.btn_height
+                background_normal: ''
+                background_color: help_btn.back_color
+                color: help_btn.text_color
+                font_size: help_btn.font_size
+
+            HelpDropDown:
+                id: help_dropdown
+                auto_width: False
+                width: 200
+
+                TopButtonDropDownButton:
+                    text: 'What would you like help with?'
+                    size_hint_y: None
+                    height: 35
+                    on_release: help_dropdown.select('help')
+
+        BoxLayout:
+            orientation: 'horizontal'
             BoxLayout:
-                orientation: 'horizontal'
-                BoxLayout:
-                    orientation: 'vertical'
-                    WindowSplitter:
-                        id: graph_splitter
-                        sizable_from: 'bottom'
-                        strip_size: graph_splitter.border_size
-                        Label:
-                            text: 'Graph'
-                            color: (0.0,0.0,0.0,1.0)
-                    Label:
-                        text: 'Map'
-                        color: (0.0,0.0,0.0,1.0)
+                orientation: 'vertical'
                 WindowSplitter:
-                    id: scroll_splitter
-                    sizable_from: 'left'
-                    layout_content: layout_content
-                    strip_size: scroll_splitter.border_size
-                    BoxLayout:
-                        id: bl
-                        orientation: 'vertical'
-                        padding: 50, 40
-                        row_default_height: '48dp'
-                        row_force_default: True
-                        spacing: 10, 10
-                        ScrollView:
-                            size: self.size
-                            GridLayout:
-                                id: layout_content
-                                size_hint_y: None
-                                cols: 1
-                                row_default_height: '20dp'
-                                row_force_default: True
-                                spacing: 0, 5
-                                padding: 0, 0
-                                height: self.minimum_height
-
-                                DefaultButton:
-                                    id: btn_a
-                                    container: layout_content
-                                    text: 'Refresh List'
-                                    size_hint_y: None
-                                    #width: self.texture_size[0] + 2 * btn_a.side_width_buffer
-                                    height: btn_a.btn_height
-                                    background_normal: ''
-                                    background_color: btn_a.back_color
-                                    color: btn_a.text_color
-                                    font_size: btn_a.font_size
-                                    on_press:
-                                        self.remove_buttons()
-                                        self.add_buttons()
-
-        Graph_Window:
-            name: 'graph'
-            BoxLayout:
-                orientation: 'vertical'
-                canvas.before:
-                    Color:
-                        rgba: .99,.99,.99,1
+                    id: graph_splitter
+                    sizable_from: 'bottom'
+                    strip_size: graph_splitter.border_size
+                    Label:
+                        text: 'Graph'
+                        color: (0.0,0.0,0.0,1.0)
                 Label:
-                    text: 'Fullscreen Graph'
+                    text: 'Map'
                     color: (0.0,0.0,0.0,1.0)
-                Graph:
-                    id: graph_test
-                    plot: MeshLinePlot
-                    xlabel:'X'
-                    ylabel:'Y'
-                    x_ticks_minor:5
-                    x_tics_major:25
-                    y_ticks_major:1
-                    y_grid_label:True
-                    x_grid_label:True
-                    padding:5
-                    x_grid:True
-                    y_grid:True
-                    xmin:-0
-                    xmax:100
-                    ymin:-1
-                    ymax:1
-                    pos: 0, root.height / 6
-                    size: root.width * 2 / 3 , root.height * 18 / 24
-        Map_Window:
-            name: 'map'
-            BoxLayout:
-                orientation: 'vertical'
-                canvas.before:
-                    Color:
-                        rgba: .99,.99,.99,1
-                Label:
-                    text: 'Fullscreen Map'
-                    color: (0.0,0.0,0.0,1.0)
+            WindowSplitter:
+                id: scroll_splitter
+                sizable_from: 'left'
+                layout_content: layout_content
+                strip_size: scroll_splitter.border_size
+                BoxLayout:
+                    id: bl
+                    orientation: 'vertical'
+                    padding: 50, 40
+                    row_default_height: '48dp'
+                    row_force_default: True
+                    spacing: 10, 10
+                    DataSetRefreshButton:
+                        id: btn_refresh
+                        container: layout_content
+                        text: 'Refresh List'
+                        size_hint_y: None
+                        #width: self.texture_size[0] + 2 * btn_refresh.side_width_buffer
+                        height: btn_refresh.btn_height
+                        background_normal: ''
+                        background_color: btn_refresh.back_color
+                        color: btn_refresh.text_color
+                        font_size: btn_refresh.font_size
+                        on_release:
+                            self.remove_buttons()
+                            self.add_buttons()
+                            #app.assign(self)
+
+                    ScrollView:
+                        size: self.size
+                        GridLayout:
+                            id: layout_content
+                            size_hint_y: None
+                            cols: 1
+                            row_default_height: '20dp'
+                            row_force_default: True
+                            spacing: 0, 5
+                            padding: 0, 0
+                            height: self.minimum_height
+
+<Graph_Window>:
+    name: 'graph'
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: .99,.99,.99,1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        GridLayout:
+            rows: 1
+            size_hint: 1, None
+            height: 35
+            pos_hint: {"x": 0, "top": 1}
+
+            file_dropdown: file_dropdown.__self__
+            edit_dropdown: edit_dropdown.__self__
+            window_dropdown: window_dropdown.__self__
+            map_dropdown: map_dropdown.__self__
+            help_dropdown: help_dropdown.__self__
+
+            canvas.before:
+                Color:
+                    rgba: 0.9, 0.9, 0.9, 1.0
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            #file
+            TopButton:
+                id: file_btn
+                text: 'File'
+                on_parent: file_dropdown.dismiss()
+                on_release: file_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * file_btn.side_width_buffer
+                height: file_btn.btn_height
+                background_normal: ''
+                background_color: file_btn.back_color
+                color: file_btn.text_color
+
+            FileDropDown:
+                id: file_dropdown
+                auto_width: False
+                width: 100
+
+                TopButtonDropDownButton:
+                    text: 'New...'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.select('new')
+                    font_size: file_dropdown.font_size
+
+                TopButtonDropDownButton:
+                    text: 'Create'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.select('create')
+
+                TopButtonDropDownButton:
+                    text: 'Save'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.select('save')
+
+                TopButtonDropDownButton:
+                    text: 'Save As'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.select('save_as')
+
+                TopButtonDropDownButton:
+                    text: 'Import Data'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.select('import_data')
+
+                TopButtonDropDownButton:
+                    text: 'Delete'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.select('delete')
+
+            #edit
+            TopButton:
+                id: edit_btn
+                text: 'Edit'
+                on_parent: edit_dropdown.dismiss()
+                on_release: edit_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * edit_btn.side_width_buffer
+                height: edit_btn.btn_height
+                background_normal: ''
+                background_color: edit_btn.back_color
+                color: edit_btn.text_color
+                font_size: edit_btn.font_size
+
+            EditDropDown:
+                id: edit_dropdown
+                auto_width: False
+                width: 100
+
+                TopButtonDropDownButton:
+                    text: 'Preferences'
+                    size_hint_y: None
+                    height: 30
+                    on_release: edit_dropdown.select('preferences')
+
+                TopButtonDropDownButton:
+                    text: 'Cut'
+                    size_hint_y: None
+                    height: 30
+                    on_release: edit_dropdown.select('cut')
+
+                TopButtonDropDownButton:
+                    text: 'Copy'
+                    size_hint_y: None
+                    height: 30
+                    on_release: edit_dropdown.select('copy')
+
+                TopButtonDropDownButton:
+                    text: 'Paste'
+                    size_hint_y: None
+                    height: 35
+                    on_release: edit_dropdown.select('paste')
+
+            #window
+            TopButton:
+                id: window_btn
+                text: 'Window'
+                on_parent: window_dropdown.dismiss()
+                on_release: window_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * window_btn.side_width_buffer
+                height: window_btn.btn_height
+                background_normal: ''
+                background_color: window_btn.back_color
+                color: window_btn.text_color
+                font_size: window_btn.font_size
+
+
+            WindowDropDown:
+                id: window_dropdown
+                auto_width: False
+                width: 115
+
+                TopButtonDropDownButton:
+                    text: 'Main View'
+                    size_hint_y: None
+                    height: 35
+                    on_release: window_dropdown.select('reset')
+                    on_release: root.manager.current = 'main'
+
+                TopButtonDropDownButton:
+                    text: 'Graph View'
+                    size_hint_y: None
+                    height: 35
+                    on_release: window_dropdown.select('graph_view')
+                    on_release: root.manager.current = 'graph'
+
+                TopButtonDropDownButton:
+                    text: 'Data Selection'
+                    size_hint_y: None
+                    height: 35
+                    on_release: window_dropdown.select('data_selection')
+
+                TopButtonDropDownButton:
+                    text: 'Data Sets'
+                    size_hint_y: None
+                    height: 35
+                    on_release: window_dropdown.select('data_sets')
+
+                TopButtonDropDownButton:
+                    text: 'Map View'
+                    size_hint_y: None
+                    height: 35
+                    on_release: window_dropdown.select('map_view')
+                    on_release: root.manager.current = 'map'
+            #Map Button
+            TopButton:
+                id: map_btn
+                text: 'Map'
+                on_parent: map_dropdown.dismiss()
+                on_release: map_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * map_btn.side_width_buffer
+                height: map_btn.btn_height
+                background_normal: ''
+                background_color: map_btn.back_color
+                color: map_btn.text_color
+                font_size: map_btn.font_size
+
+            MapDropDown:
+                id: map_dropdown
+                auto_width: False
+                width: 140
+
+                TopButtonDropDownButton:
+                    text: 'Choose coordinates'
+                    size_hint_y: None
+                    height: 35
+                    on_release: map_dropdown.dismiss()
+                    on_release: Factory.CoordinatePopup().open()
+            #help button
+            TopButton:
+                id: help_btn
+                text: 'Help'
+                on_parent: help_dropdown.dismiss()
+                on_release: help_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * help_btn.side_width_buffer
+                height: help_btn.btn_height
+                background_normal: ''
+                background_color: help_btn.back_color
+                color: help_btn.text_color
+                font_size: help_btn.font_size
+
+            HelpDropDown:
+                id: help_dropdown
+                auto_width: False
+                width: 200
+
+                TopButtonDropDownButton:
+                    text: 'What would you like help with?'
+                    size_hint_y: None
+                    height: 35
+                    on_release: help_dropdown.select('help')
+
+        Image:
+            source: 'icesat2\\graph\\graph_images\\foo.png'
+            allow_stretch: True
+
+<Map_Window>:
+    name: 'map'
+    #on_enter: self.create_map()
+    BoxLayout:
+        id: map_layout
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: .99,.99,.99,1
+        Label:
+            text: 'Fullscreen Map'
+            color: (0.0,0.0,0.0,1.0)
+        # Map:
+        #     zoom: 1
+        #     lat: 67
+        #     long: 42

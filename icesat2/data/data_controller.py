@@ -84,6 +84,7 @@ class Data:
             f.write(self.max_x + ",")
             f.write(self.max_y + ",")
     
+
     """
     get_height, will subtract height at lat x at time b from height at lat x from time a
     where a and b are start and end
@@ -97,8 +98,9 @@ class Data:
 
         print(start_data.columns)
 
+
         return
-    
+
     def get_differential(self):
         """This function will return a csv file the height differentials,
         the differential will be calculate useing all the dates
@@ -125,7 +127,9 @@ class Data:
             self.max_y = members[5]
 
 
+
 def createData(start_date, end_date, file_name, day_delta=None):
+    """Data creation request for backend"""
     data = Data(start_date, end_date, file_name, day_delta=None)
 
     return data
