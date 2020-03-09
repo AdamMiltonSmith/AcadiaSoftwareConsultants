@@ -303,7 +303,7 @@ ScreenManager:
             pos_hint: {"x": 0, "y": 0}
             on_release: coordpopup.dismiss()
         Button:
-            text: "Confirm"
+            text: "Confirm" 
             size_hint: None, None
             size: 75, 40
             pos_hint: {"right": 1, "y": 0}
@@ -372,8 +372,6 @@ ScreenManager:
 
 
 
-# ScreenManagement:
-#     id: sm
 <Main_Window>:
     name: 'main'
     BoxLayout:
@@ -852,7 +850,7 @@ ScreenManager:
                     height: 35
                     on_release: window_dropdown.select('map_view')
                     on_release: root.manager.current = 'map'
-            #Map Button
+            # Map Button
             TopButton:
                 id: map_btn
                 text: 'Map'
