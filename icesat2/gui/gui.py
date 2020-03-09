@@ -1,12 +1,13 @@
 import glob
 import os
+import re
 from math import sin
-#from icesat2.gui import graph
 from os import listdir
 from os.path import isfile, join
 
 import kivy
 import kivy.properties as prop
+import matplotlib.pyplot as plt
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
@@ -16,61 +17,51 @@ from kivy.garden.mapview import MapView
 from kivy.lang import Builder
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.splitter import Splitter
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.popup import Popup
-from kivy.uix.scrollview import ScrollView
-import re
+import shutil
 
-from kivy.core.window import Window
-from kivy.config import Config
-from kivy.garden.graph import Graph, MeshLinePlot
-from kivy.uix.widget import Widget
-from kivy.clock import Clock
-#from icesat2.gui import graph
-from os import listdir
-from os.path import isfile, join
-import glob
-import os
-import matplotlib.pyplot as plt
+
 import icesat2.graph.graphPngExport as graphPngExport
 
-graphPngExport.plot_graph(graphPngExport.read_data('icesat2\\graph\\graph_data\\foo.csv'))
+graphPngExport.plot_graph(graphPngExport.read_data('resources\\csv_data_collection\\foo.csv'))
+
+
+currentDataSet = "No data set selected"
+#Josh - if when I implement clock scheduled refreshing of the data list I will use two variables
+currDataSetPath = "No path"
+
+def getCurrDataSet():
+    #print(">> The current data set is: " + str(currentDataSet))
+    print(currentDataSet)
+    return currentDataSet
+
+def setCurrentDataSet(dataSet):
+    currentDataSet = dataSet
 
 def pre_init_screen():
     import tkinter as tk
 
     screen = tk.Tk()
 
-    screenx, screeny = screen.winfo_screenwidth(), screen.winfo_screenheight()
+    # screenx, screeny = screen.winfo_screenwidth(), screen.winfo_screenheight()
 
 class MainApp(App):
-    assigned = False
-    carrot = prop.ObjectProperty(None)
     def build(self):
         self.title = "IGLOO"
         b = Builder.load_file("icesat2\\gui\\kv\\gui.kv")
 
         #Clock.schedule_interval(self.update, 1)
         return b
-    
+
     # def update(self, *args):
     #     print("test")
-        
-    # def assign(self, booten):
-    #     if assigned == False:
-    #         print("<Assigning Shit")
-    #         carrot = booten
-    #         assigned = True
-    #         carrot.doTheThing()
-        
-        
-
-    def update(self, *args):
-        pass
 
     # def assign(self, booten):
     #     if assigned == False:
@@ -78,6 +69,9 @@ class MainApp(App):
     #         carrot = booten
     #         assigned = True
     #         carrot.doTheThing()
+
+
+
 
 class TopButton(Button):
     font_size = prop.NumericProperty(14)
@@ -130,7 +124,7 @@ class DefaultButton(Button):
     #btn_width = prop.NumericProperty(70)
     side_width_buffer = prop.NumericProperty(20)
 
-class DataSetRefreshButton(Button):
+class ListButton(Button):
     font_size = prop.NumericProperty(14)
     back_color = prop.ColorProperty([0.5, 0.5, 0.5, 1.0])
 
@@ -139,22 +133,11 @@ class DataSetRefreshButton(Button):
     #btn_width = prop.NumericProperty(70)
     side_width_buffer = prop.NumericProperty(20)
 
-    container = ObjectProperty(None) #container the buttons are added to
-    def add_buttons(self):
-        datasetPath = "resources"
-        #files = listdir(datasetPath)
-        files = next(os.walk(datasetPath))[1]
-        print(files)
-        for f in files:
-            tempButton = DefaultButton()
-            tempButton.text = f
-            self.container.add_widget(tempButton)
-    #remove buttons
-    def remove_buttons(self):
-        for child in [child for child in self.container.children]:
-                self.container.remove_widget(child)
-    def doTheThing(self):
-        print("Doing the thing")
+    def on_release(self):
+        fileName = Button.text
+        print(fileName)
+        currentDataSet = "resources\\" + fileName
+        print(currentDataSet)
 
 
 class CoordinateTextInput(TextInput):
@@ -233,10 +216,16 @@ class DayDD(DropDown):
 
             btn.bind(on_release=lambda btn: self.set_and_dismiss(btn.text))
 
-            #self.dd_buttons.append(btn)
-
             self.add_widget(btn)
 
+
+class ErrorDateLabel(Label):
+    t = prop.StringProperty("")
+
+    def set_text(self, text):
+        print(self.t)
+        self.t = text
+        print(self.t)
 
 class MonthDD(DropDown):
     font_size = prop.NumericProperty(12)
@@ -267,8 +256,7 @@ class YearDD(DropDown):
     def __init__(self, **kwargs):
 
         super(YearDD, self).__init__(**kwargs)
-        self.dd_buttons = []
-        #need to make these the button below, these need a lot of work
+
         for index in range(2018, 2023):
             btn = DateChooseDropDownButton(text=f"{index}", size_hint_y=None,
                          width=40, height=25,
@@ -276,8 +264,6 @@ class YearDD(DropDown):
                          color = [0.0, 0.0, 0.0, 1.0], background_normal = '')
 
             btn.bind(on_release=lambda btn: self.set_and_dismiss(btn.text))
-
-            self.dd_buttons.append(btn)
 
             self.add_widget(btn)
 
@@ -299,6 +285,7 @@ class CoordinatePopup(Popup):
         coord_input = []
         start_date_input = []
         end_date_input = []
+        error_label = None
         for child in self.ids.popup_layout.children:
             if isinstance(child, CoordinateTextInput):
                 coord_input.append(child)
@@ -307,29 +294,123 @@ class CoordinatePopup(Popup):
                     start_date_input.append(child)
                 else:
                     end_date_input.append(child)
+            elif isinstance(child, ErrorDateLabel):
+                error_label = child
+
         for widget in coord_input:
-            print(widget.text)
-        for widget in start_date_input:
-            print(widget.text)
-        for widget in end_date_input:
-            print(widget.text)
+            if not is_float(widget.text):
+                error_label.t = "Incorrect coordinate entry"
+                return
 
-    def process_input(self):
-        coord_input = []
-        start_date_input = []
-        end_date_input = []
-        for child in self.ids.popup_layout.children:
-            if isinstance(child, CoordinateTextInput):
-                coord_input.append(child)
-            elif isinstance(child, DateChooseButton):
-                if "start" in child.time_def:
-                    start_date_input.append(child)
-                else:
-                    end_date_input.append(child)
-        print(coord_input)
-        print(start_date_input)
-        print(end_date_input)
+        min_x = float(coord_input[3].text)
+        max_x = float(coord_input[2].text)
+        min_y = float(coord_input[1].text)
+        max_y = float(coord_input[0].text)
 
+        end_year = int(end_date_input[0].text)
+        end_month = int(end_date_input[0].text)
+        end_day = int(end_date_input[0].text)
+        start_year = int(start_date_input[0].text)
+        start_month = int(start_date_input[1].text)
+        start_day = int(start_date_input[2].text)
+
+        if max_y < min_y:
+            error_label.t = "Incorrect coordinate entry"
+            return
+        elif max_x < min_x:
+            error_label.t = "Incorrect coordinate entry"
+            return
+        elif max_y == min_y or max_x == min_x:
+            error_label.t = "No effective area chosen"
+            return
+        elif max_y > 90 or max_y < -90:
+            error_label.t = "Coordinate not within bounds"
+            return
+        elif min_y > 90 or min_y < -90:
+            error_label.t = "Coordinate not within bounds"
+            return
+        elif max_x > 180 or max_x < -180:
+            error_label.t = "Coordinate not within bounds"
+            return
+        elif min_x > 180 or min_x < -180:
+            error_label.t = "Coordinate not within bounds"
+            return
+
+        if end_year > start_year:
+            pass
+        elif end_year == start_year:
+            if end_month > start_month:
+                pass
+            elif end_month == start_month:
+                if end_day >= start_day:
+                    pass
+                elif end_day < start_day:
+                    error_label.t = "Incorrect day entered"
+                    return
+            elif end_month < start_month:
+                error_label.t = "Incorrect month entered"
+        elif end_year == start_year:
+            error_label.t = "Incorrect year entered"
+
+        error_label.t = ""
+
+        # for widget in coord_input:
+        #     print(widget.coord_dir)
+
+        coord = [min_x, max_x, min_y, max_y]
+
+        start_date = [start_day, start_month, start_year]
+        end_date = [end_day, end_month, end_year]
+
+        self.process_input(coord, start_date, end_date)
+
+    def process_input(self, coord, start_date, end_date):
+        from icesat2.data.data_controller import Data
+
+        d = Data(start_date = start_date, end_date=end_date, min_x = coord[0],
+                 min_y = coord[2], max_x = coord[1], max_y = coord[3])
+        #pass data to eli here
+        self.dismiss()
+
+
+class SavePopup(Popup):
+    def doASomething(self):
+        print(">> A Something being done.")
+
+    #needs to be converted for dynamic naming system of images
+    def save(self, path, filename):
+        print (">> Copying")
+        newName = path + "\\" + filename + ".png"
+        shutil.copy('resources\\graph_images\\foo.png', newName)
+            
+class DeletePopup(Popup):
+    def delete(self):
+        print(">> Deleting")
+        dataSets = os.listdir('resources\\csv_data_collection')
+        if getCurrDataSet() == "No data set select":
+           print(">>> Nothing to delete") 
+        elif len(dataSets) == 1:
+            temp = getCurrDataSet()
+            setCurrentDataSet("No data set selected")
+            os.remove(temp)
+            #currentDataSet
+            print('No more datasets')
+        else:
+            newPath = os.listdir('resources\\csv_data_collection')[0]
+            print(newPath)
+            temp = getCurrDataSet()
+            setCurrentDataSet(newPath)
+            os.remove(temp)
+            #setCurrentDataSet() 
+            print('Folder is Not Empty')
+        
+
+def is_float(input):
+    try:
+        float(input)
+        return True
+    except:
+        return False
 
 class DataSetRefreshButton(Button):
     font_size = prop.NumericProperty(14)
@@ -342,12 +423,12 @@ class DataSetRefreshButton(Button):
 
     container = prop.ObjectProperty(None) #container the buttons are added to
     def add_buttons(self):
-        datasetPath = "resources"
-        #files = listdir(datasetPath)
-        files = next(os.walk(datasetPath))[1]
+        datasetPath = "resources\\csv_data_collection"
+        files = listdir(datasetPath)
+        #files = next(os.walk(datasetPath))[1]
         print(files)
         for f in files:
-            tempButton = DefaultButton()
+            tempButton = ListButton()
             tempButton.text = f
             self.container.add_widget(tempButton)
     #remove buttons
@@ -361,6 +442,11 @@ class DataSetRefreshButton(Button):
 class Main_Window(Screen):
     def __init__(self, **kw):
         super(Main_Window, self).__init__(**kw)
+    def openManual(self):
+        print(">> Opening Manual")
+        os.startfile("resources\\manuals\\user_manual.pdf")
+    def deleteCurrent(self):
+        os.remove("resources\\csv")
 
 class Graph_Window(Screen):
     def __init__(self, **kw):
@@ -392,10 +478,10 @@ class SetGraph(Widget):
 # sm.current = 'main'
 
 # Calls the plot_graph function on the sample data foo.csv which is located in the
-# graph_data folder, graphPngExport then creates a png of the graph which is stored
-# in graph_png to be displayed later.
+# csv_data_collection folder, graphPngExport then creates a png of the graph which is stored
+# in graph_images to be displayed later.
 
-graphPngExport.plot_graph(graphPngExport.read_data('icesat2\\graph\\graph_data\\foo.csv'))
+graphPngExport.plot_graph(graphPngExport.read_data('resources\\csv_data_collection\\foo.csv'))
 
 def main():
     MainApp().run()
