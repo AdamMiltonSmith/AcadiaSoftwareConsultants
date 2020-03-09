@@ -2,6 +2,7 @@ import os
 import datetime
 import re
 import pandas as pd
+import numpy as np
 import requests
 
 from os import listdir
@@ -88,8 +89,13 @@ class Data:
     where a and b are start and end
     """
     def get_height_diff(self, start_date, end_date):
-        start_file = self.path + "/" + self.file_name + '' + start_date
-        end_file = self.path + "/" + self.file_name + '' + end_date
+        start_file = self.path + "/" + self.file_name + '' + start_date.strftime('%Y-%m-%d')
+        end_file = self.path + "/" + self.file_name + '' + end_date.strftime('%Y-%m-%d')
+
+        start_data = pd.read_csv(start_file)
+        end_data = pd.read_csv(end_file)
+
+        print(start_data.columns)
 
         return
     
@@ -130,3 +136,5 @@ def fetchData(file_name):
 
     return data
 
+x = Data(date(2018, 11, 13), date(2018, 11, 15), min_x, min_y, max_x, max_y, "test")
+x.get_height_diff(date(2018, 11, 13), date(2018, 11, 15))
