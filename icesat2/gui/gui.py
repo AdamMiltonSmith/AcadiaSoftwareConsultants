@@ -472,7 +472,7 @@ class SetGraph(Widget):
 
 # sm.current = 'main'
 
-"""Calls the plot_graph function on the sample data foo.csv which is located in
+"""Jacob- Calls the plot_graph function on the sample data foo.csv which is located in
  the csv_data_collection folder, graph_png_export then creates a png of the 
  graph which is stored in graph_images to be displayed later."""
 
