@@ -30,7 +30,7 @@ import shutil
 
 import icesat2.graph.graphPngExport as graphPngExport
 
-graphPngExport.plot_graph(graphPngExport.read_data('resources\\csv_data_collection\\foo.csv'))
+graphPngExport.plot_graph(graphPngExport.read_data('resources/csv_data_collection/foo.csv'))
 
 
 currentDataSet = "No data set selected"
