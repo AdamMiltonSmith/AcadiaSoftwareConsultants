@@ -28,9 +28,7 @@ from kivy.uix.widget import Widget
 import shutil
 
 
-import icesat2.graph.graphPngExport as graphPngExport
-
-graphPngExport.plot_graph(graphPngExport.read_data('resources/csv_data_collection/foo.csv'))
+import icesat2.graph.graph_png_export as graph_png_export
 
 
 currentDataSet = "No data set selected"
@@ -124,7 +122,7 @@ class DefaultButton(Button):
     #btn_width = prop.NumericProperty(70)
     side_width_buffer = prop.NumericProperty(20)
 
-class ListButton(Button, foo):
+class ListButton(Button):
     font_size = prop.NumericProperty(14)
     back_color = prop.ColorProperty([0.5, 0.5, 0.5, 1.0])
 
@@ -134,8 +132,7 @@ class ListButton(Button, foo):
     side_width_buffer = prop.NumericProperty(20)
 
     def on_release(self):
-        currentDataSet = "resources\\"
-        print(currentDataSet)
+        currentDataSet = "resources/" + self.text
 
 
 class CoordinateTextInput(TextInput):
@@ -306,8 +303,8 @@ class CoordinatePopup(Popup):
         max_y = float(coord_input[0].text)
 
         end_year = int(end_date_input[0].text)
-        end_month = int(end_date_input[0].text)
-        end_day = int(end_date_input[0].text)
+        end_month = int(end_date_input[1].text)
+        end_day = int(end_date_input[2].text)
         start_year = int(start_date_input[0].text)
         start_month = int(start_date_input[1].text)
         start_day = int(start_date_input[2].text)
@@ -402,7 +399,7 @@ class DeletePopup(Popup):
             #setCurrentDataSet() 
             print('Folder is Not Empty')
         
-
+#Converts to float without crashing on error
 def is_float(input):
     try:
         float(input)
@@ -475,11 +472,11 @@ class SetGraph(Widget):
 
 # sm.current = 'main'
 
-# Calls the plot_graph function on the sample data foo.csv which is located in the
-# csv_data_collection folder, graphPngExport then creates a png of the graph which is stored
-# in graph_images to be displayed later.
+"""Jacob- Calls the plot_graph function on the sample data foo.csv which is located in
+ the csv_data_collection folder, graph_png_export then creates a png of the 
+ graph which is stored in graph_images to be displayed later."""
 
-graphPngExport.plot_graph(graphPngExport.read_data('resources\\csv_data_collection\\foo.csv'))
+graph_png_export.plot_graph(graph_png_export.read_data('resources\\csv_data_collection\\foo.csv'))
 
 def main():
     MainApp().run()

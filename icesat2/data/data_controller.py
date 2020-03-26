@@ -20,7 +20,8 @@ class Data:
     day_delta = datetime.timedelta(days=1)
     file_name = "Untitled"
 
-    def __init__(self, start_date=None, end_date=None, min_x=None, min_y=None, max_x=None, max_y=None, file_name=None, day_delta=None):
+    def __init__(self, start_date=None, end_date=None, min_x=None, min_y=None, 
+                 max_x=None, max_y=None, file_name=None, day_delta=None):
         self.start_date = start_date
         self.end_date = end_date
 
