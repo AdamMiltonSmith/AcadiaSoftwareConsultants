@@ -28,9 +28,7 @@ from kivy.uix.widget import Widget
 import shutil
 
 
-import icesat2.graph.graphPngExport as graphPngExport
-
-graphPngExport.plot_graph(graphPngExport.read_data('resources\\csv_data_collection\\foo.csv'))
+import icesat2.graph.graph_png_export as graph_png_export
 
 
 currentDataSet = "No data set selected"
@@ -130,14 +128,11 @@ class ListButton(Button):
 
     text_color = prop.ColorProperty([1.0, 1.0, 1.0, 1.0])
     btn_height = prop.NumericProperty(20)
-    #btn_width = prop.NumericProperty(70)
+    #btn_width = prop.NumericProperty(70)000
     side_width_buffer = prop.NumericProperty(20)
 
     def on_release(self):
-        fileName = Button.text
-        print(fileName)
-        currentDataSet = "resources\\" + fileName
-        print(currentDataSet)
+        currentDataSet = "resources/" + self.text
 
 
 class CoordinateTextInput(TextInput):
@@ -308,8 +303,8 @@ class CoordinatePopup(Popup):
         max_y = float(coord_input[0].text)
 
         end_year = int(end_date_input[0].text)
-        end_month = int(end_date_input[0].text)
-        end_day = int(end_date_input[0].text)
+        end_month = int(end_date_input[1].text)
+        end_day = int(end_date_input[2].text)
         start_year = int(start_date_input[0].text)
         start_month = int(start_date_input[1].text)
         start_day = int(start_date_input[2].text)
@@ -404,7 +399,7 @@ class DeletePopup(Popup):
             #setCurrentDataSet() 
             print('Folder is Not Empty')
         
-
+#Converts to float without crashing on error
 def is_float(input):
     try:
         float(input)
@@ -429,7 +424,7 @@ class DataSetRefreshButton(Button):
         print(files)
         for f in files:
             tempButton = ListButton()
-            tempButton.text = f
+            tempButton.text = str(f)
             self.container.add_widget(tempButton)
     #remove buttons
     def remove_buttons(self):
@@ -477,11 +472,11 @@ class SetGraph(Widget):
 
 # sm.current = 'main'
 
-# Calls the plot_graph function on the sample data foo.csv which is located in the
-# csv_data_collection folder, graphPngExport then creates a png of the graph which is stored
-# in graph_images to be displayed later.
+"""Jacob- Calls the plot_graph function on the sample data foo.csv which is located in
+ the csv_data_collection folder, graph_png_export then creates a png of the 
+ graph which is stored in graph_images to be displayed later."""
 
-graphPngExport.plot_graph(graphPngExport.read_data('resources\\csv_data_collection\\foo.csv'))
+graph_png_export.plot_graph(graph_png_export.read_data('resources\\csv_data_collection\\foo.csv'))
 
 def main():
     MainApp().run()
