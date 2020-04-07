@@ -132,7 +132,15 @@ class ListButton(Button):
     side_width_buffer = prop.NumericProperty(20)
 
     def on_release(self):
-        currentDataSet = "resources/" + self.text
+        currentDataSet = "resources/csv_data_collection/" + self.text
+        
+        """Jacob- Calls the plot_graph function on the sample data foo.csv which is located in
+        the csv_data_collection folder, graph_png_export then creates a png of the 
+        graph which is stored in graph_images to be displayed later."""
+
+        #getCurrDataSet() is not working. It is returning No data set selected
+        #even when currentDataset has been set.
+        graph_png_export.plot_graph(graph_png_export.read_data(currentDataSet))
 
 
 class CoordinateTextInput(TextInput):
@@ -471,12 +479,6 @@ class SetGraph(Widget):
 #     sm.add_widget(screen)
 
 # sm.current = 'main'
-
-"""Jacob- Calls the plot_graph function on the sample data foo.csv which is located in
- the csv_data_collection folder, graph_png_export then creates a png of the 
- graph which is stored in graph_images to be displayed later."""
-
-graph_png_export.plot_graph(graph_png_export.read_data('resources\\csv_data_collection\\foo.csv'))
 
 def main():
     MainApp().run()
