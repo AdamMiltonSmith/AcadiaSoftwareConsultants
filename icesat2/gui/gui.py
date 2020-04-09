@@ -15,6 +15,7 @@ from kivy.core.window import Window
 from kivy.garden.graph import Graph, MeshLinePlot
 from kivy.garden.mapview import MapView
 from kivy.lang import Builder
+from kivy.properties import ObjectProperty
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
@@ -132,15 +133,16 @@ class ListButton(Button):
     side_width_buffer = prop.NumericProperty(20)
 
     def on_release(self):
-        currentDataSet = "resources/csv_data_collection/" + self.text
-        
         """Jacob- Calls the plot_graph function on the sample data foo.csv which is located in
         the csv_data_collection folder, graph_png_export then creates a png of the 
         graph which is stored in graph_images to be displayed later."""
 
         #getCurrDataSet() is not working. It is returning No data set selected
         #even when currentDataset has been set.
-        graph_png_export.plot_graph(graph_png_export.read_data(currentDataSet))
+        data_name = "resources/csv_data_collection/" + self.text
+        image_name = self.text[:-3] + "png"
+
+        graph_png_export.plot_graph(graph_png_export.read_data(data_name), image_name)
 
 
 class CoordinateTextInput(TextInput):
