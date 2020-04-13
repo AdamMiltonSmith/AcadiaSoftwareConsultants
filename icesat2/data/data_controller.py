@@ -110,7 +110,7 @@ class Data:
     def restore_members(self):
         write_file = self.path + "/" + self.file_name + "object_info"
 
-        with open(write_file) as f:
+        with open(write_file, 'r') as f:
             members = f.readline.split(',')
             self.start_date = members[0]
             self.end_date = members[1]
