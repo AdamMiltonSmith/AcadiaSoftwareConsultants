@@ -11,6 +11,7 @@ class Touch(Widget):
         super(Touch, self).__init__(**kwargs)
 
         #draw shit
+        #draw a rectangle
         with self.canvas:
             Color(1,0,0,.5,mode='rgba')
             self.rect = Rectangle(pos=(0,0), size=(50,50))
