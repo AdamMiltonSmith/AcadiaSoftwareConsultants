@@ -10,7 +10,6 @@ class Touch(Widget):
     def __init__(self, **kwargs):
         super(Touch, self).__init__(**kwargs)
 
-        #draw shit
         #draw a rectangle
         with self.canvas:
             Color(1,0,0,.5,mode='rgba')
