@@ -56,7 +56,15 @@ class Data:
         for i in range((self.end_date - self.start_date).days + 1):
             day = (self.start_date + i*self.day_delta)
             
-            parameters = {'date': day.strftime('%Y-%m-%d'), 'minx': self.min_x, 'miny': self.min_y, 'maxx' : self.max_x, 'maxy': self.max_y, 'trackId': '705', 'client': 'jupyter', 'outputFormat': 'csv'}           
+            parameters = {'date': day.strftime('%Y-%m-%d'), 
+                            'minx': self.min_x, 
+                            'miny': self.min_y, 
+                            'maxx' : self.max_x, 
+                            'maxy': self.max_y, 
+                            'trackId': '705', 
+                            'client': 'jupyter', 
+                            'outputFormat': 'csv'}    
+
             url = "https://openaltimetry.org/data/api/icesat2/atl06"
             
             r = requests.get(url, params=parameters)
@@ -88,12 +96,34 @@ class Data:
     get_height, will subtract height at lat x at time b from height at lat x from time a
     where a and b are start and end
     """
-    def get_height_diff(self, start_date, end_date):
-        start_file = self.path + "/" + self.file_name + '' + start_date
-        end_file = self.path + "/" + self.file_name + '' + end_date
+    def get_height_diff(self):
+        start_file = pd.read_csv(self.path + "/" + self.file_name + '' 
+        + self.start_date.strftime('%Y-%m-%d'), header=0, index_col='latitude')
+        
+        end_file = pd.read_csv(self.path + "/" + self.file_name + '' 
+        + self.end_date.strftime('%Y-%m-%d'), header=0, index_col='latitude')
 
 
-        return
+        start_height = start_file['h_li']
+        end_height = end_file['h_li']
+
+        diff = pd.DataFrame([[start_height, end_height]], columns=['start', 'end'])
+
+        print(start_file.columns)
+        height_change = diff['start'] - diff['end']
+
+        df = pd.DataFrame({ 'segment_id'            : start_file['segment_id'],
+                            'longitude'             : start_file['longitude'],
+                            'h_li'                  : height_change,
+                            'atl06_quality_summary' : start_file['atl06_quality_summary'],
+                            'track_id'              : start_file['track_id'],
+                            'beam'                  : start_file['beam'],
+                            'file_name'             : start_file['file_name']})
+
+        print(df)
+        
+        df.to_csv(self.path + "/" + self.file_name + '_change_in_height')
+
 
     def get_differential(self):
         """This function will return a csv file the height differentials,
@@ -134,3 +164,5 @@ def fetchData(file_name):
 
     return data
 
+x = Data(date(2018, 11, 13), date(2018, 11, 15), '105.25', '49.48', '106.06', '50.43', "test")
+x.get_height_diff()
