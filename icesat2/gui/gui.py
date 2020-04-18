@@ -440,8 +440,7 @@ class DataSetRefreshButton(Button):
     def remove_buttons(self):
         for child in [child for child in self.container.children]:
                 self.container.remove_widget(child)
-    def doTheThing(self):
-        print("Doing the thing")
+
 
 
 class Main_Window(Screen):
