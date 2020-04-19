@@ -376,7 +376,6 @@ ScreenManager:
     name: 'main'
     BoxLayout:
         orientation: 'vertical'
-
         canvas.before:
             Color:
                 rgba: .99,.99,.99,1
@@ -621,7 +620,8 @@ ScreenManager:
                     sizable_from: 'bottom'
                     strip_size: graph_splitter.border_size
                     Image:
-                        source: root.current_data
+                        id: graph_image
+                        source: root.update_graph(root.current_data)
                         allow_stretch: True
                     Label:
                         text: 'Graph'

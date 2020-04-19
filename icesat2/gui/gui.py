@@ -142,8 +142,7 @@ class ListButton(Button):
         data_name = "resources/csv_data_collection/" + self.text
         image_name = self.text[:-4]
 
-        Main_Window.set_graph(self, image_name)
-        Main_Window.update_graph(self)
+        Main_Window.update_graph(self, image_name)
 
         graph_data = graph_png_export.read_data(data_name)
         graph_png_export.plot_graph(graph_data, image_name)
@@ -456,15 +455,16 @@ class Main_Window(Screen):
     def deleteCurrent(self):
         os.remove("resources\\csv")
 
+
+    #TODO Comments -Boudreau
+
     current_data = "No data selected"
+    graph_image = Image
 
-    def set_graph(self, set_name):
+    def update_graph(self, set_name):
         current_data = "resources\\graph_images\\" + set_name + ".png"
-        print (current_data)
-
-    def update_graph(self):
-        img = Image(source='currant_data')
-        img.reload()
+        img = Image
+        img.source = current_data
         return img
 
 class Graph_Window(Screen):
