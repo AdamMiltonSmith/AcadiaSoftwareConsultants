@@ -19,6 +19,7 @@ from kivy.properties import ObjectProperty
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.image import Image
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
@@ -133,16 +134,19 @@ class ListButton(Button):
     side_width_buffer = prop.NumericProperty(20)
 
     def on_release(self):
-        """Jacob- Calls the plot_graph function on the sample data foo.csv which is located in
-        the csv_data_collection folder, graph_png_export then creates a png of the 
-        graph which is stored in graph_images to be displayed later."""
+        """Jacob- Calls the plot_graph function on the sample data foo.csv 
+        which is located in the csv_data_collection folder, graph_png_export 
+        then creates a png of the graph which is stored in graph_images to be
+        displayed later."""
 
-        #getCurrDataSet() is not working. It is returning No data set selected
-        #even when currentDataset has been set.
         data_name = "resources/csv_data_collection/" + self.text
-        image_name = self.text[:-3] + "png"
+        image_name = self.text[:-4]
 
-        graph_png_export.plot_graph(graph_png_export.read_data(data_name), image_name)
+        Main_Window.set_graph(self, image_name)
+        Main_Window.update_graph(self)
+
+        graph_data = graph_png_export.read_data(data_name)
+        graph_png_export.plot_graph(graph_data, image_name)
 
 
 class CoordinateTextInput(TextInput):
@@ -443,7 +447,6 @@ class DataSetRefreshButton(Button):
     def doTheThing(self):
         print("Doing the thing")
 
-
 class Main_Window(Screen):
     def __init__(self, **kw):
         super(Main_Window, self).__init__(**kw)
@@ -452,6 +455,17 @@ class Main_Window(Screen):
         os.startfile("resources\\manuals\\user_manual.pdf")
     def deleteCurrent(self):
         os.remove("resources\\csv")
+
+    current_data = "No data selected"
+
+    def set_graph(self, set_name):
+        current_data = "resources\\graph_images\\" + set_name + ".png"
+        print (current_data)
+
+    def update_graph(self):
+        img = Image(source='currant_data')
+        img.reload()
+        return img
 
 class Graph_Window(Screen):
     def __init__(self, **kw):
