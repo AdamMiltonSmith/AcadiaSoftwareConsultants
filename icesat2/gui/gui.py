@@ -139,13 +139,31 @@ class ListButton(Button):
         then creates a png of the graph which is stored in graph_images to be
         displayed later."""
 
-        data_name = "resources/csv_data_collection/" + self.text
-        image_name = self.text[:-4]
+        g = Graph_Widget()
+        set_name = self.text
+        g.set_image(set_name)
 
-        Main_Window.update_graph(self, image_name)
 
-        graph_data = graph_png_export.read_data(data_name)
+class Graph_Widget(Widget):
+    
+
+    def __init__(self, **kwargs):
+        super(Graph_Widget,self).__init__(**kwargs)
+        
+
+    def set_image(self, set_name):
+        data_path = "resources/csv_data_collection/" + set_name
+        image_name = set_name[:-4]
+        image_path = "resources/graph_images/" + image_name +  ".png"
+        graph_data = graph_png_export.read_data(data_path)
         graph_png_export.plot_graph(graph_data, image_name)
+        
+        self.image = Image(source = image_path)
+        self.add_widget(self.image)
+        Clock.schedule_interval(self.update_pic, 1)
+
+    def update_pic(self, dt):
+        self.image.reload()
 
 
 class CoordinateTextInput(TextInput):
@@ -455,17 +473,6 @@ class Main_Window(Screen):
     def deleteCurrent(self):
         os.remove("resources\\csv")
 
-
-    #TODO Comments -Boudreau
-
-    current_data = "No data selected"
-    graph_image = Image
-
-    def update_graph(self, set_name):
-        current_data = "resources\\graph_images\\" + set_name + ".png"
-        img = Image
-        img.source = current_data
-        return img
 
 class Graph_Window(Screen):
     def __init__(self, **kw):

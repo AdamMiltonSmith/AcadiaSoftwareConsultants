@@ -619,13 +619,7 @@ ScreenManager:
                     id: graph_splitter
                     sizable_from: 'bottom'
                     strip_size: graph_splitter.border_size
-                    Image:
-                        id: graph_image
-                        source: root.update_graph(root.current_data)
-                        allow_stretch: True
-                    Label:
-                        text: 'Graph'
-                        color: (0.0,0.0,0.0,1.0)
+                    Graph_Widget:
                 Label:
                     text: 'Map'
                     color: (0.0,0.0,0.0,1.0)
