@@ -19,6 +19,7 @@ from kivy.properties import ObjectProperty
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
@@ -26,10 +27,23 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.splitter import Splitter
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
+from kivy.uix.image import Image
+from kivy.graphics import Rectangle
+from kivy.graphics import Color
 import shutil
-
+import ctypes
 
 import icesat2.graph.graph_png_export as graph_png_export
+
+"""
+This stopped some TIFF unknown field with tag warnings. I don't know how it
+works. Got it here:
+https://stackoverflow.com/questions/58279121/python-tiffreaddirectory-warning-unknown-field-with-tag
+"""
+libbytiff = ctypes.CDLL("libtiff-5.dll")
+libbytiff.TIFFSetWarningHandler.argtypes = [ctypes.c_void_p]
+libbytiff.TIFFSetWarningHandler.restype = ctypes.c_void_p
+libbytiff.TIFFSetWarningHandler(None)
 
 
 currentDataSet = "No data set selected"
@@ -417,6 +431,9 @@ def is_float(input):
     except:
         return False
 
+class ObamaButton(BoxLayout):
+    font_size = prop.NumericProperty(30)
+
 class DataSetRefreshButton(Button):
     font_size = prop.NumericProperty(14)
     back_color = prop.ColorProperty([0.5, 0.5, 0.5, 1.0])
@@ -457,8 +474,38 @@ class Graph_Window(Screen):
         super(Graph_Window, self).__init__(**kw)
 
 class Map_Window(Screen):
-    def __init__(self, **kw):
-        super(Map_Window, self).__init__(**kw)
+    def __init__(self, **kwargs):
+        super(Map_Window, self).__init__(**kwargs)
+        
+    
+    
+        #draw a rectangle
+        with self.canvas:
+            Color(1,0,0,.5,mode='rgba')
+            self.rect = Rectangle(pos=(0,0), size=(0,0))
+        
+
+
+
+    def on_touch_down(self, touch):
+        self.rect.pos = touch.pos
+        self.rect.size = (1, 1)
+        print("Mouse Down", touch)
+
+    def on_touch_move(self, touch):
+        self.rect.size = (touch.x - touch.ox, touch.y - touch.oy)
+        print("Mouse Move", touch)
+    
+
+    def set_box_pos(self,x,y,sizex,sizey):
+        self.rect.pos = (x,y)
+        self.rect.size = (sizex, sizey)
+
+    def _on_keyboard_down(self):
+        print("keydown")
+
+
+
 
 class Map(MapView):
     pass
@@ -471,6 +518,8 @@ class WindowSplitter(Splitter):
 
 class SetGraph(Widget):
     testGraph = prop.ObjectProperty(None)
+
+
 
 # sm = ScreenManager()
 

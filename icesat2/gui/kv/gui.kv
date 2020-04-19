@@ -641,6 +641,8 @@ ScreenManager:
                     row_default_height: '48dp'
                     row_force_default: True
                     spacing: 10, 10
+                    ObamaButton:
+                        id: obutton
                     DataSetRefreshButton:
                         id: btn_refresh
                         container: layout_content
@@ -909,16 +911,8 @@ ScreenManager:
 <Map_Window>:
     name: 'map'
     id: map_layout
-    #on_enter: self.create_map()
     BoxLayout:
         orientation: 'vertical'
-        canvas.before:
-            Color:
-                rgba: .99,.99,.99,1
-        Label:
-            text: 'Fullscreen Map'
-            color: (0.0,0.0,0.0,1.0)
-        # Map:
-        #     zoom: 1
-        #     lat: 67
-        #     long: 42
+        Image:
+            source: 'resources\\map_images\\ice_field_map3.TIF'
+            allow_stretch: True

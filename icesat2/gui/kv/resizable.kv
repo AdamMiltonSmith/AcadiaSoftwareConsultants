@@ -1,4 +1,5 @@
 #:kivy 1.11.1
+#:import Factory kivy.factory.Factory
 
 BoxLayout:
     orientation: 'horizontal'
@@ -6,8 +7,8 @@ BoxLayout:
         orientation: 'vertical'
         Splitter:
             sizable_from: 'bottom'
-            Label:
-                text: 'Graph'
+            DateChooseButton:
+                
         Label:
             text: 'Map'
     Splitter:

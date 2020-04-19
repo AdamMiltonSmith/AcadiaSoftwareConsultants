@@ -65,25 +65,16 @@ class Touch(BoxLayout):
     def on_touch_down(self, touch):
         self.rect.pos = touch.pos
         self.rect.size = (1, 1)
+        print("Mouse Down", touch)
 
     def on_touch_move(self, touch):
         self.rect.size = (touch.x - touch.ox, touch.y - touch.oy)
+        print("Mouse Move", touch)
     
-    
-    '''
-    def on_touch_down(self,touch):
-        if self.selectBox == True:
-            self.rect.pos = touch.pos
-            self.rect.size = (200,300)
-            print("Mouse Down", touch)
 
-    def on_touch_move(self,touch):
-        if self.selectBox == True:
-            self.rect.pos = touch.pos
-            print("Mouse Move", touch)
-    '''
-    def set_box_pos(self,x,y):
+    def set_box_pos(self,x,y,sizex,sizey):
         self.rect.pos = (x,y)
+        self.rect.size = (sizex, sizey)
 
     def _on_keyboard_down(self):
         print("keydown")

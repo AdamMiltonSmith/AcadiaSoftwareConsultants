@@ -14,28 +14,26 @@ from kivy.clock import Clock
 from kivy.uix.image import Image
 from kivy.uix.textinput import TextInput
 import ctypes
+from kivy.properties import ObjectProperty
+
 
 
 root = Builder.load_file("icesat2\\gui\\kv\\resizable.kv")
 
-class ObamasAsshole(Button):
-    self.text = "ur mom"
+class DateChooseButton(Button):
+    font_size = prop.NumericProperty(12)
+
 
 class Touch(BoxLayout):
 
-
     def __init__(self, **kwargs):
         super(Touch, self).__init__(**kwargs)
-        
-        
         self.selectBox = True
         self.orientation = 'vertical'
         self.picture = Image(allow_stretch=True, source='resources\\map_images\\ice_field_map2.TIF')
         #Clock.schedule_once(lambda dt: self.add_widget(self.picture), timeout=0.1)
         self.add_widget(self.picture)
        
-
-  
         #draw a rectangle
         with self.canvas:
             Color(1,0,0,.5,mode='rgba')
@@ -69,6 +67,8 @@ class Touch(BoxLayout):
 class TestApp(App):
     def build(self):
         return root
+
+
 
 if __name__ == '__main__':
     TestApp().run()
