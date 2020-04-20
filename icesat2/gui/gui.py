@@ -130,22 +130,38 @@ class DataSetRefreshButton(Button):
     #btn_width = prop.NumericProperty(70)
     side_width_buffer = prop.NumericProperty(20)
 
-    container = ObjectProperty(None) #container the buttons are added to
-    def add_buttons(self):
-        datasetPath = "resources"
-        #files = listdir(datasetPath)
-        files = next(os.walk(datasetPath))[1]
-        print(files)
-        for f in files:
-            tempButton = DefaultButton()
-            tempButton.text = f
-            self.container.add_widget(tempButton)
-    #remove buttons
-    def remove_buttons(self):
-        for child in [child for child in self.container.children]:
-                self.container.remove_widget(child)
-    def doTheThing(self):
-        print("Doing the thing")
+    def on_release(self):
+        """Jacob- Calls the plot_graph function on the sample data foo.csv 
+        which is located in the csv_data_collection folder, graph_png_export 
+        then creates a png of the graph which is stored in graph_images to be
+        displayed later."""
+
+        g = Graph_Image()
+        set_name = self.text
+        g.set_image(set_name)
+
+
+class Graph_Image(Image):
+    current_image = "No image selected"
+
+    def __init__(self, **kwargs):
+        super(Graph_Image,self).__init__(**kwargs)
+        
+
+    def set_image(self, set_name):
+        data_path = "resources/csv_data_collection/" + set_name
+        image_name = set_name[:-4]
+        image_path = "resources/graph_images/" + image_name +  ".png"
+        graph_data = graph_png_export.read_data(data_path)
+        graph_png_export.plot_graph(graph_data, image_name)
+        
+        self.current_image = image_path
+        self.image = Image(source = image_path, allow_stretch = True)
+        self.add_widget(self.image)
+        Clock.schedule_interval(self.update_pic, 1)
+
+    def update_pic(self, dt):
+        self.image.reload()
 
 
 class CoordinateTextInput(TextInput):
@@ -338,6 +354,20 @@ class Main_Window(Screen):
 class Graph_Window(Screen):
     def __init__(self, **kw):
         super(Graph_Window, self).__init__(**kw)
+
+    def set_image(self, set_name):
+        data_path = "resources/csv_data_collection/" + set_name
+        image_name = set_name[:-4]
+        image_path = "resources/graph_images/" + image_name +  ".png"
+        graph_data = graph_png_export.read_data(data_path)
+        graph_png_export.plot_graph(graph_data, image_name)
+        
+        self.image = Image(source = image_path, allow_stretch = True)
+        self.add_widget(self.image)
+        Clock.schedule_interval(self.update_pic, 1)
+
+    def update_pic(self, dt):
+        self.image.reload()
 
 class Map_Window(Screen):
     def __init__(self, **kw):

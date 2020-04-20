@@ -505,9 +505,8 @@ ScreenManager:
                     id: graph_splitter
                     sizable_from: 'bottom'
                     strip_size: graph_splitter.border_size
-                    Image:
-                        source: 'icesat2\\graph\\graph_images\\foo.png'
-                        allow_stretch: True
+                    Graph_Image:
+
                 Label:
                     text: 'Map'
                     color: (0.0,0.0,0.0,1.0)
@@ -783,10 +782,8 @@ ScreenManager:
                     size_hint_y: None
                     height: 35
                     on_release: help_dropdown.select('help')
-        # Displays test graph on fullscreen graph window.
-        Image:
-            source: 'icesat2\\graph\\graph_images\\foo.png'
-            allow_stretch: True
+
+        Graph_Image:
 
 <Map_Window>:
     name: 'map'
@@ -797,10 +794,13 @@ ScreenManager:
         canvas.before:
             Color:
                 rgba: .99,.99,.99,1
-        # Label:
-        #     text: 'Fullscreen Map'
-        #     color: (0.0,0.0,0.0,1.0)
-        Map:
-            zoom: 1
-            lat: 67
-            long: 42
+        Label:
+            text: 'Fullscreen Map'
+            color: (0.0,0.0,0.0,1.0)
+        # Map:
+        #     zoom: 1
+        #     lat: 67
+        #     long: 42
+
+<Graph_Image>:
+    source: self.current_image
