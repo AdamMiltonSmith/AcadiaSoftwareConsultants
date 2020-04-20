@@ -134,22 +134,32 @@ class ListButton(Button):
     side_width_buffer = prop.NumericProperty(20)
 
     def on_release(self):
-        """Jacob- Calls the plot_graph function on the sample data foo.csv 
-        which is located in the csv_data_collection folder, graph_png_export 
+        """Jacob- Calls the plot_graph function on the sample data foo.csv
+        which is located in the csv_data_collection folder, graph_png_export
         then creates a png of the graph which is stored in graph_images to be
         displayed later."""
 
-        g = Graph_Widget()
+        #g = Graph_Widget()
         set_name = self.text
-        g.set_image(set_name)
+        #g.set_image(set_name)
+        # for child in [child for child in self.parent.parent.parent.parent.parent.parent.children[0].children[0].children[1].children]:
+        #     print(child)
+        graph_widget = self.parent.parent.parent.parent.parent.parent.children[0].children[1].children[1].children[1]
+
+        graph_widget.set_image(set_name)
 
 
 class Graph_Widget(Widget):
-    
 
     def __init__(self, **kwargs):
         super(Graph_Widget,self).__init__(**kwargs)
-        
+        self.image = Image(
+            source="resources/graph_images/foo.png")
+
+        print(self)
+        #self.add_widget(Label(text = "Graph"))
+        self.add_widget(self.image)
+        Clock.schedule_interval(self.update_pic, 1)
 
     def set_image(self, set_name):
         data_path = "resources/csv_data_collection/" + set_name
@@ -157,10 +167,9 @@ class Graph_Widget(Widget):
         image_path = "resources/graph_images/" + image_name +  ".png"
         graph_data = graph_png_export.read_data(data_path)
         graph_png_export.plot_graph(graph_data, image_name)
-        
+
         self.image = Image(source = image_path)
         self.add_widget(self.image)
-        Clock.schedule_interval(self.update_pic, 1)
 
     def update_pic(self, dt):
         self.image.reload()
@@ -408,13 +417,13 @@ class SavePopup(Popup):
         print (">> Copying")
         newName = path + "\\" + filename + ".png"
         shutil.copy('resources\\graph_images\\foo.png', newName)
-            
+
 class DeletePopup(Popup):
     def delete(self):
         print(">> Deleting")
         dataSets = os.listdir('resources\\csv_data_collection')
         if getCurrDataSet() == "No data set select":
-           print(">>> Nothing to delete") 
+           print(">>> Nothing to delete")
         elif len(dataSets) == 1:
             temp = getCurrDataSet()
             setCurrentDataSet("No data set selected")
@@ -427,9 +436,9 @@ class DeletePopup(Popup):
             temp = getCurrDataSet()
             setCurrentDataSet(newPath)
             os.remove(temp)
-            #setCurrentDataSet() 
+            #setCurrentDataSet()
             print('Folder is Not Empty')
-        
+
 #Converts to float without crashing on error
 def is_float(input):
     try:
