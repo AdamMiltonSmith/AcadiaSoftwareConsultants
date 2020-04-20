@@ -470,6 +470,7 @@ class Graph_Window(Screen):
     def __init__(self, **kw):
         super(Graph_Window, self).__init__(**kw)
 
+# Josh - I know I need to format this to match the formatting standards
 class Map_Window(Screen):
     def __init__(self, **kwargs):
         super(Map_Window, self).__init__(**kwargs)
@@ -504,12 +505,14 @@ class Map_Window(Screen):
             self.rect = Rectangle(pos=(300, 400), size=(50,50))
         
         
-        self.buttonBox = BoxLayout(orientation = 'vertical')
-        #self.mainBox.add_widget(self.buttonBox)
+        self.buttonBox = BoxLayout(orientation = 'vertical', spacing = 5)
+        self.mainBox.add_widget(self.buttonBox)
         btnCurrentBox = Button(text = 'Box to Current Data Set')
         btnPullData = Button(text = 'Pull Box Data')
+        btnReturnToMain = Button(text = 'Return to Main Window')
         self.buttonBox.add_widget(btnCurrentBox)
         self.buttonBox.add_widget(btnPullData)
+        self.buttonBox.add_widget(btnReturnToMain)
         
         
 
