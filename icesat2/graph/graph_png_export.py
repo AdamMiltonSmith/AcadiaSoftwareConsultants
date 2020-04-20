@@ -1,8 +1,16 @@
-from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
-from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
-import matplotlib.pyplot as plt
 import csv
+import glob
+import os
+
+
+import kivy
+import matplotlib.pyplot as plt
+from kivy.core.window import Window
+from kivy.garden.graph import Graph, MeshLinePlot
+from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+from kivy.properties import ObjectProperty
+from kivy.uix.widget import Widget
+
 
 # Reads from CSV file and adds them to a list csvInput
 def read_data(file_name: str) -> list:
@@ -15,9 +23,10 @@ def read_data(file_name: str) -> list:
         return csv_input
 
 # Plots the elements read from csvInput
-def plot_graph(csv_input: list) -> plt.plot:
+def plot_graph(csv_input: list, file_name: str) -> plt.plot:
     plt.plot(csv_input)
-    plt.title('IGLOO TESTS')
+    plt.title(file_name)
     plt.ylabel('Y Axis')
     plt.xlabel('X Axis')
-    plt.savefig('resources\\graph_images\\foo.png', dpi = 100)
+    plt.savefig('resources\\graph_images\\' + file_name, dpi = 100)
+    plt.close()

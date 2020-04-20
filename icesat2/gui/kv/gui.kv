@@ -303,7 +303,7 @@ ScreenManager:
             pos_hint: {"x": 0, "y": 0}
             on_release: coordpopup.dismiss()
         Button:
-            text: "Confirm" 
+            text: "Confirm"
             size_hint: None, None
             size: 75, 40
             pos_hint: {"right": 1, "y": 0}
@@ -375,8 +375,8 @@ ScreenManager:
 <Main_Window>:
     name: 'main'
     BoxLayout:
+        id: main_window_main_layout
         orientation: 'vertical'
-
         canvas.before:
             Color:
                 rgba: .99,.99,.99,1
@@ -384,6 +384,7 @@ ScreenManager:
                 pos: self.pos
                 size: self.size
         GridLayout:
+            id: main_window_top_bar
             rows: 1
             size_hint: 1, None
             height: 35
@@ -613,19 +614,17 @@ ScreenManager:
                     on_release: root.openManual()
 
         BoxLayout:
+            id: main_window_bottom
             orientation: 'horizontal'
             BoxLayout:
+                id: main_window_graph_layout
                 orientation: 'vertical'
+
                 WindowSplitter:
                     id: graph_splitter
                     sizable_from: 'bottom'
                     strip_size: graph_splitter.border_size
-                    Image:
-                        source: 'resources\\graph_images\\foo.png'
-                        allow_stretch: True
-                    Label:
-                        text: 'Graph'
-                        color: (0.0,0.0,0.0,1.0)
+                    Graph_Widget:
                 Label:
                     text: 'Map'
                     color: (0.0,0.0,0.0,1.0)
@@ -902,9 +901,8 @@ ScreenManager:
                     height: 35
                     on_release: help_dropdown.select('help')
 
-        Image:
-            source: 'resources\\graph_images\\foo.png'
-            allow_stretch: True
+        Graph_Widget:
+
 
 <Map_Window>:
     name: 'map'
