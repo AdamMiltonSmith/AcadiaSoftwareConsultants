@@ -624,18 +624,7 @@ ScreenManager:
                     id: graph_splitter
                     sizable_from: 'bottom'
                     strip_size: graph_splitter.border_size
-                    BoxLayout:
-                        Graph_Widget:
-                            container: 
-                            canvas.before:
-                                Color:
-                                    rgba: 0,0,0,1
-                                Rectangle:
-                                    pos: self.pos
-                                    size: self.size
-                        # Label:
-                        #     text: 'Map'
-                        #     color: (0.0,0.0,0.0,1.0)
+                    Graph_Widget:
                 Label:
                     text: 'Map'
                     color: (0.0,0.0,0.0,1.0)
@@ -912,9 +901,8 @@ ScreenManager:
                     height: 35
                     on_release: help_dropdown.select('help')
 
-        Image:
-            source: 'resources\\graph_images\\foo.png'
-            allow_stretch: True
+        Graph_Widget:
+
 
 <Map_Window>:
     name: 'map'

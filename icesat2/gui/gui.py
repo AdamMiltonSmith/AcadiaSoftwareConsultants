@@ -37,6 +37,8 @@ currentDataSet = "No data set selected"
 #Josh - if when I implement clock scheduled refreshing of the data list I will use two variables
 currDataSetPath = "No path"
 
+selected_graph = None
+
 def getCurrDataSet():
     #print(">> The current data set is: " + str(currentDataSet))
     print(currentDataSet)
@@ -149,17 +151,19 @@ class ListButton(Button):
         graph_widget.set_image(set_name)
 
 
-class Graph_Widget(Widget):
+class Graph_Widget(Image):
 
     def __init__(self, **kwargs):
         super(Graph_Widget,self).__init__(**kwargs)
-        self.image = Image(
-            source="resources/graph_images/foo.png")
+        global selected_graph
+        self.source = "resources/graph_images/no_dataset.png"
+        self.reload()
+        if selected_graph == None:
+            selected_graph = "resources/graph_images/no_dataset.png"
 
-        print(self)
         #self.add_widget(Label(text = "Graph"))
-        self.add_widget(self.image)
-        Clock.schedule_interval(self.update_pic, 1)
+        #self.add_widget(self.image)
+        Clock.schedule_interval(self.update_pic, 2)
 
     def set_image(self, set_name):
         data_path = "resources/csv_data_collection/" + set_name
@@ -168,11 +172,17 @@ class Graph_Widget(Widget):
         graph_data = graph_png_export.read_data(data_path)
         graph_png_export.plot_graph(graph_data, image_name)
 
-        self.image = Image(source = image_path)
-        self.add_widget(self.image)
+        self.source = image_path
+        self.reload()
+        global selected_graph
+
+        selected_graph = image_path
+        #self.add_widget(self.image)
 
     def update_pic(self, dt):
-        self.image.reload()
+        if self.source != selected_graph:
+            self.source = selected_graph
+            self.reload()
 
 
 class CoordinateTextInput(TextInput):
