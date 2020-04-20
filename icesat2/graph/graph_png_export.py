@@ -2,7 +2,6 @@ import csv
 import glob
 import os
 
-
 import kivy
 import matplotlib.pyplot as plt
 from kivy.core.window import Window

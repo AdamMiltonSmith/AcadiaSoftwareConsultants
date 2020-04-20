@@ -20,7 +20,7 @@ class Data:
     day_delta = datetime.timedelta(days=1)
     file_name = "Untitled"
 
-    def __init__(self, start_date=None, end_date=None, min_x=None, min_y=None, 
+    def __init__(self, start_date=None, end_date=None, min_x=None, min_y=None,
                  max_x=None, max_y=None, file_name=None, day_delta=None):
         self.start_date = start_date
         self.end_date = end_date
@@ -55,52 +55,52 @@ class Data:
         """
         for i in range((self.end_date - self.start_date).days + 1):
             day = (self.start_date + i*self.day_delta)
-            
-            parameters = {'date': day.strftime('%Y-%m-%d'), 
-                            'minx': self.min_x, 
-                            'miny': self.min_y, 
-                            'maxx' : self.max_x, 
-                            'maxy': self.max_y, 
-                            'trackId': '705', 
-                            'client': 'jupyter', 
-                            'outputFormat': 'csv'}    
+
+            parameters = {'date': day.strftime('%Y-%m-%d'),
+                            'minx': self.min_x,
+                            'miny': self.min_y,
+                            'maxx' : self.max_x,
+                            'maxy': self.max_y,
+                            'trackId': '705',
+                            'client': 'jupyter',
+                            'outputFormat': 'csv'}
 
             url = "https://openaltimetry.org/data/api/icesat2/atl06"
-            
+
             r = requests.get(url, params=parameters)
             write_file = self.path + "/" + self.file_name + day.strftime('%Y-%m-%d')
-            
+
             with open(write_file, "w") as f:
                 for line in r.text:
                     f.write(line)
 
-        
+
         write_file = self.path + "/" + self.file_name + "object_info"
 
         """
-        This chunk of code will save needed object info in plain txt
+        This chunk of code will save needed object info in plain text
         This will help with allowing front-end interfaces fetch data objects
         Hopefully serialize in the future
         """
         with open(write_file, "w") as f:
             f.write(self.start_date.strftime('%Y-%m-%d') + ",")
             f.write(self.end_date.strftime('%Y-%m-%d') + ",")
-            
+
             f.write(self.min_x + ",")
             f.write(self.min_y + ",")
             f.write(self.max_x + ",")
             f.write(self.max_y + ",")
-    
+
 
     """
     get_height, will subtract height at lat x at time b from height at lat x from time a
     where a and b are start and end
     """
     def get_height_diff(self):
-        start_file = pd.read_csv(self.path + "/" + self.file_name + '' 
+        start_file = pd.read_csv(self.path + "/" + self.file_name + ''
         + self.start_date.strftime('%Y-%m-%d'), header=0, index_col='latitude')
-        
-        end_file = pd.read_csv(self.path + "/" + self.file_name + '' 
+
+        end_file = pd.read_csv(self.path + "/" + self.file_name + ''
         + self.end_date.strftime('%Y-%m-%d'), header=0, index_col='latitude')
 
 
@@ -121,7 +121,7 @@ class Data:
                             'file_name'             : start_file['file_name']})
 
         print(df)
-        
+
         df.to_csv(self.path + "/" + self.file_name + '_change_in_height')
 
 
@@ -131,7 +131,7 @@ class Data:
         This will be a bit harder to implement
         """
         return
-    
+
     """
     This function will allow the front-end to create a data object
     with only an already existing name.
@@ -144,7 +144,7 @@ class Data:
             members = f.readline.split(',')
             self.start_date = members[0]
             self.end_date = members[1]
-            
+
             self.min_x = members[2]
             self.min_y = members[3]
             self.max_x = members[4]

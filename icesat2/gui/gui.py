@@ -48,11 +48,7 @@ def setCurrentDataSet(dataSet):
     currentDataSet = dataSet
 
 def pre_init_screen():
-    import tkinter as tk
-
-    screen = tk.Tk()
-
-    # screenx, screeny = screen.winfo_screenwidth(), screen.winfo_screenheight()
+    pass
 
 class MainApp(App):
     def build(self):
@@ -61,19 +57,6 @@ class MainApp(App):
 
         #Clock.schedule_interval(self.update, 1)
         return b
-
-    # def update(self, *args):
-    #     print("test")
-
-    # def assign(self, booten):
-    #     if assigned == False:
-    #         print("<Assigning Shit")
-    #         carrot = booten
-    #         assigned = True
-    #         carrot.doTheThing()
-
-
-
 
 class TopButton(Button):
     font_size = prop.NumericProperty(14)
