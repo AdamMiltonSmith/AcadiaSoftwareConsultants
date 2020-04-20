@@ -20,6 +20,7 @@ from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.image import Image
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
@@ -49,6 +50,8 @@ libbytiff.TIFFSetWarningHandler(None)
 currentDataSet = "No data set selected"
 #Josh - if when I implement clock scheduled refreshing of the data list I will use two variables
 currDataSetPath = "No path"
+
+selected_graph = None
 
 def getCurrDataSet():
     #print(">> The current data set is: " + str(currentDataSet))
@@ -147,16 +150,53 @@ class ListButton(Button):
     side_width_buffer = prop.NumericProperty(20)
 
     def on_release(self):
-        """Jacob- Calls the plot_graph function on the sample data foo.csv which is located in
-        the csv_data_collection folder, graph_png_export then creates a png of the 
-        graph which is stored in graph_images to be displayed later."""
+        """Jacob- Calls the plot_graph function on the sample data foo.csv
+        which is located in the csv_data_collection folder, graph_png_export
+        then creates a png of the graph which is stored in graph_images to be
+        displayed later."""
 
-        #getCurrDataSet() is not working. It is returning No data set selected
-        #even when currentDataset has been set.
-        data_name = "resources/csv_data_collection/" + self.text
-        image_name = self.text[:-3] + "png"
+        #g = Graph_Widget()
+        set_name = self.text
+        #g.set_image(set_name)
+        # for child in [child for child in self.parent.parent.parent.parent.parent.parent.children[0].children[0].children[1].children]:
+        #     print(child)
+        graph_widget = self.parent.parent.parent.parent.parent.parent.children[0].children[1].children[1].children[1]
 
-        graph_png_export.plot_graph(graph_png_export.read_data(data_name), image_name)
+        graph_widget.set_image(set_name)
+
+
+class Graph_Widget(Image):
+
+    def __init__(self, **kwargs):
+        super(Graph_Widget,self).__init__(**kwargs)
+        global selected_graph
+        self.source = "resources/graph_images/no_dataset.png"
+        self.reload()
+        if selected_graph == None:
+            selected_graph = "resources/graph_images/no_dataset.png"
+
+        #self.add_widget(Label(text = "Graph"))
+        #self.add_widget(self.image)
+        Clock.schedule_interval(self.update_pic, 2)
+
+    def set_image(self, set_name):
+        data_path = "resources/csv_data_collection/" + set_name
+        image_name = set_name[:-4]
+        image_path = "resources/graph_images/" + image_name +  ".png"
+        graph_data = graph_png_export.read_data(data_path)
+        graph_png_export.plot_graph(graph_data, image_name)
+
+        self.source = image_path
+        self.reload()
+        global selected_graph
+
+        selected_graph = image_path
+        #self.add_widget(self.image)
+
+    def update_pic(self, dt):
+        if self.source != selected_graph:
+            self.source = selected_graph
+            self.reload()
 
 
 class CoordinateTextInput(TextInput):
@@ -401,13 +441,13 @@ class SavePopup(Popup):
         print (">> Copying")
         newName = path + "\\" + filename + ".png"
         shutil.copy('resources\\graph_images\\foo.png', newName)
-            
+
 class DeletePopup(Popup):
     def delete(self):
         print(">> Deleting")
         dataSets = os.listdir('resources\\csv_data_collection')
         if getCurrDataSet() == "No data set select":
-           print(">>> Nothing to delete") 
+           print(">>> Nothing to delete")
         elif len(dataSets) == 1:
             temp = getCurrDataSet()
             setCurrentDataSet("No data set selected")
@@ -420,9 +460,9 @@ class DeletePopup(Popup):
             temp = getCurrDataSet()
             setCurrentDataSet(newPath)
             os.remove(temp)
-            #setCurrentDataSet() 
+            #setCurrentDataSet()
             print('Folder is Not Empty')
-        
+
 #Converts to float without crashing on error
 def is_float(input):
     try:
@@ -456,7 +496,6 @@ class DataSetRefreshButton(Button):
                 self.container.remove_widget(child)
 
 
-
 class Main_Window(Screen):
     def __init__(self, **kw):
         super(Main_Window, self).__init__(**kw)
@@ -465,6 +504,7 @@ class Main_Window(Screen):
         os.startfile("resources\\manuals\\user_manual.pdf")
     def deleteCurrent(self):
         os.remove("resources\\csv")
+
 
 class Graph_Window(Screen):
     def __init__(self, **kw):
