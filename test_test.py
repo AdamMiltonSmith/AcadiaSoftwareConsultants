@@ -1,5 +1,5 @@
 import pytest
 def test_file1_method1():
-	x=5
+	x=6
 	y=6
-	assert x+1 == y
+	assert x == y
