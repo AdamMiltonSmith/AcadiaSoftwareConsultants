@@ -1,4 +1,3 @@
-astroid
 atomicwrites
 attrs
 autopep8
