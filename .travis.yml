@@ -3,6 +3,6 @@ python: 3.7
 dist: xenial
 sudo: true
 install:
-  -pip install -r travisRequirements.txt
+  -python -m pip install -r travisRequirements.txt
 script:
   -pytest
