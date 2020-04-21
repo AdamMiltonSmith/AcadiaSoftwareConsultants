@@ -6,9 +6,9 @@ import os
 import kivy
 import matplotlib.pyplot as plt
 from kivy.core.window import Window
-from kivy.garden.graph import Graph, MeshLinePlot
-from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
-from kivy.properties import ObjectProperty
+#from kivy.garden.graph import Graph, MeshLinePlot
+#from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+#from kivy.properties import ObjectProperty
 from kivy.uix.widget import Widget
 
 

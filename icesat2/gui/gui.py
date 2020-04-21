@@ -12,10 +12,10 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
 from kivy.core.window import Window
-from kivy.garden.graph import Graph, MeshLinePlot
-from kivy.garden.mapview import MapView
+#from kivy.garden.graph import Graph, MeshLinePlot
+#from kivy.garden.mapview import MapView 
 from kivy.lang import Builder
-from kivy.properties import ObjectProperty
+#from kivy.properties import ObjectProperty
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
@@ -501,11 +501,7 @@ class Map_Window(Screen):
     def __init__(self, **kw):
         super(Map_Window, self).__init__(**kw)
 
-class Map(MapView):
-    pass
 
-class ScreenManagement(ScreenManager):
-    pass
 
 class WindowSplitter(Splitter):
     border_size = prop.NumericProperty(5)
