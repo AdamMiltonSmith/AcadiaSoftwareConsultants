@@ -6,4 +6,4 @@ cache: pip
 install:
   - pip install -r travisRequirements.txt
 script:
-  -python test_test.py
+  -pytest
