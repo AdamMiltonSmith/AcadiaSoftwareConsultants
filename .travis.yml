@@ -5,7 +5,6 @@ matrix:
       language: shell      
       before_install:
         - choco install python3 --version 3.7
-      env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
       install:
        py -m pip install -r travisRequirements
       script: py -m pytest
