@@ -9,6 +9,7 @@ matrix:
       install:
        py -m pip install -r travisRequirements.txt
       script: py -m pytest
+  
     - name: "PythonUnix"
       python: 3.7
       os: linux
@@ -19,4 +20,4 @@ matrix:
        - sudo apt-get upgrade python
        - pip install -r travisRequirements.txt
       script:
-      pytest
+       pytest
