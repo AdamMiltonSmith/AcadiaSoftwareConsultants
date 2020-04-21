@@ -3,16 +3,12 @@ python: 3.7
 
 matrix:
   include:
-  - os: windows
-    language: shell
-    python: "3.7"
-    before_install: 
-      - choco install python --version 3.7
-      - python -m pip install -U pip
-    install:
-      - python -m pip install -r requirements.txt
-
-  - os: osx
-    langauge: shell
-script:
-  - python -m pytest
+  - name: "Python"
+    os: windows           
+    language: shell       
+    before_install:
+     - choco install python --version 3.7
+     - python --version
+     - python -m pip install --upgrade pip
+     - pip3 install --upgrade pytest
+    env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
