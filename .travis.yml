@@ -5,9 +5,6 @@ matrix:
       language: shell       # 'language: python' is an error on Travis CI Windows
       before_install:
         - choco install python --version 3.7
-        - python --version
-        - wget -qO- https://bootstrap.pypa.io/get-pip.py | python
-        - python -m pip install --upgrade pip
         - pip3 install --upgrade pytest
       env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
       install: python -m pip install -r travisRequirements
