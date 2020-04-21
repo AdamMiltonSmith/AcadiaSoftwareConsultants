@@ -7,7 +7,7 @@ matrix:
         - choco install python3 --version 3.7
         - py -m pip install --upgrade pip
       install:
-       py -m pip install -r travisRequirements
+       py -m pip install -r travisRequirements.txt
       script: py -m pytest
     - name: "Python"
       os: osx
@@ -16,4 +16,5 @@ matrix:
       before_install:
         - python --version 3.7
         - pip install pytest --user
+        - pip install -r travisRequirements.txt
       script: python -m pytest  
