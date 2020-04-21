@@ -30,6 +30,7 @@ jupyter
 jupyter-client
 jupyter-console
 jupyter-core
+Kivy
 kivy-deps.angle
 kivy-deps.glew
 kivy-deps.gstreamer
@@ -37,7 +38,6 @@ kivy-deps.sdl2
 Kivy-Garden
 Kivy-Garden-Graph
 kivymd
-Kivy
 kiwisolver
 lazy-object-proxy
 MarkupSafe
