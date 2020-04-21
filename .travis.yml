@@ -16,6 +16,4 @@ matrix:
       before_install:
         - python --version
         - pip install pytest --user
-        - pip install codecov --user
-      install: pip install ".[test]" --user
       script: python -m pytest  # pytest command won't be found
