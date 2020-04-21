@@ -69,7 +69,6 @@ requests
 rope
 selenium
 Send2Trash
-six
 sqlparse
 terminado
 testpath
@@ -81,5 +80,4 @@ wcwidth
 webencodings
 widgetsnbextension
 wincertstore
-wrapt
 zipp
