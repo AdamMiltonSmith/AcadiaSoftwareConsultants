@@ -17,7 +17,7 @@ matrix:
       sudo: true
       cache: pip
       install:
-       - sudo apt-get install python 3.7
+       - sudo apt-get install python 3.7 --user
        - pip install -r travisRequirements.txt
       script:
        pytest
