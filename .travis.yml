@@ -9,3 +9,13 @@ matrix:
       env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
       install: python3 -m pip install -r travisRequirements
       script: python3 -m pytest
+    - name: "Python 2.7.14 on macOS 10.13"
+      os: osx
+      osx_image: xcode9.3  # Python 2.7.14_2 running on macOS 10.13
+      language: shell  # 'language: python' errors on Travis CI macOS
+      before_install:
+        - python --version
+        - pip install pytest --user
+        - pip install codecov --user
+      install: pip install ".[test]" --user
+      script: python -m pytest  # pytest command won't be found
