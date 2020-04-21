@@ -4,7 +4,7 @@ matrix:
       os: windows          
       language: shell      
       before_install:
-        - choco install python --version 3.7
+        - choco install python 3.7
       env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
       install:
        python -m pip install -r travisRequirements
