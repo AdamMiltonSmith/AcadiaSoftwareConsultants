@@ -11,8 +11,11 @@ matrix:
       script: py -m pytest
     - name: "PythonUnix"
       python: 3.7
-      
+      os: linux
+      dist: xenial
+      sudo: true
+      cache: pip
       install:
-        pip install -r travisRequirements.txt --user
+       - pip install -r travisRequirements.txt
       script:
-        pytest
+      pytest
