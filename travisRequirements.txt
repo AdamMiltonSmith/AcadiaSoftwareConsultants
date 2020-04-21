@@ -73,7 +73,6 @@ terminado
 testpath
 tornado
 traitlets
-typed-ast
 urllib3
 wcwidth
 webencodings
