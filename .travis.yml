@@ -1,19 +1,19 @@
 matrix:
   include:
     - name: "PythonWindows"
-      os: windows           # Windows 10.0.17134 N/A Build 17134
-      language: shell       # 'language: python' is an error on Travis CI Windows
+      os: windows          
+      language: shell      
       before_install:
         - choco install python --version 3.7
-        - python3 -m pip install --upgrade pytest
       env: PATH=/c/Python35:/c/Python35/Scripts:$PATH
-      install: python3 -m pip install -r travisRequirements
+      install:
+       python3 -m pip3 install -r travisRequirements
       script: python3 -m pytest
     - name: "Python 2.7.14 on macOS 10.13"
       os: osx
-      osx_image: xcode9.3  # Python 2.7.14_2 running on macOS 10.13
-      language: shell  # 'language: python' errors on Travis CI macOS
+      osx_image: xcode9.3  
+      language: shell  
       before_install:
         - python --version
         - pip install pytest --user
-      script: python -m pytest  # pytest command won't be found
+      script: python -m pytest  
