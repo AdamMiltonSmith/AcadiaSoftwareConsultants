@@ -31,7 +31,6 @@ jupyter-client
 jupyter-console
 jupyter-core
 Kivy
-kivy-deps
 Kivy-Garden
 Kivy-Garden-Graph
 kivymd
