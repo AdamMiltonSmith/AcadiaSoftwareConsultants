@@ -31,10 +31,7 @@ jupyter-client
 jupyter-console
 jupyter-core
 Kivy
-kivy-deps.angle
-kivy-deps.glew
-kivy-deps.gstreamer
-kivy-deps.sdl2
+kivy-deps
 Kivy-Garden
 Kivy-Garden-Graph
 kivymd
