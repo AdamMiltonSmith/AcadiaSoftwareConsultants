@@ -9,7 +9,7 @@ matrix:
       install:
        py -m pip install -r travisRequirements.txt
       script: py -m pytest
-    - name: "Python"
+    - name: "PythonMac"
       os: osx
       osx_image: xcode9.3  
       language: shell  
@@ -17,5 +17,6 @@ matrix:
         - python --version 3.7
         - ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
         - brew upgrade python3
+        - pip install --upgrade pip
         - pip install -r travisRequirements.txt --user
       script: python -m pytest  
