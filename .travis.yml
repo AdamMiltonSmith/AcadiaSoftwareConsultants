@@ -16,5 +16,6 @@ matrix:
       before_install:
         - python --version 3.7
         - pip install pytest --user
+        - pip install --upgrade pip
         - pip install -r travisRequirements.txt
       script: python -m pytest  
