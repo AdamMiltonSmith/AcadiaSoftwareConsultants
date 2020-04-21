@@ -26,7 +26,7 @@ def read_data(file_name: str) -> list:
 def plot_graph(csv_input: list, file_name: str) -> plt.plot:
     plt.plot(csv_input)
     plt.title(file_name)
-    plt.ylabel('Y Axis')
-    plt.xlabel('X Axis')
+    plt.ylabel('Elevation')
+    plt.xlabel('Latitude Along Track')
     plt.savefig('resources\\graph_images\\' + file_name, dpi = 100)
     plt.close()
