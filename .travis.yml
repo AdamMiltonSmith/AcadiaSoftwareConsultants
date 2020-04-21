@@ -5,14 +5,15 @@ matrix:
       language: shell      
       before_install:
         - choco install python3 --version 3.7
+        - py -m pip install --upgrade pip
       install:
        py -m pip install -r travisRequirements
       script: py -m pytest
-    - name: "Python 2.7.14 on macOS 10.13"
+    - name: "Python"
       os: osx
       osx_image: xcode9.3  
       language: shell  
       before_install:
-        - python --version
+        - python --version 3.7
         - pip install pytest --user
       script: python -m pytest  
