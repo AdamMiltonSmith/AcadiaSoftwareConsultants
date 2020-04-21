@@ -15,5 +15,6 @@ matrix:
       language: shell  
       before_install:
         - python --version 3.7
+        - upgrade python
         - pip install -r travisRequirements.txt --user
       script: python -m pytest  
