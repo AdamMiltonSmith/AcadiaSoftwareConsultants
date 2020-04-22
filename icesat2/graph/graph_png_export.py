@@ -7,9 +7,6 @@ import matplotlib.pyplot as plt
 from kivy.core.window import Window
 from kivy.garden.graph import Graph, MeshLinePlot
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
-from kivy.properties import ObjectProperty
-from kivy.uix.widget import Widget
-
 
 # Reads from CSV file and adds them to a list csvInput
 def read_data(file_name: str) -> list:
