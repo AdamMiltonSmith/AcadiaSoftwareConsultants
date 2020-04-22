@@ -1,9 +1,12 @@
+import ctypes
 import glob
 import os
 import re
+import shutil
 from math import sin
 from os import listdir
 from os.path import isfile, join
+from os import path
 
 import kivy
 import kivy.properties as prop
@@ -14,25 +17,22 @@ from kivy.config import Config
 from kivy.core.window import Window
 from kivy.garden.graph import Graph, MeshLinePlot
 from kivy.garden.mapview import MapView
+from kivy.graphics import Color, Rectangle
 from kivy.lang import Builder
-from kivy.properties import ObjectProperty
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
-from kivy.uix.popup import Popup
 from kivy.uix.label import Label
+from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.splitter import Splitter
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
-from kivy.uix.image import Image
-from kivy.graphics import Rectangle
-from kivy.graphics import Color
-import shutil
-import ctypes
+
+from icesat2.data.data_controller import create_data
 
 import icesat2.graph.graph_png_export as graph_png_export
 
@@ -62,11 +62,7 @@ def setCurrentDataSet(dataSet):
     currentDataSet = dataSet
 
 def pre_init_screen():
-    import tkinter as tk
-
-    screen = tk.Tk()
-
-    # screenx, screeny = screen.winfo_screenwidth(), screen.winfo_screenheight()
+    pass
 
 class MainApp(App):
     def build(self):
@@ -75,19 +71,6 @@ class MainApp(App):
 
         #Clock.schedule_interval(self.update, 1)
         return b
-
-    # def update(self, *args):
-    #     print("test")
-
-    # def assign(self, booten):
-    #     if assigned == False:
-    #         print("<Assigning Shit")
-    #         carrot = booten
-    #         assigned = True
-    #         carrot.doTheThing()
-
-
-
 
 class TopButton(Button):
     font_size = prop.NumericProperty(14)
@@ -150,16 +133,17 @@ class ListButton(Button):
     side_width_buffer = prop.NumericProperty(20)
 
     def on_release(self):
-        """Jacob- Calls the plot_graph function on the sample data foo.csv
+        """
+        Jacob- Calls the plot_graph function on the sample data foo.csv
         which is located in the csv_data_collection folder, graph_png_export
         then creates a png of the graph which is stored in graph_images to be
-        displayed later."""
+        displayed later.
+        """
 
         #g = Graph_Widget()
         set_name = self.text
-        #g.set_image(set_name)
-        # for child in [child for child in self.parent.parent.parent.parent.parent.parent.children[0].children[0].children[1].children]:
-        #     print(child)
+
+        #adamg - god this is awful but it works
         graph_widget = self.parent.parent.parent.parent.parent.parent.children[0].children[1].children[1].children[1]
 
         graph_widget.set_image(set_name)
@@ -172,6 +156,7 @@ class Graph_Widget(Image):
         global selected_graph
         self.source = "resources/graph_images/no_dataset.png"
         self.reload()
+
         if selected_graph == None:
             selected_graph = "resources/graph_images/no_dataset.png"
 
@@ -180,6 +165,11 @@ class Graph_Widget(Image):
         Clock.schedule_interval(self.update_pic, 2)
 
     def set_image(self, set_name):
+        global selected_graph
+
+        if path.exists(f"resources/graph_images/{selected_graph}"):
+            os.remove(f"resources/graph_images/{selected_graph}")
+
         data_path = "resources/csv_data_collection/" + set_name
         image_name = set_name[:-4]
         image_path = "resources/graph_images/" + image_name +  ".png"
@@ -188,16 +178,13 @@ class Graph_Widget(Image):
 
         self.source = image_path
         self.reload()
-        global selected_graph
 
         selected_graph = image_path
-        #self.add_widget(self.image)
 
     def update_pic(self, dt):
         if self.source != selected_graph:
             self.source = selected_graph
             self.reload()
-
 
 class CoordinateTextInput(TextInput):
     default_text = "Format xx.xx"
@@ -206,8 +193,10 @@ class CoordinateTextInput(TextInput):
     pat = re.compile('[^0-9]')
 
     def insert_text(self, substring, from_undo=False):
-        """Disallows users from entering anything other than numbers into the
-        boxes"""
+        """
+        Disallows users from entering anything other than numbers into the
+        boxes
+        """
         pat = self.pat
         if '.' in self.text:
             s = re.sub(pat, '', substring)
@@ -216,15 +205,19 @@ class CoordinateTextInput(TextInput):
         return super(CoordinateTextInput, self).insert_text(s, from_undo=from_undo)
 
     def on_enter(self):
-        """Function that validates the data that the user just pressed enter
-        with"""
+        """
+        Function that validates the data that the user just pressed enter
+        with
+        """
         print('User pressed enter in', self, self.coord_dir)
 
 
     def check_text(self):
-        """Function that will clear the text in the box and change the color
+        """
+        Function that will clear the text in the box and change the color
         of the text, more of a quality of life check and not necessary as of
-        now"""
+        now
+        """
         #got focus
         if self.focus:
             pass
@@ -307,7 +300,6 @@ class MonthDD(DropDown):
     def set_and_dismiss(self, value):
         self.parent_widget.text = value
         self.dismiss()
-
 
 class YearDD(DropDown):
     font_size = prop.NumericProperty(12)
@@ -413,9 +405,6 @@ class CoordinatePopup(Popup):
 
         error_label.t = ""
 
-        # for widget in coord_input:
-        #     print(widget.coord_dir)
-
         coord = [min_x, max_x, min_y, max_y]
 
         start_date = [start_day, start_month, start_year]
@@ -426,7 +415,8 @@ class CoordinatePopup(Popup):
     def process_input(self, coord, start_date, end_date):
         from icesat2.data.data_controller import Data
 
-        d = Data(start_date = start_date, end_date=end_date, min_x = coord[0],
+
+        create_data(start_date = start_date, end_date=end_date, min_x = coord[0],
                  min_y = coord[2], max_x = coord[1], max_y = coord[3])
         #pass data to eli here
         self.dismiss()
@@ -439,13 +429,13 @@ class SavePopup(Popup):
     #needs to be converted for dynamic naming system of images
     def save(self, path, filename):
         print (">> Copying")
-        newName = path + "\\" + filename + ".png"
-        shutil.copy('resources\\graph_images\\foo.png', newName)
+        newName = path + "/" + filename + ".png"
+        shutil.copy('resources/graph_images/foo.png', newName)
 
 class DeletePopup(Popup):
     def delete(self):
         print(">> Deleting")
-        dataSets = os.listdir('resources\\csv_data_collection')
+        dataSets = os.listdir('resources/csv_data_collection')
         if getCurrDataSet() == "No data set select":
            print(">>> Nothing to delete")
         elif len(dataSets) == 1:
@@ -455,7 +445,7 @@ class DeletePopup(Popup):
             #currentDataSet
             print('No more datasets')
         else:
-            newPath = os.listdir('resources\\csv_data_collection')[0]
+            newPath = os.listdir('resources/csv_data_collection')[0]
             print(newPath)
             temp = getCurrDataSet()
             setCurrentDataSet(newPath)
@@ -482,7 +472,7 @@ class DataSetRefreshButton(Button):
 
     container = prop.ObjectProperty(None) #container the buttons are added to
     def add_buttons(self):
-        datasetPath = "resources\\csv_data_collection"
+        datasetPath = "resources/csv_data_collection"
         files = listdir(datasetPath)
         #files = next(os.walk(datasetPath))[1]
         print(files)
@@ -501,9 +491,9 @@ class Main_Window(Screen):
         super(Main_Window, self).__init__(**kw)
     def openManual(self):
         print(">> Opening Manual")
-        os.startfile("resources\\manuals\\user_manual.pdf")
+        os.startfile("resources/manuals/user_manual.pdf")
     def deleteCurrent(self):
-        os.remove("resources\\csv")
+        os.remove("resources/csv")
 
 
 class Graph_Window(Screen):
@@ -515,26 +505,24 @@ class Map_Window(Screen):
     def __init__(self, **kwargs):
         super(Map_Window, self).__init__(**kwargs)
         self.selectBox = True
-        
+
         self.orientation = 'vertical'
-        
+
         self.mainBox = BoxLayout(orientation = 'horizontal')
         self.add_widget(self.mainBox)
-        
 
-
-        self.picture = Image(allow_stretch=True, source='resources\\map_images\\ice_field_map3.TIF')
+        self.picture = Image(allow_stretch=True, source='resources/map_images/ice_field_map3.TIF')
         self.mainBox.add_widget(self.picture)
         # xmin,xmax,ymin,xmax of the provided image
         self.xminMap = 134.601389
         self.xmaxMap = 134.956389
         self.yminMap = 58.363611
         self.ymaxMap = 58.989167
-        
+
         self.xdiff = self.xmaxMap - self.xminMap
         self.ydiff = self.ymaxMap - self.yminMap
-        
-  
+
+
         #draw a rectangle
         with self.canvas:
             Color(1,0,0,.5,mode='rgba')
@@ -543,8 +531,8 @@ class Map_Window(Screen):
 
 
             self.rect = Rectangle(pos=(300, 400), size=(50,50))
-        
-        
+
+
         self.buttonBox = BoxLayout(orientation = 'vertical', spacing = 5)
         self.mainBox.add_widget(self.buttonBox)
         btnCurrentBox = Button(text = 'Box to Current Data Set')
@@ -553,11 +541,9 @@ class Map_Window(Screen):
         self.buttonBox.add_widget(btnCurrentBox)
         self.buttonBox.add_widget(btnPullData)
         self.buttonBox.add_widget(btnReturnToMain)
-        
-        
 
     def getImageAbsX(self):
-        return self.picture.center_x - self.picture.norm_image_size[0] / 2.0   
+        return self.picture.center_x - self.picture.norm_image_size[0] / 2.0
 
     def getImageAbsY(self):
         return self.picture.center_y + self.picture.norm_image_size[1] / 2.0
@@ -588,7 +574,7 @@ class Map_Window(Screen):
                 pass
             else:
                 self.rect.size = (touch.x - touch.ox, touch.y - touch.oy)
-    
+
     #set the box position and size based on xmin, xmax, ymin, ymax
     def set_box_pos(self,xmin,xmax,ymin,ymax):
         bottomX = 0
@@ -602,7 +588,7 @@ class Map_Window(Screen):
             inBounds =  True
         else:
             inBounds = False
-        
+
         if inBounds == True:
             #convert actual coords of bottom left of box to relative pixels on map image
             totalPixelsX = (self.picture.center_x - self.picture.norm_image_size[0] / 2.0 + self.picture.norm_image_size[0])
@@ -612,7 +598,7 @@ class Map_Window(Screen):
             bottomX = totalPixelsX * distanceRatioX
             bottomY = totalPixelsY * distanceRatioY
 
-            #convert xmax and ymax for size 
+            #convert xmax and ymax for size
             distanceRatioX = (self.xmaxMap - xmax) / (self.xmaxMap - self.xminMap)
             distanceRatioY = (self.ymaxMap - ymax) / (self.ymaxMap - self.yminMap)
             xsize = (totalPixelsX * distanceRatioX) - bottomX
@@ -628,9 +614,9 @@ class Map_Window(Screen):
 
     def process_input(self, coord, start_date, end_date):
         from icesat2.data.data_controller import Data
-        coord = [min_x, max_x, min_y, max_y]
-        d = Data(start_date = start_date, end_date=end_date, min_x = coord[0],
-                 min_y = coord[2], max_x = coord[1], max_y = coord[3])
+        # coord = [min_x, max_x, min_y, max_y]
+        # d = Data(start_date = start_date, end_date=end_date, min_x = coord[0],
+        #          min_y = coord[2], max_x = coord[1], max_y = coord[3])
 
 
 
@@ -645,17 +631,6 @@ class WindowSplitter(Splitter):
 
 class SetGraph(Widget):
     testGraph = prop.ObjectProperty(None)
-
-
-
-# sm = ScreenManager()
-
-# screens = [Main_Window(name='main')]
-
-# for screen in screens:
-#     sm.add_widget(screen)
-
-# sm.current = 'main'
 
 def main():
     MainApp().run()

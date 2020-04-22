@@ -518,3 +518,5 @@ resources/csv_data_collection/test
 resources/csv_data_collection/test_dates
 
 cache/
+resources/graph_images/bar.png
+resources/graph_images/foo.png
