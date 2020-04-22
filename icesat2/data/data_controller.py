@@ -21,6 +21,8 @@ max_y = '50.43'
 DATA_DIR = "resources/csv_data_collection"
 DEFAULT_PROJECT_NAME = "Untilted"
 
+DEFAULT_REQUEST = 'segment_id,longitude,latitude,h_li,atl06_quality_summary,track_id,beam,file_name\n'
+
 class Data:
     day_delta = datetime.timedelta(days=1)
 
@@ -54,15 +56,17 @@ class Data:
             dir_found = False
             if not path.exists(DATA_DIR + f"/{DEFAULT_PROJECT_NAME}"):
                 dir_found = True
+                self.file_name = DEFAULT_PROJECT_NAME
             else:
                 number_addition = 1
                 while not dir_found:
                     if not path.exists(DATA_DIR + f"/{DEFAULT_PROJECT_NAME}{number_addition}"):
                         dir_found = True
+                        self.file_name = DEFAULT_PROJECT_NAME
                     else:
                         number_addition += 1
 
-        self.path = DATA_DIR + self.file_name
+        self.path = DATA_DIR + "/" + self.file_name
 
         if not os.path.exists(self.path):
             os.makedirs(self.path)
@@ -90,10 +94,10 @@ class Data:
             write_file = self.path + "/" + self.file_name + day.strftime('%Y-%m-%d') + ".csv"
 
 
-
-            with open(write_file, "w") as f:
-                for line in r.text:
-                    f.write(line)
+            #print (r.text)
+            if r.text != DEFAULT_REQUEST:
+                with open(write_file, "w") as f:
+                    f.write(r.text)
 
 
         write_file = self.path + "/" + self.file_name + "object_info"
@@ -123,7 +127,7 @@ class Data:
         end_file = pd.read_csv(self.path + "/" + self.file_name + ''
                                + self.end_date.strftime('%Y-%m-%d') + ".csv", header=0, index_col='segment_id')
 
-        print(start_file)
+        #print(start_file)
         diff = pd.DataFrame({'start': start_file['h_li'],
                             'end': end_file['h_li']})
 
@@ -185,6 +189,9 @@ def fetchData(file_name):
 
     return data
 
-x = Data(date(2018, 11, 13), date(2019, 2, 12), '105.25', '49.48', '106.06', '50.43', "test")
-x.get_data()
-x.get_height_diff()
+if __name__ == "__main__":
+    x = Data(date(2018, 11, 13), date(2019, 2, 12),
+             '105.25', '49.48', '106.06', '50.43', "test")
+    x.get_data()
+    x.get_height_diff()
+

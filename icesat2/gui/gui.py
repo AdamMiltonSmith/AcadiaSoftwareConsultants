@@ -1,9 +1,7 @@
 import ctypes
 import glob
 import os
-import re
 import shutil
-from math import sin
 from os import listdir
 from os.path import isfile, join
 from os import path
@@ -32,8 +30,6 @@ from kivy.uix.splitter import Splitter
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 
-from icesat2.data.data_controller import create_data
-
 import icesat2.graph.graph_png_export as graph_png_export
 
 """
@@ -47,19 +43,18 @@ libbytiff.TIFFSetWarningHandler.restype = ctypes.c_void_p
 libbytiff.TIFFSetWarningHandler(None)
 
 
-currentDataSet = "No data set selected"
+current_data_set = "No data set selected"
 #Josh - if when I implement clock scheduled refreshing of the data list I will use two variables
-currDataSetPath = "No path"
+#currDataSetPath = "No path"
 
 selected_graph = None
 
 def getCurrDataSet():
-    #print(">> The current data set is: " + str(currentDataSet))
-    print(currentDataSet)
-    return currentDataSet
+    return current_data_set
 
 def setCurrentDataSet(dataSet):
-    currentDataSet = dataSet
+    global current_data_set
+    current_data_set = dataSet
 
 def pre_init_screen():
     pass
@@ -80,7 +75,6 @@ class TopButton(Button):
     btn_height = prop.NumericProperty(35)
     btn_width = prop.NumericProperty(70)
     side_width_buffer = prop.NumericProperty(20)
-
 
 class TopButtonDropDown(DropDown):
     font_size = prop.NumericProperty(14)
@@ -190,18 +184,20 @@ class CoordinateTextInput(TextInput):
     default_text = "Format xx.xx"
     default_shade = prop.ColorProperty([0.5, 0.5, 0.5, 1.0])
 
-    pat = re.compile('[^0-9]')
-
     def insert_text(self, substring, from_undo=False):
         """
         Disallows users from entering anything other than numbers into the
         boxes
         """
-        pat = self.pat
+        import re as regex
+
+        pat = regex.compile('[^0-9]')
+
         if '.' in self.text:
-            s = re.sub(pat, '', substring)
+            s = regex.sub(pat, '', substring)
         else:
-            s = '.'.join([re.sub(pat, '', s) for s in substring.split('.', 1)])
+            s = '.'.join([regex.sub(pat, '', s)
+                          for s in substring.split('.', 1)])
         return super(CoordinateTextInput, self).insert_text(s, from_undo=from_undo)
 
     def on_enter(self):
@@ -233,7 +229,6 @@ class DateChooseButton(Button):
     #back_normal = prop.ColorProperty([1.0, 1.0, 1.0, 1.0])
     text_color = prop.ColorProperty([0.0, 0.0, 0.0, 1.0])
     side_width_buffer = prop.NumericProperty(20)
-
 
 class DayDD(DropDown):
     font_size = prop.NumericProperty(12)
@@ -413,8 +408,7 @@ class CoordinatePopup(Popup):
         self.process_input(coord, start_date, end_date)
 
     def process_input(self, coord, start_date, end_date):
-        from icesat2.data.data_controller import Data
-
+        from icesat2.data.data_controller import create_data
 
         create_data(start_date = start_date, end_date=end_date, min_x = coord[0],
                  min_y = coord[2], max_x = coord[1], max_y = coord[3])
@@ -611,12 +605,11 @@ class Map_Window(Screen):
     def pullData(self):
         print("Pulling data from selected region on map")
 
-
     def process_input(self, coord, start_date, end_date):
-        from icesat2.data.data_controller import Data
-        # coord = [min_x, max_x, min_y, max_y]
-        # d = Data(start_date = start_date, end_date=end_date, min_x = coord[0],
-        #          min_y = coord[2], max_x = coord[1], max_y = coord[3])
+        from icesat2.data.data_controller import create_data
+
+        create_data(start_date=start_date, end_date=end_date, min_x=coord[0],
+                    min_y=coord[2], max_x=coord[1], max_y=coord[3])
 
 
 
