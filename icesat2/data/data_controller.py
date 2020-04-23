@@ -121,17 +121,26 @@ class Data:
     where a and b are start and end
     """
     def get_height_diff(self):
+
         start_file = pd.read_csv(self.path + "/" + self.file_name + ''
         + self.start_date.strftime('%Y-%m-%d')+".csv", header=0, index_col='segment_id')
 
         end_file = pd.read_csv(self.path + "/" + self.file_name + ''
                                + self.end_date.strftime('%Y-%m-%d') + ".csv", header=0, index_col='segment_id')
+        decimal_points_lat = 3
+        decimal_points_long = 3
+
+        start_file_rounded = start_file.round({'longtitude': decimal_points_long, 'latitidue': decimal_points_lat})
+        end_file_rounded = end_file.round({'longtitude': decimal_points_long, 'latitidue': decimal_points_lat})
+
+        start_file_grouped = start_file_rounded.groupby['latitude', 'beam'].agg({'longitude': 'mean', 'h_li': 'mean'})
+        end_file_grouped = end_file_rounded.groupby['latitude', 'beam'].agg(
+            {'longitude': 'mean', 'h_li': 'mean'})
+
 
         #print(start_file)
-        diff = pd.DataFrame({'start': start_file['h_li'],
-                            'end': end_file['h_li']})
-
-        height_change = diff['start'] - diff['end']
+        diff = pd.DataFrame({'start': start_file_grouped['h_li'],
+                             'end': end_file_grouped['h_li']})
 
         #print(diff)
 
@@ -145,7 +154,7 @@ class Data:
 
         #print(df)
 
-        df.to_csv(self.path + "/" + self.file_name + '_change_in_height.csv')
+        df.to_csv(self.path + "/" + 'change_in_height.csv')
 
 
     def get_differential(self):
