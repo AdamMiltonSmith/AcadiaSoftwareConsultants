@@ -93,7 +93,6 @@ class Data:
             r = requests.get(url, params=parameters)
             write_file = self.path + "/" + self.file_name + day.strftime('%Y-%m-%d') + ".csv"
 
-
             #print (r.text)
             if r.text != DEFAULT_REQUEST:
                 with open(write_file, "w") as f:
@@ -123,19 +122,41 @@ class Data:
     def get_height_diff(self):
 
         start_file = pd.read_csv(self.path + "/" + self.file_name + ''
-        + self.start_date.strftime('%Y-%m-%d')+".csv", header=0, index_col='segment_id')
+                                 + self.start_date.strftime('%Y-%m-%d')+".csv", header=0, index_col='segment_id')
 
         end_file = pd.read_csv(self.path + "/" + self.file_name + ''
                                + self.end_date.strftime('%Y-%m-%d') + ".csv", header=0, index_col='segment_id')
         decimal_points_lat = 3
         decimal_points_long = 3
 
-        start_file_rounded = start_file.round({'longtitude': decimal_points_long, 'latitidue': decimal_points_lat})
-        end_file_rounded = end_file.round({'longtitude': decimal_points_long, 'latitidue': decimal_points_lat})
+        print(start_file)
 
-        start_file_grouped = start_file_rounded.groupby['latitude', 'beam'].agg({'longitude': 'mean', 'h_li': 'mean'})
-        end_file_grouped = end_file_rounded.groupby['latitude', 'beam'].agg(
-            {'longitude': 'mean', 'h_li': 'mean'})
+        start_file_rounded = start_file.round(
+            {'longitude': decimal_points_long, 'latitude': decimal_points_lat})
+        end_file_rounded = end_file.round(
+            {'longitude': decimal_points_long, 'latitude': decimal_points_lat})
+
+        print(start_file_rounded)
+        print(end_file_rounded)
+
+        start_file_grouped = start_file_rounded.groupby(['latitude', 'beam']).agg(
+            {'longitude': 'mean', 'h_li': 'mean'}).reset_index()
+        end_file_grouped = end_file_rounded.groupby(['latitude', 'beam']).agg(
+            {'longitude': 'mean', 'h_li': 'mean'}).reset_index()
+
+        #start_file_grouped.to_csv(self.path + "/" + 'test23.csv')
+
+        print(start_file_grouped)
+
+
+        end_file_grouped2 = ({  #'segment_id_2'            : end_file_grouped['segment_id'],
+                                'latitude_2': end_file_grouped['latitude'],
+                                'longitude_2': end_file_grouped['longitude'],
+                                'h_li_2': end_file_grouped['h_li'],
+                                #'atl06_quality_summary_2': end_file_grouped['atl06_quality_summary'],
+                                #'track_id_2': end_file_grouped['track_id'],
+                                'beam_2': end_file_grouped['beam']})
+                                #'file_name_2': end_file_grouped['file_name']})
 
 
         #print(start_file)
@@ -201,6 +222,6 @@ def fetchData(file_name):
 if __name__ == "__main__":
     x = Data(date(2018, 11, 13), date(2019, 2, 12),
              '105.25', '49.48', '106.06', '50.43', "test")
-    x.get_data()
+    #x.get_data()
     x.get_height_diff()
 
