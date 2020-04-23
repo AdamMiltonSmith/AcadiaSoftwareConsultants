@@ -126,8 +126,8 @@ class Data:
 
         end_file = pd.read_csv(self.path + "/" + self.file_name + ''
                                + self.end_date.strftime('%Y-%m-%d') + ".csv", header=0, index_col='segment_id')
-        decimal_points_lat = 3
-        decimal_points_long = 3
+        decimal_points_lat = 2
+        decimal_points_long = 2
 
         print(start_file)
 
@@ -139,24 +139,24 @@ class Data:
         print(start_file_rounded)
         print(end_file_rounded)
 
-        start_file_grouped = start_file_rounded.groupby(['latitude', 'beam']).agg(
-            {'longitude': 'mean', 'h_li': 'mean'}).reset_index()
-        end_file_grouped = end_file_rounded.groupby(['latitude', 'beam']).agg(
-            {'longitude': 'mean', 'h_li': 'mean'}).reset_index()
+        start_file_grouped = start_file_rounded.groupby(['latitude', 'longitude', 'beam']).agg(
+            {'h_li': 'mean'}).reset_index()
+        end_file_grouped = end_file_rounded.groupby(['latitude', 'longitude', 'beam']).agg(
+            {'h_li': 'mean'}).reset_index()
 
         #start_file_grouped.to_csv(self.path + "/" + 'test23.csv')
 
         print(start_file_grouped)
 
 
-        end_file_grouped2 = ({  #'segment_id_2'            : end_file_grouped['segment_id'],
-                                'latitude_2': end_file_grouped['latitude'],
-                                'longitude_2': end_file_grouped['longitude'],
-                                'h_li_2': end_file_grouped['h_li'],
-                                #'atl06_quality_summary_2': end_file_grouped['atl06_quality_summary'],
-                                #'track_id_2': end_file_grouped['track_id'],
-                                'beam_2': end_file_grouped['beam']})
-                                #'file_name_2': end_file_grouped['file_name']})
+        # end_file_grouped2 = ({  #'segment_id_2'            : end_file_grouped['segment_id'],
+        #                         'latitude_2': end_file_grouped['latitude'],
+        #                         'longitude_2': end_file_grouped['longitude'],
+        #                         'h_li_2': end_file_grouped['h_li'],
+        #                         #'atl06_quality_summary_2': end_file_grouped['atl06_quality_summary'],
+        #                         #'track_id_2': end_file_grouped['track_id'],
+        #                         'beam_2': end_file_grouped['beam']})
+        #                         #'file_name_2': end_file_grouped['file_name']})
 
 
         #print(start_file)
@@ -165,13 +165,16 @@ class Data:
 
         #print(diff)
 
-        df = pd.DataFrame({ 'segment_id'            : start_file['segment_id'],
-                            'longitude'             : start_file['longitude'],
-                            'h_li'                  : diff['start'] - diff['end'],
-                            'atl06_quality_summary' : start_file['atl06_quality_summary'],
-                            'track_id'              : start_file['track_id'],
-                            'beam'                  : start_file['beam'],
-                            'file_name'             : start_file['file_name']})
+        df = pd.DataFrame({# 'segment_id'            : start_file['segment_id'],
+                            'latitude'              : end_file_grouped['latitude'],
+                            'longitude'             : end_file_grouped['longitude'],
+                            'h_li_start'            : start_file_grouped['h_li'],
+                            'h_li_end'              : end_file_grouped['h_li'],
+                            'h_li_diff'             : diff['start'] - diff['end'],
+                            #'atl06_quality_summary' : start_file['atl06_quality_summary'],
+                            #'track_id'              : start_file['track_id'],
+                            'beam'                   : end_file_grouped['beam']})
+                            #'file_name'             : start_file['file_name']})
 
         #print(df)
 
