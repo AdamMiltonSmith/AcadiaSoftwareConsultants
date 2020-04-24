@@ -16,8 +16,8 @@ from os import path
 DATA_DIR = "resources/csv_data_collection"
 DEFAULT_PROJECT_NAME = "Untitled"
 
-DEFAULT_REQUEST = """segment_id,longitude,latitude,h_li,atl06_quality_summary,
-track_id,beam,file_name\n"""
+DEFAULT_REQUEST = "segment_id,longitude,latitude,h_li,atl06_quality_summary,\
+track_id,beam,file_name\n"
 
 class Data:
     def __init__(self, start_date, end_date, min_x, min_y,
@@ -116,21 +116,16 @@ class Data:
         self.valid_start_date = dt.strptime(first_file, '%Y-%m-%d')
         self.valid_end_date = dt.strptime(last_file, '%Y-%m-%d')
 
-        # write_file = self.path + "/" + "object_info"
+        write_file = self.path + "/" + "object_info.txt"
 
-        # """
-        # This chunk of code will save needed object info in plain text
-        # This will help with allowing front-end interfaces fetch data objects
-        # Hopefully serialize in the future
-        # """
-        # with open(write_file, "w") as f:
-        #     f.write(self.start_date.strftime('%Y-%m-%d') + ",")
-        #     f.write(self.end_date.strftime('%Y-%m-%d') + ",")
-
-        #     f.write(self.min_x + ",")
-        #     f.write(self.min_y + ",")
-        #     f.write(self.max_x + ",")
-        #     f.write(self.max_y + ",")
+        """
+        This chunk of code will save needed object info in plain text
+        This will help with allowing front-end interfaces fetch data objects
+        Hopefully serialize in the future
+        """
+        with open(write_file, "w") as f:
+            f.write(self.valid_start_date.strftime('%Y-%m-%d') + ",")
+            f.write(self.valid_end_date.strftime('%Y-%m-%d'))
 
     def get_height_diff(self):
         """
@@ -169,10 +164,22 @@ class Data:
 
         df.to_csv(self.path + "/" + 'change_in_height.csv')
 
+def get_metadata(project_name):
+    with open(DATA_DIR + "/" + project_name + "/object_info.txt") as f:
+        line = f.read()
+        line_split = line.split(",")
+
+        metadata = {}
+
+        metadata['start_date'] = line_split[0]
+        metadata['end_date'] = line_split[1]
+
+        return metadata
+
 def create_data(start_date, end_date, min_x, min_y, max_x, max_y, project_name=None):
 
     data = Data(start_date=start_date, end_date=end_date, min_x=min_x,
-                min_y=min_y, max_x=max_x, max_y=max_y)
+                min_y=min_y, max_x=max_x, max_y=max_y, project_name = project_name)
     data.get_data()
 
     data.get_height_diff()

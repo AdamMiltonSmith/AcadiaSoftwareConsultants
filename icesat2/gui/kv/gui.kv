@@ -317,9 +317,61 @@ ScreenManager:
             size: 200, 50
             pos_hint: {"x": .3, "y": 0}
 
+<NoProjectChosenPopup>:
+    id: noprojectchosenpopup
+    title: "No project chosen"
+    size: 500, 200
+    size_hint: None, None
+    FloatLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        Label:
+            size: 500, 115
+            size_hint: None, None
+            pos_hint: {"x": 0, "top": 1}
+            multiline: True
+            halign: 'center'
+            valign: 'middle'
+            text: """There is no project chosen to save."""
+        Button:
+            size: 60, 30
+            size_hint: None, None
+            pos_hint: {"right": 1, "y": 0}
+            text: "Ok"
+            on_release: noprojectchosenpopup.dismiss()
 
-<SavePopup>:
-    id: savepopup
+<ProjectSavePopup>:
+    id: projectsavepopup
+    title: "Save Project"
+    size: 500, 400
+    size_hint: None, None
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        Label:
+            text: "Enter name of new project below"
+        TextInput:
+            id: text_input
+            size_hint_y: None
+            height: 30
+            multiline: False
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: projectsavepopup.dismiss()
+
+            Button:
+                text: "Save"
+                on_release: root.save(text_input.text)
+                on_release: projectsavepopup.dismiss()
+
+
+<ImageSavePopup>:
+    id: imagesavepopup
     title: "Save Image"
     size: 500, 400
     size_hint: None, None
@@ -342,12 +394,12 @@ ScreenManager:
             height: 30
             Button:
                 text: "Cancel"
-                on_release: savepopup.dismiss()
+                on_release: imagesavepopup.dismiss()
 
             Button:
                 text: "Save"
                 on_release: root.save(filechooser.path, text_input.text)
-                on_release: savepopup.dismiss()
+                on_release: imagesavepopup.dismiss()
 
 <DeletePopup>:
     id: deletepopup
@@ -373,6 +425,7 @@ ScreenManager:
                 on_release: root.delete()
                 on_release: deletepopup.dismiss()
 
+
 <IncorrectDatasetPopup>:
     id: incorrectdatasetpopup
     title: "Dataset incomplete"
@@ -387,9 +440,9 @@ ScreenManager:
             size_hint: None, None
             pos_hint: {"x": 0, "top": 1}
             multiline: True
-            halign: 'right'
+            halign: 'center'
             valign: 'middle'
-            text: """The dataset is missing its height difference computation. \nThis is probably due to not completing the data acquisition."""
+            text: """The dataset is missing necessary files. \nThis is probably due to not completing the data acquisition."""
         Button:
             size: 60, 30
             size_hint: None, None
@@ -448,37 +501,25 @@ ScreenManager:
                 width: 100
 
                 TopButtonDropDownButton:
-                    text: 'New...'
+                    text: 'Save Project As'
                     size_hint_y: None
                     height: 30
-                    on_release: file_dropdown.select('new')
-                    font_size: file_dropdown.font_size
-
-                TopButtonDropDownButton:
-                    text: 'Create'
-                    size_hint_y: None
-                    height: 30
-                    on_release: file_dropdown.select('create')
-
-                TopButtonDropDownButton:
-                    text: 'Save'
-                    size_hint_y: None
-                    height: 30
-                    on_release: file_dropdown.select('save')
-
-                TopButtonDropDownButton:
-                    text: 'Save As'
-                    size_hint_y: None
-                    height: 30
-                    #on_release: file_dropdown.select('save_as')
                     on_release: file_dropdown.dismiss()
-                    on_release: Factory.SavePopup().open()
+                    on_release: file_dropdown.project_save_check()
+
+                TopButtonDropDownButton:
+                    text: 'Save Image As'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.dismiss()
+                    on_release: Factory.ImageSavePopup().open()
 
                 TopButtonDropDownButton:
                     text: 'Import Data'
                     size_hint_y: None
                     height: 30
-                    on_release: file_dropdown.select('import_data')
+                    on_release: file_dropdown.dismiss()
+                    on_release: Factory.CoordinatePopup().open()
 
                 TopButtonDropDownButton:
                     text: 'Delete'
@@ -512,24 +553,6 @@ ScreenManager:
                     size_hint_y: None
                     height: 30
                     on_release: edit_dropdown.select('preferences')
-
-                TopButtonDropDownButton:
-                    text: 'Cut'
-                    size_hint_y: None
-                    height: 30
-                    on_release: edit_dropdown.select('cut')
-
-                TopButtonDropDownButton:
-                    text: 'Copy'
-                    size_hint_y: None
-                    height: 30
-                    on_release: edit_dropdown.select('copy')
-
-                TopButtonDropDownButton:
-                    text: 'Paste'
-                    size_hint_y: None
-                    height: 35
-                    on_release: edit_dropdown.select('paste')
 
             #window
             TopButton:
@@ -605,11 +628,12 @@ ScreenManager:
                 width: 140
 
                 TopButtonDropDownButton:
-                    text: 'Choose coordinates'
+                    text: 'Placeholder'
                     size_hint_y: None
                     height: 35
                     on_release: map_dropdown.dismiss()
-                    on_release: Factory.CoordinatePopup().open()
+                    #on_release: Factory.CoordinatePopup().open()
+
             #help button
             TopButton:
                 id: help_btn
@@ -631,10 +655,9 @@ ScreenManager:
                 width: 200
 
                 TopButtonDropDownButton:
-                    text: 'What would you like help with?'
+                    text: 'Open manual'
                     size_hint_y: None
                     height: 35
-                    on_release: help_dropdown.select('help')
                     on_release: help_dropdown.dismiss()
                     on_release: root.openManual()
 
@@ -661,10 +684,7 @@ ScreenManager:
                 BoxLayout:
                     id: bl
                     orientation: 'vertical'
-                    padding: 125, 25
-                    # size_hint_x: None
-                    # width: 125
-                    # pos: root.center
+                    padding: '125dp', 25
                     row_default_height: '48dp'
                     row_force_default: True
                     spacing: 0, 40
@@ -690,7 +710,6 @@ ScreenManager:
                             id: layout_content
                             size_hint_y: None
                             cols: 1
-                            #pos_hint: {'center_x': .5}
                             row_default_height: '40dp'
                             row_force_default: True
                             spacing: 0, 20
@@ -931,7 +950,7 @@ ScreenManager:
                     on_release: help_dropdown.select('help')
 
         Graph_Widget:
-
+            allow_stretch: True
 
 <Map_Window>:
     name: 'map'

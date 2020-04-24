@@ -518,5 +518,6 @@ resources/csv_data_collection/*
 
 resources/graph_images/*
 !resources/graph_images/no_dataset.png
+!resources/graph_images/items_missing.png
 
 cache/
