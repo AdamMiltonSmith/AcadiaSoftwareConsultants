@@ -162,7 +162,9 @@ ScreenManager:
             pos_hint: {"x": .075, "top": .3}
             font_size: 11
             on_parent: start_date_day_dd.dismiss()
-            on_release: start_date_day_dd.create_buttons(start_date_month_button.text, start_date_year_button.text)
+            on_release:
+                start_date_day_dd.create_buttons(start_date_month_button.text, \
+                start_date_year_button.text)
             on_release: start_date_day_dd.open(self)
             size: 30, 30
             background_normal: ''
@@ -357,7 +359,8 @@ ScreenManager:
         pos: root.pos
         orientation: "vertical"
         Label:
-            text: "Are you sure you want to delete the current data set? This cannot be undone."
+            multiline: True
+            text: """Are you sure you want to delete the current data set? \nThis cannot be undone."""
         BoxLayout:
             size_hint_y: None
             height: 30
@@ -370,7 +373,29 @@ ScreenManager:
                 on_release: root.delete()
                 on_release: deletepopup.dismiss()
 
-
+<IncorrectDatasetPopup>:
+    id: incorrectdatasetpopup
+    title: "Dataset incomplete"
+    size: 500, 200
+    size_hint: None, None
+    FloatLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        Label:
+            size: 500, 115
+            size_hint: None, None
+            pos_hint: {"x": 0, "top": 1}
+            multiline: True
+            halign: 'right'
+            valign: 'middle'
+            text: """The dataset is missing its height difference computation. \nThis is probably due to not completing the data acquisition."""
+        Button:
+            size: 60, 30
+            size_hint: None, None
+            pos_hint: {"x": 0, "y": 0}
+            text: "Cancel"
+            on_release: incorrectdatasetpopup.dismiss()
 
 <Main_Window>:
     name: 'main'
@@ -636,16 +661,20 @@ ScreenManager:
                 BoxLayout:
                     id: bl
                     orientation: 'vertical'
-                    padding: 50, 40
+                    padding: 125, 25
+                    # size_hint_x: None
+                    # width: 125
+                    # pos: root.center
                     row_default_height: '48dp'
                     row_force_default: True
-                    spacing: 10, 10
+                    spacing: 0, 40
                     DataSetRefreshButton:
                         id: btn_refresh
                         container: layout_content
                         text: 'Refresh List'
-                        size_hint_y: None
-                        #width: self.texture_size[0] + 2 * btn_refresh.side_width_buffer
+                        size_hint: None, None
+                        pos_hint: {'center_x': .5}
+                        width: self.texture_size[0] + 2 * btn_refresh.side_width_buffer
                         height: btn_refresh.btn_height
                         background_normal: ''
                         background_color: btn_refresh.back_color
@@ -654,18 +683,18 @@ ScreenManager:
                         on_release:
                             self.remove_buttons()
                             self.add_buttons()
-                            #app.assign(self)
 
                     ScrollView:
-                        size: self.size
+                        size: root.size
                         GridLayout:
                             id: layout_content
                             size_hint_y: None
                             cols: 1
-                            row_default_height: '20dp'
+                            #pos_hint: {'center_x': .5}
+                            row_default_height: '40dp'
                             row_force_default: True
-                            spacing: 0, 5
-                            padding: 0, 0
+                            spacing: 0, 20
+                            padding: 0, 40
                             height: self.minimum_height
 
 <Graph_Window>:
@@ -907,4 +936,3 @@ ScreenManager:
 <Map_Window>:
     name: 'map'
     id: map_layout
-    

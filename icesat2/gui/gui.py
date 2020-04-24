@@ -30,7 +30,7 @@ from kivy.uix.splitter import Splitter
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 
-import icesat2.graph.graph_png_export as graph_png_export
+from icesat2.graph.graph_png_export import create_graph
 
 """
 This stopped some TIFF unknown field with tag warnings. I don't know how it
@@ -43,14 +43,18 @@ libbytiff.TIFFSetWarningHandler.restype = ctypes.c_void_p
 libbytiff.TIFFSetWarningHandler(None)
 
 
-current_data_set = "No data set selected"
-#Josh - if when I implement clock scheduled refreshing of the data list I will use two variables
-#currDataSetPath = "No path"
+current_dataset = ""
 
 selected_graph = None
 
+MONTH_DAY = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+CSV_DIRECTORY = "resources/csv_data_collection"
+
+DEFAULT_GRAPH = "resources/graph_images/no_dataset.png"
+
 def getCurrDataSet():
-    return current_data_set
+    return current_dataset
 
 def setCurrentDataSet(dataSet):
     global current_data_set
@@ -117,58 +121,87 @@ class DefaultButton(Button):
     #btn_width = prop.NumericProperty(70)
     side_width_buffer = prop.NumericProperty(20)
 
+
+class IncorrectDatasetPopup(Popup):
+    pass
+
 class ListButton(Button):
+    """
+    Author:
+    """
     font_size = prop.NumericProperty(14)
     back_color = prop.ColorProperty([0.5, 0.5, 0.5, 1.0])
 
     text_color = prop.ColorProperty([1.0, 1.0, 1.0, 1.0])
     btn_height = prop.NumericProperty(20)
-    #btn_width = prop.NumericProperty(70)000
+    btn_width = prop.NumericProperty(25)
     side_width_buffer = prop.NumericProperty(20)
+
+    def __init__(self, **kwargs):
+        super(ListButton, self).__init__(**kwargs)
+        #self.height = 35
+        # self.size_hint_x = None
+        # self.width = 40
+        # self.pos_hint = {'center_x': .5}
 
     def on_release(self):
         """
-        Jacob- Calls the plot_graph function on the sample data foo.csv
-        which is located in the csv_data_collection folder, graph_png_export
-        then creates a png of the graph which is stored in graph_images to be
-        displayed later.
+        Author: adamg and jacobb
+        Passes data to Graph_Widget class for instantiation of the object.
         """
 
-        #g = Graph_Widget()
-        set_name = self.text
+        project_name = self.text
 
-        #adamg - god this is awful but it works
+        # check the data set that it has everything completed for a drawing
+
+        if not path.exists("resources/csv_data_collection/" + project_name + "/change_in_height.csv"):
+            i = IncorrectDatasetPopup()
+            i.open()
+            return
+
+        # adamg - god this is awful but it works
         graph_widget = self.parent.parent.parent.parent.parent.parent.children[0].children[1].children[1].children[1]
 
-        graph_widget.set_image(set_name)
+        graph_widget.set_image(project_name)
+
+        global current_dataset
+        current_dataset = project_name
 
 
 class Graph_Widget(Image):
-
+    """
+    Author: adamg and jacobb
+    """
     def __init__(self, **kwargs):
+        """
+        Author: adamg
+        """
         super(Graph_Widget,self).__init__(**kwargs)
+        self.allow_stretch = True
+
         global selected_graph
-        self.source = "resources/graph_images/no_dataset.png"
+        self.source = DEFAULT_GRAPH
         self.reload()
 
         if selected_graph == None:
-            selected_graph = "resources/graph_images/no_dataset.png"
+            selected_graph = DEFAULT_GRAPH
 
-        #self.add_widget(Label(text = "Graph"))
-        #self.add_widget(self.image)
         Clock.schedule_interval(self.update_pic, 2)
 
     def set_image(self, set_name):
+        """
+        Author: adamg and jacobb
+        """
         global selected_graph
 
-        if path.exists(f"resources/graph_images/{selected_graph}"):
-            os.remove(f"resources/graph_images/{selected_graph}")
+        if path.exists(selected_graph) and selected_graph != DEFAULT_GRAPH:
+            os.remove(selected_graph)
 
-        data_path = "resources/csv_data_collection/" + set_name
-        image_name = set_name[:-4]
-        image_path = "resources/graph_images/" + image_name +  ".png"
-        graph_data = graph_png_export.read_data(data_path)
-        graph_png_export.plot_graph(graph_data, image_name)
+        data_path = "resources/csv_data_collection/" + set_name + "/change_in_height.csv"
+
+        image_path = "resources/graph_images/" + set_name + ".png"
+
+        create_graph(data_path, set_name)
 
         self.source = image_path
         self.reload()
@@ -176,6 +209,9 @@ class Graph_Widget(Image):
         selected_graph = image_path
 
     def update_pic(self, dt):
+        """
+        Author: adamg and jacobb
+        """
         if self.source != selected_graph:
             self.source = selected_graph
             self.reload()
@@ -237,7 +273,14 @@ class DayDD(DropDown):
 
         super(DayDD, self).__init__(**kwargs)
 
-        self.month_day = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        self.max_day = 31
+
+    def calc_max_day(self, month, year):
+        if month == 2 and year % 4 == 0:
+            self.max_day = 29
+        else:
+            self.max_day = MONTH_DAY[month-1]
+        return self.max_day
 
     def set_and_dismiss(self, value):
         self.parent_widget.text = value
@@ -246,15 +289,9 @@ class DayDD(DropDown):
     def create_buttons(self, _month, _year):
         self.clear_widgets()
 
-        month = int(_month)
-        year = int(_year)
+        self.calc_max_day(int(_month), int(_year))
 
-        if month == 2 and year % 4 == 0:
-            max_day = 29
-        else:
-            max_day = self.month_day[month-1]
-
-        for index in range(1, max_day + 1):
+        for index in range(1, self.max_day + 1):
             btn = DateChooseDropDownButton(text=f"{index}", size_hint_y=None,
                                            width=40, height=25,
                                            background_color=[
@@ -264,7 +301,6 @@ class DayDD(DropDown):
             btn.bind(on_release=lambda btn: self.set_and_dismiss(btn.text))
 
             self.add_widget(btn)
-
 
 class ErrorDateLabel(Label):
     t = prop.StringProperty("")
@@ -276,6 +312,7 @@ class ErrorDateLabel(Label):
 
 class MonthDD(DropDown):
     font_size = prop.NumericProperty(12)
+    #day_button - self.day_button
 
     def __init__(self, **kwargs):
 
@@ -303,7 +340,7 @@ class YearDD(DropDown):
 
         super(YearDD, self).__init__(**kwargs)
 
-        for index in range(2018, 2023):
+        for index in range(2018, 2022):
             btn = DateChooseDropDownButton(text=f"{index}", size_hint_y=None,
                          width=40, height=25,
                          background_color = [1.0, 1.0,1.0, 1.0],
@@ -382,6 +419,13 @@ class CoordinatePopup(Popup):
             error_label.t = "Coordinate not within bounds"
             return
 
+        if start_day not in range(1, MONTH_DAY[start_month-1] + 1):
+            error_label.t = "Incorrect day for start month"
+            return
+        elif end_day not in range(1, MONTH_DAY[end_month-1] + 1):
+            error_label.t = "Incorrect day for end month"
+            return
+
         if end_year > start_year:
             pass
         elif end_year == start_year:
@@ -402,16 +446,25 @@ class CoordinatePopup(Popup):
 
         coord = [min_x, max_x, min_y, max_y]
 
-        start_date = [start_day, start_month, start_year]
-        end_date = [end_day, end_month, end_year]
+        start_year = str(start_year).zfill(4)
+        start_month = str(start_month).zfill(2)
+        start_day = str(start_day).zfill(2)
+
+        end_year = str(end_year).zfill(4)
+        end_month = str(end_month).zfill(2)
+        end_day = str(end_day).zfill(2)
+
+
+        start_date = f"{start_year}/{start_month}/{start_day}"
+        end_date = f"{end_year}/{end_month}/{end_day}"
 
         self.process_input(coord, start_date, end_date)
 
     def process_input(self, coord, start_date, end_date):
         from icesat2.data.data_controller import create_data
 
-        create_data(start_date = start_date, end_date=end_date, min_x = coord[0],
-                 min_y = coord[2], max_x = coord[1], max_y = coord[3])
+        create_data(start_date = start_date, end_date=end_date, min_x = float(coord[0]),
+                 min_y = float(coord[2]), max_x = float(coord[1]), max_y = float(coord[3]))
         #pass data to eli here
         self.dismiss()
 
@@ -427,25 +480,26 @@ class SavePopup(Popup):
         shutil.copy('resources/graph_images/foo.png', newName)
 
 class DeletePopup(Popup):
+
+    def get_dataset(self):
+        return current_dataset
+
+    def set_dataset(self, new_dataset: str):
+        global current_dataset
+        current_dataset = new_dataset
+
     def delete(self):
-        print(">> Deleting")
-        dataSets = os.listdir('resources/csv_data_collection')
-        if getCurrDataSet() == "No data set select":
+        #print(">> Deleting")
+        data_sets = os.listdir(CSV_DIRECTORY)
+        if self.get_dataset() == "":
            print(">>> Nothing to delete")
-        elif len(dataSets) == 1:
-            temp = getCurrDataSet()
-            setCurrentDataSet("No data set selected")
-            os.remove(temp)
-            #currentDataSet
-            print('No more datasets')
+        elif len(data_sets) == 0:
+            print(">>> Nothing to delete")
         else:
-            newPath = os.listdir('resources/csv_data_collection')[0]
-            print(newPath)
-            temp = getCurrDataSet()
-            setCurrentDataSet(newPath)
-            os.remove(temp)
-            #setCurrentDataSet()
-            print('Folder is Not Empty')
+            temp = self.get_dataset()
+            self.set_dataset("")
+            os.remove(path.join(CSV_DIRECTORY, temp))
+            print('No more datasets')
 
 #Converts to float without crashing on error
 def is_float(input):
@@ -460,15 +514,15 @@ class DataSetRefreshButton(Button):
     back_color = prop.ColorProperty([0.5, 0.5, 0.5, 1.0])
 
     text_color = prop.ColorProperty([1.0, 1.0, 1.0, 1.0])
-    btn_height = prop.NumericProperty(20)
+    btn_height = prop.NumericProperty(25)
     #btn_width = prop.NumericProperty(70)
     side_width_buffer = prop.NumericProperty(20)
 
     container = prop.ObjectProperty(None) #container the buttons are added to
     def add_buttons(self):
         datasetPath = "resources/csv_data_collection"
-        files = listdir(datasetPath)
-        #files = next(os.walk(datasetPath))[1]
+        #folders_only = listdir(datasetPath)
+        files = next(os.walk(datasetPath))[1]
         print(files)
         for f in files:
             tempButton = ListButton()
