@@ -618,7 +618,7 @@ class Main_Window(Screen):
 
     def openManual(self):
         print(">> Opening Manual")
-        os.startfile("resources/manuals/user_manual.pdf")
+        os.startfile(os.path.normpath("resources/manuals/user_manual.pdf"))
 
     def deleteCurrent(self):
         os.remove("resources/csv")
