@@ -514,9 +514,10 @@ MigrationBackup/
 .DS_Store
 libs
 
-resources/csv_data_collection/test
-resources/csv_data_collection/test_dates
+resources/csv_data_collection/*
+
+resources/graph_images/*
+!resources/graph_images/no_dataset.png
+!resources/graph_images/items_missing.png
 
 cache/
-resources/graph_images/bar.png
-resources/graph_images/foo.png
