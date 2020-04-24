@@ -72,6 +72,7 @@ def pre_init_screen():
 class MainApp(App):
     def build(self):
         self.title = "IGLOO"
+
         b = Builder.load_file("icesat2/gui/kv/gui.kv")
 
         #Clock.schedule_interval(self.update, 1)
@@ -768,4 +769,6 @@ class SetGraph(Widget):
 
 
 def main():
+    if not path.exists(DATA_DIRECTORY):
+        os.mkdir(DATA_DIRECTORY)
     MainApp().run()
