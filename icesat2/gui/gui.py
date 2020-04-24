@@ -42,10 +42,10 @@ libbytiff.TIFFSetWarningHandler.argtypes = [ctypes.c_void_p]
 libbytiff.TIFFSetWarningHandler.restype = ctypes.c_void_p
 libbytiff.TIFFSetWarningHandler(None)
 
-#just dataset name - i.e. "Untitled"
+# just dataset name - i.e. "Untitled"
 current_dataset = ""
 
-#full path - i.e. "resources/graph_images/no_dataset.png"
+# full path - i.e. "resources/graph_images/no_dataset.png"
 selected_graph = ""
 
 MONTH_DAY = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
@@ -109,15 +109,21 @@ class FileDropDown(DropDown):
                 error_message="No datasets to delete.").open()
         elif current_dataset == "":
             e = ErrorPopup(
-                error_message="No dataset selected to delete."\
-                    "\nRefresh the data list to select a new one.").open()
+                error_message="No dataset selected to delete."
+                "\nRefresh the data list to select a new one.").open()
         else:
             p = DeletePopup().open()
 
 
-
 class EditDropDown(DropDown):
     font_size = prop.NumericProperty(14)
+
+    def show_preferences(self):
+        # TODO
+        e = ErrorPopup(
+            error_message="To do"). open()
+
+        # show preferences popup that pulls from config file
 
 
 class WindowDropDown(DropDown):
@@ -188,7 +194,8 @@ class ListButton(Button):
         current_dataset = project_name
 
         # adamg - god this is awful but it works
-        graph_widget = self.parent.parent.parent.parent.parent.parent.children[0].children[1].children[1].children[1]
+        graph_widget = self.parent.parent.parent.parent.parent.parent.children[
+            0].children[1].children[1].children[1]
 
         # check the data set that it has everything completed for a drawing
         if (not path.exists(f"{DATA_DIRECTORY}/" + project_name + "/change_in_height.csv") or not path.exists("{DATA_DIRECTORY}/" + project_name + "/object_info.csv")):
@@ -199,7 +206,6 @@ class ListButton(Button):
             graph_widget.set_image("error")
 
             return
-
 
         #graph_widget = self.parent.parent.parent.parent.parent.parent.children[0].children[1].children[1].children[1]
 
@@ -265,10 +271,10 @@ class Graph_Widget(Image):
         """
         Author: adamg and jacobb
         """
-        #print(selected_graph)
+        # print(selected_graph)
         if self.source != selected_graph:
             self.source = selected_graph
-            #despite it being a huge edge case, we do not want it to crash here
+            # despite it being a huge edge case, we do not want it to crash here
             if path.exists(selected_graph):
                 self.reload()
 
@@ -535,26 +541,29 @@ class CoordinatePopup(Popup):
 
 class ErrorPopup(Popup):
     error_message = prop.StringProperty()
+
     def __init__(self, *, error_message, **kwargs):
         super(ErrorPopup, self).__init__(**kwargs)
         self.error_message = error_message
+
 
 class ProjectSavePopup(Popup):
     def save(self, new_name):
         #os.rename(src, dst)
         global current_dataset, selected_graph
 
-        #rename image
+        # rename image
         os.rename(f"resources/graph_images/{current_dataset}.png",
                   f"resources/graph_images/{new_name}.png")
 
         selected_graph = f"resources/graph_images/{new_name}.png"
 
-        #rename project
+        # rename project
         os.rename(f"{DATA_DIRECTORY}/{current_dataset}",
                   f"{DATA_DIRECTORY}/{new_name}")
 
         current_dataset = new_name
+
 
 class ImageSavePopup(Popup):
     # needs to be converted for dynamic naming system of images
@@ -582,6 +591,8 @@ class DeletePopup(Popup):
         shutil.rmtree(path.join(DATA_DIRECTORY, temp))
 
 # Converts to float without crashing on error
+
+
 def is_float(input):
     try:
         float(input)

@@ -474,7 +474,7 @@ ScreenManager:
             FileDropDown:
                 id: file_dropdown
                 auto_width: False
-                width: 100
+                width: 115
 
                 TopButtonDropDownButton:
                     text: 'Save Project As'
@@ -529,7 +529,8 @@ ScreenManager:
                     text: 'Preferences'
                     size_hint_y: None
                     height: 30
-                    on_release: edit_dropdown.select('preferences')
+                    on_release: edit_dropdown.show_preferences
+                    #edit_dropdown.select('preferences')
 
             #window
             TopButton:
@@ -550,7 +551,7 @@ ScreenManager:
             WindowDropDown:
                 id: window_dropdown
                 auto_width: False
-                width: 115
+                width: 90
 
                 TopButtonDropDownButton:
                     text: 'Main View'
@@ -567,23 +568,12 @@ ScreenManager:
                     on_release: root.manager.current = 'graph'
 
                 TopButtonDropDownButton:
-                    text: 'Data Selection'
-                    size_hint_y: None
-                    height: 35
-                    on_release: window_dropdown.select('data_selection')
-
-                TopButtonDropDownButton:
-                    text: 'Data Sets'
-                    size_hint_y: None
-                    height: 35
-                    on_release: window_dropdown.select('data_sets')
-
-                TopButtonDropDownButton:
                     text: 'Map View'
                     size_hint_y: None
                     height: 35
                     on_release: window_dropdown.select('map_view')
                     on_release: root.manager.current = 'map'
+
             #Map Button
             TopButton:
                 id: map_btn
@@ -629,7 +619,7 @@ ScreenManager:
             HelpDropDown:
                 id: help_dropdown
                 auto_width: False
-                width: 200
+                width: 100
 
                 TopButtonDropDownButton:
                     text: 'Open manual'
@@ -704,6 +694,7 @@ ScreenManager:
                 pos: self.pos
                 size: self.size
         GridLayout:
+            id: main_window_top_bar
             rows: 1
             size_hint: 1, None
             height: 35
@@ -735,49 +726,41 @@ ScreenManager:
                 background_color: file_btn.back_color
                 color: file_btn.text_color
 
+
             FileDropDown:
                 id: file_dropdown
                 auto_width: False
-                width: 100
+                width: 115
 
                 TopButtonDropDownButton:
-                    text: 'New...'
+                    text: 'Save Project As'
                     size_hint_y: None
                     height: 30
-                    on_release: file_dropdown.select('new')
-                    font_size: file_dropdown.font_size
+                    on_release: file_dropdown.dismiss()
+                    on_release: file_dropdown.project_save_check()
 
                 TopButtonDropDownButton:
-                    text: 'Create'
+                    text: 'Save Image As'
                     size_hint_y: None
                     height: 30
-                    on_release: file_dropdown.select('create')
-
-                TopButtonDropDownButton:
-                    text: 'Save'
-                    size_hint_y: None
-                    height: 30
-                    on_release: file_dropdown.select('save')
-
-                TopButtonDropDownButton:
-                    text: 'Save As'
-                    size_hint_y: None
-                    height: 30
-                    on_release: file_dropdown.select('save_as')
+                    on_release: file_dropdown.dismiss()
+                    on_release: Factory.ImageSavePopup().open()
 
                 TopButtonDropDownButton:
                     text: 'Import Data'
                     size_hint_y: None
                     height: 30
-                    on_release: file_dropdown.select('import_data')
+                    on_release: file_dropdown.dismiss()
+                    on_release: Factory.CoordinatePopup().open()
 
                 TopButtonDropDownButton:
                     text: 'Delete'
                     size_hint_y: None
                     height: 30
-                    on_release: file_dropdown.select('delete')
+                    on_release: file_dropdown.dismiss()
+                    on_release: file_dropdown.project_delete_check()
 
-            #edit
+            # Edit Button
             TopButton:
                 id: edit_btn
                 text: 'Edit'
@@ -801,27 +784,9 @@ ScreenManager:
                     text: 'Preferences'
                     size_hint_y: None
                     height: 30
-                    on_release: edit_dropdown.select('preferences')
+                    on_release: edit_dropdown.show_preferences
 
-                TopButtonDropDownButton:
-                    text: 'Cut'
-                    size_hint_y: None
-                    height: 30
-                    on_release: edit_dropdown.select('cut')
-
-                TopButtonDropDownButton:
-                    text: 'Copy'
-                    size_hint_y: None
-                    height: 30
-                    on_release: edit_dropdown.select('copy')
-
-                TopButtonDropDownButton:
-                    text: 'Paste'
-                    size_hint_y: None
-                    height: 35
-                    on_release: edit_dropdown.select('paste')
-
-            #window
+            # Window Button
             TopButton:
                 id: window_btn
                 text: 'Window'
@@ -840,7 +805,7 @@ ScreenManager:
             WindowDropDown:
                 id: window_dropdown
                 auto_width: False
-                width: 115
+                width: 90
 
                 TopButtonDropDownButton:
                     text: 'Main View'
@@ -857,24 +822,13 @@ ScreenManager:
                     on_release: root.manager.current = 'graph'
 
                 TopButtonDropDownButton:
-                    text: 'Data Selection'
-                    size_hint_y: None
-                    height: 35
-                    on_release: window_dropdown.select('data_selection')
-
-                TopButtonDropDownButton:
-                    text: 'Data Sets'
-                    size_hint_y: None
-                    height: 35
-                    on_release: window_dropdown.select('data_sets')
-
-                TopButtonDropDownButton:
                     text: 'Map View'
                     size_hint_y: None
                     height: 35
                     on_release: window_dropdown.select('map_view')
                     on_release: root.manager.current = 'map'
-            # Map Button
+
+            #Map Button
             TopButton:
                 id: map_btn
                 text: 'Map'
@@ -895,11 +849,12 @@ ScreenManager:
                 width: 140
 
                 TopButtonDropDownButton:
-                    text: 'Choose coordinates'
+                    text: 'Placeholder'
                     size_hint_y: None
                     height: 35
                     on_release: map_dropdown.dismiss()
-                    on_release: Factory.CoordinatePopup().open()
+                    #on_release: Factory.CoordinatePopup().open()
+
             #help button
             TopButton:
                 id: help_btn
@@ -918,13 +873,14 @@ ScreenManager:
             HelpDropDown:
                 id: help_dropdown
                 auto_width: False
-                width: 200
+                width: 100
 
                 TopButtonDropDownButton:
-                    text: 'What would you like help with?'
+                    text: 'Open manual'
                     size_hint_y: None
                     height: 35
-                    on_release: help_dropdown.select('help')
+                    on_release: help_dropdown.dismiss()
+                    on_release: root.openManual()
 
         Graph_Widget:
             allow_stretch: True
