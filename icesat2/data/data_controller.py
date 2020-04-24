@@ -132,7 +132,8 @@ class Data:
         get_height, will subtract height at lat x at time b from height at
         lat x from time a where a and b are start and end
         """
-
+        if self.file_count == 0:
+            return
         start_file = pd.read_csv(self.path + "/"
                                  + self.valid_start_date.strftime('%Y-%m-%d')
                                  + ".csv", header=0, index_col='segment_id')

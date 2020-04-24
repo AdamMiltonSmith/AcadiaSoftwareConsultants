@@ -98,7 +98,7 @@ class FileDropDown(DropDown):
 
     def project_save_check(self):
         if current_dataset == "":
-            n = NoProjectChosenPopup().open()
+            n = ErrorPopup(error_message="There is no project to save").open()
             return
         p = ProjectSavePopup().open()
 
@@ -137,10 +137,6 @@ class DefaultButton(Button):
     btn_height = prop.NumericProperty(20)
     #btn_width = prop.NumericProperty(70)
     side_width_buffer = prop.NumericProperty(20)
-
-
-class IncorrectDatasetPopup(Popup):
-    pass
 
 
 class ListButton(Button):
@@ -184,8 +180,9 @@ class ListButton(Button):
 
         # check the data set that it has everything completed for a drawing
         if (not path.exists(f"{DATA_DIRECTORY}/" + project_name + "/change_in_height.csv") or not path.exists("{DATA_DIRECTORY}/" + project_name + "/object_info.csv")):
-            i = IncorrectDatasetPopup()
-            i.open()
+            e = ErrorPopup(error_message="The dataset is missing necessary "
+                           "files.\nThis is probably due to not completing "
+                           "the data acquisition.").open()
 
             graph_widget.set_image("error")
 
@@ -524,8 +521,11 @@ class CoordinatePopup(Popup):
         self.dismiss()
 
 
-class NoProjectChosenPopup(Popup):
-    pass
+class ErrorPopup(Popup):
+    error_message = prop.StringProperty()
+    def __init__(self, *, error_message, **kwargs):
+        super(ErrorPopup, self).__init__(**kwargs)
+        self.error_message = error_message
 
 class ProjectSavePopup(Popup):
     def save(self, new_name):

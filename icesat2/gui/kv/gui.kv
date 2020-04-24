@@ -317,30 +317,6 @@ ScreenManager:
             size: 200, 50
             pos_hint: {"x": .3, "y": 0}
 
-<NoProjectChosenPopup>:
-    id: noprojectchosenpopup
-    title: "No project chosen"
-    size: 500, 200
-    size_hint: None, None
-    FloatLayout:
-        size: root.size
-        pos: root.pos
-        orientation: "vertical"
-        Label:
-            size: 500, 115
-            size_hint: None, None
-            pos_hint: {"x": 0, "top": 1}
-            multiline: True
-            halign: 'center'
-            valign: 'middle'
-            text: """There is no project chosen to save."""
-        Button:
-            size: 60, 30
-            size_hint: None, None
-            pos_hint: {"right": 1, "y": 0}
-            text: "Ok"
-            on_release: noprojectchosenpopup.dismiss()
-
 <ProjectSavePopup>:
     id: projectsavepopup
     title: "Save Project"
@@ -425,30 +401,30 @@ ScreenManager:
                 on_release: root.delete()
                 on_release: deletepopup.dismiss()
 
-
-<IncorrectDatasetPopup>:
-    id: incorrectdatasetpopup
-    title: "Dataset incomplete"
+<ErrorPopup>:
+    id: errorpopup
+    title: "Error"
     size: 500, 200
     size_hint: None, None
+    error_message: self.error_message
     FloatLayout:
         size: root.size
         pos: root.pos
         orientation: "vertical"
         Label:
-            size: 500, 115
-            size_hint: None, None
+            height: 115
+            size_hint_y: None
             pos_hint: {"x": 0, "top": 1}
             multiline: True
             halign: 'center'
             valign: 'middle'
-            text: """The dataset is missing necessary files. \nThis is probably due to not completing the data acquisition."""
+            text: root.error_message
         Button:
             size: 60, 30
-            size_hint: None, None
-            pos_hint: {"x": 0, "y": 0}
-            text: "Cancel"
-            on_release: incorrectdatasetpopup.dismiss()
+            size_hint_y: None
+            pos_hint: {"right": 1, "y": 0}
+            text: "Ok"
+            on_release: errorpopup.dismiss()
 
 <Main_Window>:
     name: 'main'
