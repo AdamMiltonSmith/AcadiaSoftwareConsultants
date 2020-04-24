@@ -10,6 +10,8 @@ from datetime import datetime as dt
 
 from os import path
 
+from icesat2.gui.gui import ErrorPopup
+
 # csv format:
 #   segment_id, longitude, latitude, height, quality, track_id, beam, file_name
 
@@ -113,8 +115,15 @@ class Data:
                     f.write(r.text)
                     self.file_count += 1
 
-        self.valid_start_date = dt.strptime(first_file, '%Y-%m-%d')
-        self.valid_end_date = dt.strptime(last_file, '%Y-%m-%d')
+        #create metadata file
+
+        if self.file_count is not 0:
+            self.valid_start_date = dt.strptime(first_file, '%Y-%m-%d')
+            self.valid_end_date = dt.strptime(last_file, '%Y-%m-%d')
+        else:
+            self.valid_start_date = dt.strptime('1970-01-01', '%Y-%m-%d')
+            self.valid_end_date = dt.strptime('1970-01-01', '%Y-%m-%d')
+
 
         write_file = self.path + "/" + "object_info.txt"
 
@@ -125,7 +134,8 @@ class Data:
         """
         with open(write_file, "w") as f:
             f.write(self.valid_start_date.strftime('%Y-%m-%d') + ",")
-            f.write(self.valid_end_date.strftime('%Y-%m-%d'))
+            f.write(self.valid_end_date.strftime('%Y-%m-%d') + ",")
+            f.write(str(self.file_count))
 
     def get_height_diff(self):
         """
@@ -172,8 +182,10 @@ def get_metadata(project_name):
 
         metadata = {}
 
+
         metadata['start_date'] = line_split[0]
         metadata['end_date'] = line_split[1]
+        metadata['file_count'] = line_split[2]
 
         return metadata
 
@@ -183,7 +195,16 @@ def create_data(start_date, end_date, min_x, min_y, max_x, max_y, project_name=N
                 min_y=min_y, max_x=max_x, max_y=max_y, project_name = project_name)
     data.get_data()
 
-    data.get_height_diff()
+    if data.file_count == 0:
+        e = ErrorPopup(
+            error_message=f"No files generated for data comparison on project"\
+                f" {data.project_name}.\nProject deletion recommended").open()
+    elif data.file_count == 1:
+        e = ErrorPopup(
+            error_message=f"Only one file generated for project"\
+                f" {data.project_name}.\nNo data comparison possible").open()
+    else:
+        data.get_height_diff()
 
 if __name__ == "__main__":
     create_data(datetime.date(2018, 11, 13), datetime.date(2019, 3, 12),
