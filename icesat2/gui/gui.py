@@ -98,9 +98,21 @@ class FileDropDown(DropDown):
 
     def project_save_check(self):
         if current_dataset == "":
-            n = ErrorPopup(error_message="There is no project to save").open()
+            n = ErrorPopup(error_message="There is no project to save.").open()
             return
         p = ProjectSavePopup().open()
+
+    def project_delete_check(self):
+        data_sets = os.listdir(DATA_DIRECTORY)
+        if len(data_sets) == 0:
+            e = ErrorPopup(
+                error_message="No datasets to delete.").open()
+        elif current_dataset == "":
+            e = ErrorPopup(
+                error_message="No dataset selected to delete."\
+                    "\nRefresh the data list to select a new one.").open()
+        else:
+            p = DeletePopup().open()
 
 
 
@@ -562,15 +574,12 @@ class DeletePopup(Popup):
 
     def delete(self):
         #print(">> Deleting")
-        data_sets = os.listdir(DATA_DIRECTORY)
-        if self.get_dataset() == "":
-            print(">>> Nothing to delete")
-        elif len(data_sets) == 0:
-            print(">>> Nothing to delete")
-        else:
-            temp = self.get_dataset()
-            self.set_dataset("")
-            shutil.rmtree(path.join(DATA_DIRECTORY, temp))
+
+        temp = self.get_dataset()
+        self.set_dataset("")
+        global selected_graph
+        selected_graph = DEFAULT_GRAPH
+        shutil.rmtree(path.join(DATA_DIRECTORY, temp))
 
 # Converts to float without crashing on error
 def is_float(input):

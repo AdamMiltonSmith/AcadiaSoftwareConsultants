@@ -502,7 +502,8 @@ ScreenManager:
                     size_hint_y: None
                     height: 30
                     on_release: file_dropdown.dismiss()
-                    on_release: Factory.DeletePopup().open()
+                    on_release: file_dropdown.project_delete_check()
+                    #Factory.DeletePopup().open()
 
             #edit
             TopButton:
