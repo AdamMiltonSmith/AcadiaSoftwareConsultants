@@ -556,7 +556,7 @@ ScreenManager:
                     text: 'Preferences'
                     size_hint_y: None
                     height: 30
-                    on_release: edit_dropdown.show_preferences
+                    on_release: edit_dropdown.show_preferences()
                     #edit_dropdown.select('preferences')
 
             #window
@@ -579,13 +579,6 @@ ScreenManager:
                 id: window_dropdown
                 auto_width: False
                 width: 90
-
-                TopButtonDropDownButton:
-                    text: 'Main View'
-                    size_hint_y: None
-                    height: 35
-                    on_release: window_dropdown.select('reset')
-                    on_release: root.manager.current = 'main'
 
                 TopButtonDropDownButton:
                     text: 'Graph View'
@@ -619,14 +612,14 @@ ScreenManager:
             MapDropDown:
                 id: map_dropdown
                 auto_width: False
-                width: 140
+                width: 155
 
                 TopButtonDropDownButton:
-                    text: 'Test'
+                    text: 'Import data from Map'
                     size_hint_y: None
                     height: 35
                     on_release: map_dropdown.dismiss()
-                    on_release: root.test_method()
+                    on_release: root.map_selection_to_popup()
 
             #help button
             TopButton:
@@ -740,7 +733,6 @@ ScreenManager:
             file_dropdown: file_dropdown.__self__
             edit_dropdown: edit_dropdown.__self__
             window_dropdown: window_dropdown.__self__
-            map_dropdown: map_dropdown.__self__
             help_dropdown: help_dropdown.__self__
 
             canvas.before:
@@ -852,45 +844,11 @@ ScreenManager:
                     on_release: root.manager.current = 'main'
 
                 TopButtonDropDownButton:
-                    text: 'Graph View'
-                    size_hint_y: None
-                    height: 35
-                    on_release: window_dropdown.select('graph_view')
-                    on_release: root.manager.current = 'graph'
-
-                TopButtonDropDownButton:
                     text: 'Map View'
                     size_hint_y: None
                     height: 35
                     on_release: window_dropdown.select('map_view')
                     on_release: root.manager.current = 'map'
-
-            #Map Button
-            TopButton:
-                id: map_btn
-                text: 'Map'
-                on_parent: map_dropdown.dismiss()
-                on_release: map_dropdown.open(self)
-                pos_hint: {"x": 0, "top": 1}
-                size_hint: None, None
-                width: self.texture_size[0] + 2 * map_btn.side_width_buffer
-                height: map_btn.btn_height
-                background_normal: ''
-                background_color: map_btn.back_color
-                color: map_btn.text_color
-                font_size: map_btn.font_size
-
-            MapDropDown:
-                id: map_dropdown
-                auto_width: False
-                width: 140
-
-                TopButtonDropDownButton:
-                    text: 'Placeholder'
-                    size_hint_y: None
-                    height: 35
-                    on_release: map_dropdown.dismiss()
-                    #on_release: Factory.CoordinatePopup().open()
 
             #help button
             TopButton:
@@ -1028,7 +986,6 @@ ScreenManager:
                     size_hint_y: None
                     height: 30
                     on_release: edit_dropdown.show_preferences
-                    #edit_dropdown.select('preferences')
 
             #window
             TopButton:
@@ -1065,13 +1022,6 @@ ScreenManager:
                     on_release: window_dropdown.select('graph_view')
                     on_release: root.manager.current = 'graph'
 
-                TopButtonDropDownButton:
-                    text: 'Map View'
-                    size_hint_y: None
-                    height: 35
-                    on_release: window_dropdown.select('map_view')
-                    on_release: root.manager.current = 'map'
-
             #Map Button
             TopButton:
                 id: map_btn
@@ -1090,14 +1040,14 @@ ScreenManager:
             MapDropDown:
                 id: map_dropdown
                 auto_width: False
-                width: 140
+                width: 155
 
                 TopButtonDropDownButton:
-                    text: 'Test'
+                    text: 'Import data from Map'
                     size_hint_y: None
                     height: 35
                     on_release: map_dropdown.dismiss()
-                    on_release: root.test_method()
+                    on_release: root.map_selection_to_popup()
 
             #help button
             TopButton:

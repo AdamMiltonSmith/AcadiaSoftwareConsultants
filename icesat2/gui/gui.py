@@ -2,9 +2,8 @@ import ctypes
 import glob
 import os
 import shutil
-from os import listdir
+from os import listdir, path
 from os.path import isfile, join
-from os import path
 
 import kivy
 import kivy.properties as prop
@@ -117,14 +116,13 @@ class FileDropDown(DropDown):
         else:
             p = DeletePopup().open()
 
-
 class EditDropDown(DropDown):
     font_size = prop.NumericProperty(14)
 
     def show_preferences(self):
         # TODO
         e = ErrorPopup(
-            error_message="To do"). open()
+            error_message="To do:\nThis requires implementation at a later time"). open()
 
         # show preferences popup that pulls from config file
 
@@ -176,11 +174,6 @@ class ListButton(Button):
         super(ListButton, self).__init__(**kwargs)
         self.background_color = (0.5, 0.5, 0.5, 1.0)
         self.background_normal = ''
-        #self.background_down: (1, 1, 1, 1)
-        #self.height = 35
-        # self.size_hint_x = None
-        # self.width = 40
-        # self.pos_hint = {'center_x': .5}
 
     def on_release(self):
         """
@@ -200,7 +193,7 @@ class ListButton(Button):
         ).root.children[0].ids.main_window_graph_widget
 
         # check the data set that it has everything completed for a drawing
-        if (not path.exists(f"{DATA_DIRECTORY}/" + project_name + "/change_in_height.csv") or not path.exists("{DATA_DIRECTORY}/" + project_name + "/object_info.csv")):
+        if not path.exists(f"{DATA_DIRECTORY}/{project_name}/change_in_height.csv") or not path.exists(f"{DATA_DIRECTORY}/{project_name}/object_info.txt"):
             e = ErrorPopup(error_message="The dataset is missing necessary "
                            "files.\nThis is probably due to not completing "
                            "the data acquisition.").open()
@@ -250,7 +243,7 @@ class Graph_Widget(Image):
 
             return
 
-        if path.exists(selected_graph) and (selected_graph != DEFAULT_GRAPH or selected_graph != ERROR_GRAPH):
+        if path.exists(selected_graph) and (selected_graph != DEFAULT_GRAPH and selected_graph != ERROR_GRAPH):
             os.remove(selected_graph)
 
         data_path = f"{DATA_DIRECTORY}/" + set_name + "/change_in_height.csv"
@@ -574,10 +567,17 @@ class ProjectSavePopup(Popup):
 
 class ImageSavePopup(Popup):
     # needs to be converted for dynamic naming system of images
-    def save(self, path, filename):
-        print(">> Copying")
-        newName = path + "/" + filename + ".png"
-        shutil.copy('resources/graph_images/foo.png', newName)
+    def save(self, file_path, file_name):
+        new_name = file_path + "/" + file_name + ".png"
+        if path.exists(new_name):
+            e = ErrorPopup(error_message = "File already exists.")
+            return
+
+        if selected_graph == DEFAULT_GRAPH or selected_graph == ERROR_GRAPH:
+            e = ErrorPopup(error_message="No project to save.")
+            return
+        else:
+            shutil.copy(selected_graph, new_name)
 
 
 class DeletePopup(Popup):
@@ -834,7 +834,7 @@ class Main_Window(Screen):
     def deleteCurrent(self):
         os.remove("resources/csv")
 
-    def test_method(self):
+    def map_selection_to_popup(self):
         coords = self.ids.map_widget.pull_data()
 
         if coords == None:
@@ -858,13 +858,7 @@ class Graph_Window(Screen):
 
 
 class Map_Window(Screen):
-
-    minX = "null"
-    maxX = "null"
-    minY = "null"
-    maxY = "null"
-
-    def test_method(self):
+    def map_selection_to_popup(self):
         coords = self.ids.map_widget.pull_data()
 
         if coords == None:
@@ -888,13 +882,6 @@ class Map_Window(Screen):
         self.ids.min_y_label.text = "Minimum Y: " + str(round(coords[1], 5))
         self.ids.max_x_label.text = "Maximum X: " + str(round(coords[2], 5))
         self.ids.max_y_label.text = "Maximum Y: " + str(round(coords[3], 5))
-
-
-    # def process_input(self, coord, start_date, end_date):
-    #     from icesat2.data.data_controller import create_data
-
-    #     create_data(start_date=start_date, end_date=end_date, min_x=coord[0],
-    #                 min_y=coord[2], max_x=coord[1], max_y=coord[3])
 
 
 class Map(MapView):

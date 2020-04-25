@@ -181,12 +181,12 @@ def get_metadata(project_name):
 
         metadata['start_date'] = line_split[0]
         metadata['end_date'] = line_split[1]
-        metadata['file_count'] = line_split[2]
+        #metadata['file_count'] = line_split[2]
 
         return metadata
 
 
-def create_project_dir(project_n):
+def create_project_dir(project_n, start_date, end_date):
     project_name = project_n or DEFAULT_PROJECT_NAME
 
     # looks for the first directory under DEFAULT_PROJECT_NAME (currently
@@ -210,19 +210,36 @@ def create_project_dir(project_n):
 
     if not path.exists(p):
         os.makedirs(p)
+
+    write_file = p + "/" + "object_info.txt"
+
+    """
+    This chunk of code will save needed object info in plain text
+    This will help with allowing front-end interfaces fetch data objects
+    Hopefully serialize in the future
+    """
+    with open(write_file, "w") as f:
+        f.write(f"{start_date},")
+        f.write(f"{end_date},")
+
     return project_name
 
 
-def compile_diff_data(*data_objs):
+def compile_diff_data(data_objs, project_name):
     # write function to compile changes in height by latitude
-    pass
+    dataframes = []
+    for i in data_objs:
+        dataframes.append(pd.read_csv(i.path + "/change_in_height.csv", header=0))
 
+    result = pd.concat(dataframes)
+
+    result.to_csv(DATA_DIR + "/" + project_name + "/" + 'change_in_height.csv')
 
 def create_data(start_date, end_date, min_x, min_y, max_x, max_y, project_name=None):
     with open('resources/data_tracks.json') as f:
         d = json.load(f)
 
-    new_project_name = create_project_dir(project_name)
+    new_project_name = create_project_dir(project_name, start_date, end_date)
 
     data_vars = []
 
@@ -241,8 +258,9 @@ def create_data(start_date, end_date, min_x, min_y, max_x, max_y, project_name=N
         e = ErrorPopup(error_message=f"No files generated for data comparison on project"
                        f" {data.project_name}.\nProject deletion recommended").open()
     else:
-        compile_diff_data(data_vars)
-        n = NotificationPopup(message = f"Project successfully created with name {self.project_name}").open()
+        compile_diff_data(data_vars, new_project_name)
+        n = NotificationPopup(
+            message=f"Project successfully created with name {new_project_name}").open()
 
 
 if __name__ == "__main__":
