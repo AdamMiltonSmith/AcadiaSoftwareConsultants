@@ -2,31 +2,34 @@ import csv
 import glob
 import os
 
-
 import kivy
 import matplotlib.pyplot as plt
-from kivy.core.window import Window
+#from kivy.core.window import Window
 #from kivy.garden.graph import Graph, MeshLinePlot
 #from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
-#from kivy.properties import ObjectProperty
-from kivy.uix.widget import Widget
+import pandas
 
+class Graph:
+    def __init__(self, data_file: str, image_file: str, start_date, end_date):
+        data = pandas.read_csv(data_file)
+        self.output_image = image_file
 
-# Reads from CSV file and adds them to a list csvInput
-def read_data(file_name: str) -> list:
-    with open(file_name) as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
-        csv_input = []
-        for row in csv_reader:
-            for element in row:
-                csv_input.append(int(element))
-        return csv_input
+        self.plot_graph((data['latitude'].tolist(),
+                    data['h_li_diff'].tolist()))
+        self.start_date = start_date
+        self.end_date = end_date
 
 # Plots the elements read from csvInput
-def plot_graph(csv_input: list, file_name: str) -> plt.plot:
-    plt.plot(csv_input)
-    plt.title(file_name)
-    plt.ylabel('Y Axis')
-    plt.xlabel('X Axis')
-    plt.savefig('resources\\graph_images\\' + file_name, dpi = 100)
-    plt.close()
+    def plot_graph(self, csv_input: list) -> plt.plot:
+        plt.plot(csv_input[0], csv_input[1])
+        plt.title(self.output_image + "({start_date}-{end_date}")
+        plt.ylabel('Elevation (Meters)')
+        plt.xlabel('Latitude (Degrees)')
+        plt.savefig('resources/graph_images/' + self.output_image, dpi=300)
+        plt.close()
+
+def create_graph(input_file: str, output_file: str, start_date, end_date) -> Graph:
+    return Graph(input_file, output_file, start_date, end_date)
+
+if __name__ == "__main__":
+    Graph("resources/csv_data_collection/test/change_in_height.csv", 'foo.png', '2018-02-12', '2019-02-12')

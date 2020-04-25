@@ -52,7 +52,7 @@ ScreenManager:
             size_hint: None, None
             pos_hint: {"x": .575, "top": .9}
         CoordinateTextInput:
-            id: bottomleft
+            id: topright
             text: "Format xx.xx"
             multiline: False
             coord_dir: "+e/w"
@@ -67,6 +67,7 @@ ScreenManager:
             size_hint: None, None
             pos_hint: {"x": 0, "top": .7}
         CoordinateTextInput:
+            id: bottomleft
             text: "Format xx.xx"
             multiline: False
             coord_dir: "-n/s"
@@ -81,6 +82,7 @@ ScreenManager:
             size_hint: None, None
             pos_hint: {"x": .575, "top": .7}
         CoordinateTextInput:
+            id: bottomright
             text: "Format xx.xx"
             multiline: False
             coord_dir: "+n/s"
@@ -162,7 +164,9 @@ ScreenManager:
             pos_hint: {"x": .075, "top": .3}
             font_size: 11
             on_parent: start_date_day_dd.dismiss()
-            on_release: start_date_day_dd.create_buttons(start_date_month_button.text, start_date_year_button.text)
+            on_release:
+                start_date_day_dd.create_buttons(start_date_month_button.text, \
+                start_date_year_button.text)
             on_release: start_date_day_dd.open(self)
             size: 30, 30
             background_normal: ''
@@ -315,9 +319,37 @@ ScreenManager:
             size: 200, 50
             pos_hint: {"x": .3, "y": 0}
 
+<ProjectSavePopup>:
+    id: projectsavepopup
+    title: "Save Project"
+    size: 500, 400
+    size_hint: None, None
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        Label:
+            text: "Enter name of new project below"
+        TextInput:
+            id: text_input
+            size_hint_y: None
+            height: 30
+            multiline: False
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: projectsavepopup.dismiss()
 
-<SavePopup>:
-    id: savepopup
+            Button:
+                text: "Save"
+                on_release: root.save(text_input.text)
+                on_release: projectsavepopup.dismiss()
+
+
+<ImageSavePopup>:
+    id: imagesavepopup
     title: "Save Image"
     size: 500, 400
     size_hint: None, None
@@ -340,12 +372,12 @@ ScreenManager:
             height: 30
             Button:
                 text: "Cancel"
-                on_release: savepopup.dismiss()
+                on_release: imagesavepopup.dismiss()
 
             Button:
                 text: "Save"
                 on_release: root.save(filechooser.path, text_input.text)
-                on_release: savepopup.dismiss()
+                on_release: imagesavepopup.dismiss()
 
 <DeletePopup>:
     id: deletepopup
@@ -357,7 +389,8 @@ ScreenManager:
         pos: root.pos
         orientation: "vertical"
         Label:
-            text: "Are you sure you want to delete the current data set? This cannot be undone."
+            multiline: True
+            text: """Are you sure you want to delete the current data set? \nThis cannot be undone."""
         BoxLayout:
             size_hint_y: None
             height: 30
@@ -370,7 +403,55 @@ ScreenManager:
                 on_release: root.delete()
                 on_release: deletepopup.dismiss()
 
+<ErrorPopup>:
+    id: errorpopup
+    title: "Error"
+    size: 500, 200
+    size_hint: None, None
+    error_message: self.error_message
+    FloatLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        Label:
+            height: 115
+            size_hint_y: None
+            pos_hint: {"x": 0, "top": 1}
+            multiline: True
+            halign: 'center'
+            valign: 'middle'
+            text: root.error_message
+        Button:
+            size: 60, 30
+            size_hint_y: None
+            pos_hint: {"right": 1, "y": 0}
+            text: "Ok"
+            on_release: errorpopup.dismiss()
 
+<NotificationPopup>:
+    id: notificationpopup
+    title: "Error"
+    size: 500, 200
+    size_hint: None, None
+    message: self.message
+    FloatLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        Label:
+            height: 115
+            size_hint_y: None
+            pos_hint: {"x": 0, "top": 1}
+            multiline: True
+            halign: 'center'
+            valign: 'middle'
+            text: root.message
+        Button:
+            size: 60, 30
+            size_hint_y: None
+            pos_hint: {"right": 1, "y": 0}
+            text: "Ok"
+            on_release: notificationpopup.dismiss()
 
 <Main_Window>:
     name: 'main'
@@ -420,47 +501,36 @@ ScreenManager:
             FileDropDown:
                 id: file_dropdown
                 auto_width: False
-                width: 100
+                width: 115
 
                 TopButtonDropDownButton:
-                    text: 'New...'
+                    text: 'Save Project As'
                     size_hint_y: None
                     height: 30
-                    on_release: file_dropdown.select('new')
-                    font_size: file_dropdown.font_size
-
-                TopButtonDropDownButton:
-                    text: 'Create'
-                    size_hint_y: None
-                    height: 30
-                    on_release: file_dropdown.select('create')
-
-                TopButtonDropDownButton:
-                    text: 'Save'
-                    size_hint_y: None
-                    height: 30
-                    on_release: file_dropdown.select('save')
-
-                TopButtonDropDownButton:
-                    text: 'Save As'
-                    size_hint_y: None
-                    height: 30
-                    #on_release: file_dropdown.select('save_as')
                     on_release: file_dropdown.dismiss()
-                    on_release: Factory.SavePopup().open()
+                    on_release: file_dropdown.project_save_check()
+
+                TopButtonDropDownButton:
+                    text: 'Save Image As'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.dismiss()
+                    on_release: Factory.ImageSavePopup().open()
 
                 TopButtonDropDownButton:
                     text: 'Import Data'
                     size_hint_y: None
                     height: 30
-                    on_release: file_dropdown.select('import_data')
+                    on_release: file_dropdown.dismiss()
+                    on_release: Factory.CoordinatePopup().open()
 
                 TopButtonDropDownButton:
                     text: 'Delete'
                     size_hint_y: None
                     height: 30
                     on_release: file_dropdown.dismiss()
-                    on_release: Factory.DeletePopup().open()
+                    on_release: file_dropdown.project_delete_check()
+                    #Factory.DeletePopup().open()
 
             #edit
             TopButton:
@@ -486,25 +556,8 @@ ScreenManager:
                     text: 'Preferences'
                     size_hint_y: None
                     height: 30
-                    on_release: edit_dropdown.select('preferences')
-
-                TopButtonDropDownButton:
-                    text: 'Cut'
-                    size_hint_y: None
-                    height: 30
-                    on_release: edit_dropdown.select('cut')
-
-                TopButtonDropDownButton:
-                    text: 'Copy'
-                    size_hint_y: None
-                    height: 30
-                    on_release: edit_dropdown.select('copy')
-
-                TopButtonDropDownButton:
-                    text: 'Paste'
-                    size_hint_y: None
-                    height: 35
-                    on_release: edit_dropdown.select('paste')
+                    on_release: edit_dropdown.show_preferences
+                    #edit_dropdown.select('preferences')
 
             #window
             TopButton:
@@ -525,7 +578,7 @@ ScreenManager:
             WindowDropDown:
                 id: window_dropdown
                 auto_width: False
-                width: 115
+                width: 90
 
                 TopButtonDropDownButton:
                     text: 'Main View'
@@ -542,23 +595,12 @@ ScreenManager:
                     on_release: root.manager.current = 'graph'
 
                 TopButtonDropDownButton:
-                    text: 'Data Selection'
-                    size_hint_y: None
-                    height: 35
-                    on_release: window_dropdown.select('data_selection')
-
-                TopButtonDropDownButton:
-                    text: 'Data Sets'
-                    size_hint_y: None
-                    height: 35
-                    on_release: window_dropdown.select('data_sets')
-
-                TopButtonDropDownButton:
                     text: 'Map View'
                     size_hint_y: None
                     height: 35
                     on_release: window_dropdown.select('map_view')
                     on_release: root.manager.current = 'map'
+
             #Map Button
             TopButton:
                 id: map_btn
@@ -580,11 +622,12 @@ ScreenManager:
                 width: 140
 
                 TopButtonDropDownButton:
-                    text: 'Choose coordinates'
+                    text: 'Test'
                     size_hint_y: None
                     height: 35
                     on_release: map_dropdown.dismiss()
-                    on_release: Factory.CoordinatePopup().open()
+                    on_release: root.test_method()
+
             #help button
             TopButton:
                 id: help_btn
@@ -603,13 +646,12 @@ ScreenManager:
             HelpDropDown:
                 id: help_dropdown
                 auto_width: False
-                width: 200
+                width: 100
 
                 TopButtonDropDownButton:
-                    text: 'What would you like help with?'
+                    text: 'Open manual'
                     size_hint_y: None
                     height: 35
-                    on_release: help_dropdown.select('help')
                     on_release: help_dropdown.dismiss()
                     on_release: root.openManual()
 
@@ -625,9 +667,19 @@ ScreenManager:
                     sizable_from: 'bottom'
                     strip_size: graph_splitter.border_size
                     Graph_Widget:
-                Label:
-                    text: 'Map'
-                    color: (0.0,0.0,0.0,1.0)
+                        id: main_window_graph_widget
+                Map_Widget:
+                    id: map_widget
+                    allow_stretch: True
+                    on_touch_down: self.on_touch_down(args[1])
+                    on_touch_move: self.on_touch_move(args[1])
+                    source: 'resources/map_images/ice_field_map3.TIF'
+                    canvas:
+                        Color:
+                            rgba: 1, 0, 0, .5
+                        Rectangle:
+                            pos: self.rect_pos
+                            size: self.rect_size
             WindowSplitter:
                 id: scroll_splitter
                 sizable_from: 'left'
@@ -636,16 +688,17 @@ ScreenManager:
                 BoxLayout:
                     id: bl
                     orientation: 'vertical'
-                    padding: 50, 40
+                    padding: '125dp', 25
                     row_default_height: '48dp'
                     row_force_default: True
-                    spacing: 10, 10
+                    spacing: 0, 40
                     DataSetRefreshButton:
                         id: btn_refresh
                         container: layout_content
                         text: 'Refresh List'
-                        size_hint_y: None
-                        #width: self.texture_size[0] + 2 * btn_refresh.side_width_buffer
+                        size_hint: None, None
+                        pos_hint: {'center_x': .5}
+                        width: self.texture_size[0] + 2 * btn_refresh.side_width_buffer
                         height: btn_refresh.btn_height
                         background_normal: ''
                         background_color: btn_refresh.back_color
@@ -654,18 +707,17 @@ ScreenManager:
                         on_release:
                             self.remove_buttons()
                             self.add_buttons()
-                            #app.assign(self)
 
                     ScrollView:
-                        size: self.size
+                        size: root.size
                         GridLayout:
                             id: layout_content
                             size_hint_y: None
                             cols: 1
-                            row_default_height: '20dp'
+                            row_default_height: '40dp'
                             row_force_default: True
-                            spacing: 0, 5
-                            padding: 0, 0
+                            spacing: 0, 20
+                            padding: 0, 40
                             height: self.minimum_height
 
 <Graph_Window>:
@@ -679,6 +731,7 @@ ScreenManager:
                 pos: self.pos
                 size: self.size
         GridLayout:
+            id: main_window_top_bar
             rows: 1
             size_hint: 1, None
             height: 35
@@ -710,47 +763,244 @@ ScreenManager:
                 background_color: file_btn.back_color
                 color: file_btn.text_color
 
+
             FileDropDown:
                 id: file_dropdown
                 auto_width: False
-                width: 100
+                width: 115
 
                 TopButtonDropDownButton:
-                    text: 'New...'
+                    text: 'Save Project As'
                     size_hint_y: None
                     height: 30
-                    on_release: file_dropdown.select('new')
-                    font_size: file_dropdown.font_size
+                    on_release: file_dropdown.dismiss()
+                    on_release: file_dropdown.project_save_check()
 
                 TopButtonDropDownButton:
-                    text: 'Create'
+                    text: 'Save Image As'
                     size_hint_y: None
                     height: 30
-                    on_release: file_dropdown.select('create')
-
-                TopButtonDropDownButton:
-                    text: 'Save'
-                    size_hint_y: None
-                    height: 30
-                    on_release: file_dropdown.select('save')
-
-                TopButtonDropDownButton:
-                    text: 'Save As'
-                    size_hint_y: None
-                    height: 30
-                    on_release: file_dropdown.select('save_as')
+                    on_release: file_dropdown.dismiss()
+                    on_release: Factory.ImageSavePopup().open()
 
                 TopButtonDropDownButton:
                     text: 'Import Data'
                     size_hint_y: None
                     height: 30
-                    on_release: file_dropdown.select('import_data')
+                    on_release: file_dropdown.dismiss()
+                    on_release: Factory.CoordinatePopup().open()
 
                 TopButtonDropDownButton:
                     text: 'Delete'
                     size_hint_y: None
                     height: 30
-                    on_release: file_dropdown.select('delete')
+                    on_release: file_dropdown.dismiss()
+                    on_release: file_dropdown.project_delete_check()
+
+            # Edit Button
+            TopButton:
+                id: edit_btn
+                text: 'Edit'
+                on_parent: edit_dropdown.dismiss()
+                on_release: edit_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * edit_btn.side_width_buffer
+                height: edit_btn.btn_height
+                background_normal: ''
+                background_color: edit_btn.back_color
+                color: edit_btn.text_color
+                font_size: edit_btn.font_size
+
+            EditDropDown:
+                id: edit_dropdown
+                auto_width: False
+                width: 100
+
+                TopButtonDropDownButton:
+                    text: 'Preferences'
+                    size_hint_y: None
+                    height: 30
+                    on_release: edit_dropdown.show_preferences
+
+            # Window Button
+            TopButton:
+                id: window_btn
+                text: 'Window'
+                on_parent: window_dropdown.dismiss()
+                on_release: window_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * window_btn.side_width_buffer
+                height: window_btn.btn_height
+                background_normal: ''
+                background_color: window_btn.back_color
+                color: window_btn.text_color
+                font_size: window_btn.font_size
+
+
+            WindowDropDown:
+                id: window_dropdown
+                auto_width: False
+                width: 90
+
+                TopButtonDropDownButton:
+                    text: 'Main View'
+                    size_hint_y: None
+                    height: 35
+                    on_release: window_dropdown.select('reset')
+                    on_release: root.manager.current = 'main'
+
+                TopButtonDropDownButton:
+                    text: 'Graph View'
+                    size_hint_y: None
+                    height: 35
+                    on_release: window_dropdown.select('graph_view')
+                    on_release: root.manager.current = 'graph'
+
+                TopButtonDropDownButton:
+                    text: 'Map View'
+                    size_hint_y: None
+                    height: 35
+                    on_release: window_dropdown.select('map_view')
+                    on_release: root.manager.current = 'map'
+
+            #Map Button
+            TopButton:
+                id: map_btn
+                text: 'Map'
+                on_parent: map_dropdown.dismiss()
+                on_release: map_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * map_btn.side_width_buffer
+                height: map_btn.btn_height
+                background_normal: ''
+                background_color: map_btn.back_color
+                color: map_btn.text_color
+                font_size: map_btn.font_size
+
+            MapDropDown:
+                id: map_dropdown
+                auto_width: False
+                width: 140
+
+                TopButtonDropDownButton:
+                    text: 'Placeholder'
+                    size_hint_y: None
+                    height: 35
+                    on_release: map_dropdown.dismiss()
+                    #on_release: Factory.CoordinatePopup().open()
+
+            #help button
+            TopButton:
+                id: help_btn
+                text: 'Help'
+                on_parent: help_dropdown.dismiss()
+                on_release: help_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * help_btn.side_width_buffer
+                height: help_btn.btn_height
+                background_normal: ''
+                background_color: help_btn.back_color
+                color: help_btn.text_color
+                font_size: help_btn.font_size
+
+            HelpDropDown:
+                id: help_dropdown
+                auto_width: False
+                width: 100
+
+                TopButtonDropDownButton:
+                    text: 'Open manual'
+                    size_hint_y: None
+                    height: 35
+                    on_release: help_dropdown.dismiss()
+                    on_release: root.openManual()
+
+        Graph_Widget:
+            allow_stretch: True
+
+<Map_Window>:
+    name: 'map'
+    id: map_window
+    BoxLayout:
+        id: map_layout
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: .99,.99,.99,1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        GridLayout:
+            id: main_window_top_bar
+            rows: 1
+            size_hint: 1, None
+            height: 35
+            pos_hint: {"x": 0, "top": 1}
+
+            file_dropdown: file_dropdown.__self__
+            edit_dropdown: edit_dropdown.__self__
+            window_dropdown: window_dropdown.__self__
+            map_dropdown: map_dropdown.__self__
+            help_dropdown: help_dropdown.__self__
+
+            canvas.before:
+                Color:
+                    rgba: 0.9, 0.9, 0.9, 1.0
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            #file
+            TopButton:
+                id: file_btn
+                text: 'File'
+                on_parent: file_dropdown.dismiss()
+                on_release: file_dropdown.open(self)
+                pos_hint: {"x": 0, "top": 1}
+                size_hint: None, None
+                width: self.texture_size[0] + 2 * file_btn.side_width_buffer
+                height: file_btn.btn_height
+                background_normal: ''
+                background_color: file_btn.back_color
+                color: file_btn.text_color
+
+
+            FileDropDown:
+                id: file_dropdown
+                auto_width: False
+                width: 115
+
+                TopButtonDropDownButton:
+                    text: 'Save Project As'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.dismiss()
+                    on_release: file_dropdown.project_save_check()
+
+                TopButtonDropDownButton:
+                    text: 'Save Image As'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.dismiss()
+                    on_release: Factory.ImageSavePopup().open()
+
+                TopButtonDropDownButton:
+                    text: 'Import Data'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.dismiss()
+                    on_release: Factory.CoordinatePopup().open()
+
+                TopButtonDropDownButton:
+                    text: 'Delete'
+                    size_hint_y: None
+                    height: 30
+                    on_release: file_dropdown.dismiss()
+                    on_release: file_dropdown.project_delete_check()
+                    #Factory.DeletePopup().open()
 
             #edit
             TopButton:
@@ -776,25 +1026,8 @@ ScreenManager:
                     text: 'Preferences'
                     size_hint_y: None
                     height: 30
-                    on_release: edit_dropdown.select('preferences')
-
-                TopButtonDropDownButton:
-                    text: 'Cut'
-                    size_hint_y: None
-                    height: 30
-                    on_release: edit_dropdown.select('cut')
-
-                TopButtonDropDownButton:
-                    text: 'Copy'
-                    size_hint_y: None
-                    height: 30
-                    on_release: edit_dropdown.select('copy')
-
-                TopButtonDropDownButton:
-                    text: 'Paste'
-                    size_hint_y: None
-                    height: 35
-                    on_release: edit_dropdown.select('paste')
+                    on_release: edit_dropdown.show_preferences
+                    #edit_dropdown.select('preferences')
 
             #window
             TopButton:
@@ -815,7 +1048,7 @@ ScreenManager:
             WindowDropDown:
                 id: window_dropdown
                 auto_width: False
-                width: 115
+                width: 90
 
                 TopButtonDropDownButton:
                     text: 'Main View'
@@ -832,24 +1065,13 @@ ScreenManager:
                     on_release: root.manager.current = 'graph'
 
                 TopButtonDropDownButton:
-                    text: 'Data Selection'
-                    size_hint_y: None
-                    height: 35
-                    on_release: window_dropdown.select('data_selection')
-
-                TopButtonDropDownButton:
-                    text: 'Data Sets'
-                    size_hint_y: None
-                    height: 35
-                    on_release: window_dropdown.select('data_sets')
-
-                TopButtonDropDownButton:
                     text: 'Map View'
                     size_hint_y: None
                     height: 35
                     on_release: window_dropdown.select('map_view')
                     on_release: root.manager.current = 'map'
-            # Map Button
+
+            #Map Button
             TopButton:
                 id: map_btn
                 text: 'Map'
@@ -870,11 +1092,12 @@ ScreenManager:
                 width: 140
 
                 TopButtonDropDownButton:
-                    text: 'Choose coordinates'
+                    text: 'Test'
                     size_hint_y: None
                     height: 35
                     on_release: map_dropdown.dismiss()
-                    on_release: Factory.CoordinatePopup().open()
+                    on_release: root.test_method()
+
             #help button
             TopButton:
                 id: help_btn
@@ -893,30 +1116,26 @@ ScreenManager:
             HelpDropDown:
                 id: help_dropdown
                 auto_width: False
-                width: 200
+                width: 100
 
                 TopButtonDropDownButton:
-                    text: 'What would you like help with?'
+                    text: 'Open manual'
                     size_hint_y: None
                     height: 35
-                    on_release: help_dropdown.select('help')
+                    on_release: help_dropdown.dismiss()
+                    on_release: root.openManual()
+        Map_Widget:
+            id: map_widget
+            allow_stretch: True
+            on_touch_down: self.on_touch_down(args[1])
+            on_touch_move: self.on_touch_move(args[1])
+            source: 'resources/map_images/ice_field_map3.TIF'
+            canvas:
+                Color:
+                    rgba: 1, 0, 0, .5
+                Rectangle:
+                    pos: self.rect_pos
+                    size: self.rect_size
 
-        Graph_Widget:
-
-
-<Map_Window>:
-    name: 'map'
-    id: map_layout
-    #on_enter: self.create_map()
-    BoxLayout:
-        orientation: 'vertical'
-        canvas.before:
-            Color:
-                rgba: .99,.99,.99,1
-        Label:
-            text: 'Fullscreen Map'
-            color: (0.0,0.0,0.0,1.0)
-        # Map:
-        #     zoom: 1
-        #     lat: 67
-        #     long: 42
+            # on_touch_down: root.on_touch_down(*args[1].pos)
+            # on_touch_move: root.on_touch_move(*args[1].pos)

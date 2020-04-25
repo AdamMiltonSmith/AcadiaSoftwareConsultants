@@ -3,97 +3,72 @@ kivy.require('1.8.1')
 
 from kivy.app import App
 from kivy.lang import Builder
+import kivy
+from kivy.app import App
+from kivy.uix.widget import Widget
+from kivy.uix.button import Button
+from kivy.graphics import Rectangle
+from kivy.graphics import Color
+from kivy.uix.boxlayout import BoxLayout
+from kivy.clock import Clock
+from kivy.uix.image import Image
+from kivy.uix.textinput import TextInput
+import ctypes
+from kivy.properties import ObjectProperty
 
-root = Builder.load_string('''
-BoxLayout:
-    orientation: 'horizontal'
-    BoxLayout:
-        orientation: 'vertical'
-        Splitter:
-            sizable_from: 'bottom'
-            Label:
-                text: 'Graph'
-        Label:
-            text: 'Map'
-    Splitter:
-        sizable_from: 'left'
-        layout_content: layout_content
-        BoxLayout:
-            id: bl
-            orientation: 'vertical'
-            padding: 50, 40
-            row_default_height: '48dp'
-            row_force_default: True
-            spacing: 10, 10
-            ScrollView:
-                size: self.size
-                GridLayout:
-                    id: layout_content
-                    size_hint_y: None
-                    cols: 1
-                    row_default_height: '20dp'
-                    row_force_default: True
-                    spacing: 0, 5
-                    padding: 0, 0
-                    height: self.minimum_height
-                    
-                    Button:
-                        text: 'Data Set a'
-                    Button:
-                        text: 'Data Set b'
-                    Button:
-                        text: 'Data Set c'
-                    Button:
-                        text: 'Data Set d'
-                    Button:
-                        text: 'Data Set e'
-                    Button:
-                        text: 'Data Set f'
-                    Button:
-                        text: 'Data Set g'
-                    Button:
-                        text: 'Data Set h'
-                    Button:
-                        text: 'Data Set i'
-                    Button:
-                        text: 'Data Set j'
-                    Button:
-                        text: 'Data Set k'
-                    Button:
-                        text: 'Data Set l'
-                    Button:
-                        text: 'Data Set m'
-                    Button:
-                        text: 'Data Set n'
-                    Button:
-                        text: 'Data Set o'
-                    Button:
-                        text: 'Data Set p'
-                    Button:
-                        text: 'Data Set q'
-                    Button:
-                        text: 'Data Set r'
-                    Button:
-                        text: 'Data Set s'
-                    Button:
-                        text: 'Data Set t'
-                    Button:
-                        text: 'Data Set u'
-                    Button:
-                        text: 'Data Set v'
-                    Button:
-                        text: 'Data Set w'
-                    Button:
-                        text: 'Data Set x'
-                    Button:
-                        text: 'Data Set y'
-                    Button:
-                        text: 'Data Set z'
-''')
+
+
+root = Builder.load_file("icesat2\\gui\\kv\\resizable.kv")
+
+class DateChooseButton(Button):
+    font_size = prop.NumericProperty(12)
+
+
+class Touch(BoxLayout):
+
+    def __init__(self, **kwargs):
+        super(Touch, self).__init__(**kwargs)
+        self.selectBox = True
+        self.orientation = 'vertical'
+        self.picture = Image(allow_stretch=True, source='resources\\map_images\\ice_field_map2.TIF')
+        #Clock.schedule_once(lambda dt: self.add_widget(self.picture), timeout=0.1)
+        self.add_widget(self.picture)
+       
+        #draw a rectangle
+        with self.canvas:
+            Color(1,0,0,.5,mode='rgba')
+            self.rect = Rectangle(pos=(0,0), size=(0,0))
+        
+
+        self.bottomBox = BoxLayout(orientation = 'horizontal')
+        self.bottomBox.height = 100
+        toggleButton = Button(text = 'Toggle Bounding Box Select')
+        textinput = TextInput(text='Hi')
+        self.bottomBox.add_widget(textinput)
+        self.bottomBox.add_widget(toggleButton)
+ 
+        self.add_widget(self.bottomBox)
+
+
+    def on_touch_down(self, touch):
+        self.rect.pos = touch.pos
+        self.rect.size = (1, 1)
+
+    def on_touch_move(self, touch):
+        self.rect.size = (touch.x - touch.ox, touch.y - touch.oy)
+    
+    
+    def set_box_pos(self,x,y):
+        self.rect.pos = (x,y)
+
+    def _on_keyboard_down(self):
+        print("keydown")
 
 class TestApp(App):
     def build(self):
         return root
+
+
 
 if __name__ == '__main__':
     TestApp().run()
