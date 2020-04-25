@@ -42,6 +42,9 @@ libbytiff.TIFFSetWarningHandler.argtypes = [ctypes.c_void_p]
 libbytiff.TIFFSetWarningHandler.restype = ctypes.c_void_p
 libbytiff.TIFFSetWarningHandler(None)
 
+"""Removes red dots when right clicking."""
+Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
+
 # just dataset name - i.e. "Untitled"
 current_dataset = ""
 
