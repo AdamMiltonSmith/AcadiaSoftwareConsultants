@@ -648,8 +648,8 @@ class Map_Widget(Image):
         self.selectBox = True
 
         # xmin,xmax,ymin,xmax of the provided image
-        self.map_xmin = -134.956389
-        self.map_xmax = -134.601389
+        self.map_xmin = -134.95
+        self.map_xmax = -133.601389
         self.map_ymin = 58.363611
         self.map_ymax = 58.989167
 
@@ -677,7 +677,7 @@ class Map_Widget(Image):
                 self.rect_size = [0, 0]
 
     def on_touch_move(self, touch):
-        print(self.rect_size)
+        #print(self.rect_size)
         if self.selectBox == True:
             # check if selection is being done outside of the actual image not just the image widget
             out_of_bounds = False
@@ -689,6 +689,8 @@ class Map_Widget(Image):
                 pass
             else:
                 self.rect_size = [touch.x - touch.ox, touch.y - touch.oy]
+
+        
 
     # set the box position and size based on xmin, xmax, ymin, ymax
     def set_box_pos(self, xmin, xmax, ymin, ymax):
@@ -857,6 +859,11 @@ class Graph_Window(Screen):
 
 class Map_Window(Screen):
 
+    minX = "null"
+    maxX = "null"
+    minY = "null"
+    maxY = "null"
+
     def test_method(self):
         coords = self.ids.map_widget.pull_data()
 
@@ -870,6 +877,21 @@ class Map_Window(Screen):
         c.ids.bottomleft.text = str(round(coords[1], 5))
         c.ids.topright.text = str(round(coords[2], 5))
         c.ids.bottomright.text = str(round(coords[3], 5))
+
+    def updateCoordsBox(self):
+        coords = self.ids.map_widget.pull_data()
+
+        if coords == None:
+            return
+        self.ids.min_x_label.text = "Minimum X: " + str(round(coords[0], 5))
+        self.ids.min_y_label.text = "Minimum Y: " + str(round(coords[1], 5))
+        self.ids.max_x_label.text = "Maximum X: " + str(round(coords[2], 5))
+        self.ids.max_y_label.text = "Maximum Y: " + str(round(coords[3], 5))
+
+
+        self.minY = str(round(coords[1], 5))
+        self.maxX = str(round(coords[2], 5))
+        self.maxY = str(round(coords[3], 5))
 
 
     # def process_input(self, coord, start_date, end_date):
