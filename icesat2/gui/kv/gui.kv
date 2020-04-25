@@ -1138,7 +1138,7 @@ ScreenManager:
                     pos: self.rect_pos
                     size: self.rect_size
         GridLayout:
-            id: main_window_top_bar
+            id: map_window_bottom_bar
             rows: 1
             size_hint: 1, None
             height: 35
@@ -1164,6 +1164,6 @@ ScreenManager:
                 color: 0,0,0,1
             Button:
                 text: "Update Coords"
-                on_release: root.updateCoordsBox()
+                on_release: root.updateCoords()
             # on_touch_down: root.on_touch_down(*args[1].pos)
             # on_touch_move: root.on_touch_move(*args[1].pos)
