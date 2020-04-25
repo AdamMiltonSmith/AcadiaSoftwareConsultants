@@ -883,6 +883,7 @@ ScreenManager:
 <Map_Window>:
     name: 'map'
     id: map_window
+
     BoxLayout:
         id: map_layout
         orientation: 'vertical'
@@ -1086,6 +1087,33 @@ ScreenManager:
                 Rectangle:
                     pos: self.rect_pos
                     size: self.rect_size
-
+        GridLayout:
+            id: map_window_bottom_bar
+            rows: 1
+            size_hint: 1, None
+            height: 35
+            pos_hint: {"x": 0, "top": 1}
+            color: 1,0,1,1
+            padding: 0
+            Label:
+                id: min_x_label
+                text: "Minimum X: null"
+                color: 0,0,0,1
+                background_color: 0,1,1,1
+            Label:
+                id: max_x_label
+                text: "Maximum X: null"
+                color: 0,0,0,1
+            Label:
+                id: min_y_label
+                text: "Minimum Y: null"
+                color: 0,0,0,1
+            Label:
+                id: max_y_label
+                text: "Maximum Y: null"
+                color: 0,0,0,1
+            Button:
+                text: "Update Coords"
+                on_release: root.updateCoords()
             # on_touch_down: root.on_touch_down(*args[1].pos)
             # on_touch_move: root.on_touch_move(*args[1].pos)
