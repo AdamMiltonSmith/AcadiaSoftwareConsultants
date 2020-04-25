@@ -193,9 +193,8 @@ class ListButton(Button):
         global current_dataset
         current_dataset = project_name
 
-        # adamg - god this is awful but it works
-        graph_widget = self.parent.parent.parent.parent.parent.parent.children[
-            0].children[1].children[1].children[1]
+        graph_widget = App.get_running_app(
+        ).root.children[0].ids.main_window_graph_widget
 
         # check the data set that it has everything completed for a drawing
         if (not path.exists(f"{DATA_DIRECTORY}/" + project_name + "/change_in_height.csv") or not path.exists("{DATA_DIRECTORY}/" + project_name + "/object_info.csv")):
@@ -206,8 +205,6 @@ class ListButton(Button):
             graph_widget.set_image("error")
 
             return
-
-        #graph_widget = self.parent.parent.parent.parent.parent.parent.children[0].children[1].children[1].children[1]
 
         graph_widget.set_image(project_name)
 
@@ -547,6 +544,13 @@ class ErrorPopup(Popup):
         self.error_message = error_message
 
 
+class NotificationPopup(Popup):
+    message = prop.StringProperty()
+
+    def __init__(self, *, message, **kwargs):
+        super(NotificationPopup, self).__init__(**kwargs)
+        self.message = message
+
 class ProjectSavePopup(Popup):
     def save(self, new_name):
         #os.rename(src, dst)
@@ -632,100 +636,60 @@ class DataSetRefreshButton(Button):
             self.container.remove_widget(child)
 
 
-class Main_Window(Screen):
-    def __init__(self, **kw):
-        super(Main_Window, self).__init__(**kw)
+class Map_Widget(Image):
+    rect_pos = prop.ListProperty([0, 0])
+    rect_size = prop.ListProperty([0, 0])
 
-    def openManual(self):
-        print(">> Opening Manual")
-        os.startfile(os.path.normpath("resources/manuals/user_manual.pdf"))
-
-    def deleteCurrent(self):
-        os.remove("resources/csv")
-
-
-class Graph_Window(Screen):
-    def __init__(self, **kw):
-        super(Graph_Window, self).__init__(**kw)
-
-# Josh - I know I need to format this to match the formatting standards
-
-
-class Map_Window(Screen):
     def __init__(self, **kwargs):
-        super(Map_Window, self).__init__(**kwargs)
+        super(Map_Widget, self).__init__(**kwargs)
         self.selectBox = True
 
-        self.orientation = 'vertical'
-
-        self.mainBox = BoxLayout(orientation='horizontal')
-        self.add_widget(self.mainBox)
-
-        self.picture = Image(allow_stretch=True,
-                             source='resources/map_images/ice_field_map3.TIF')
-        self.mainBox.add_widget(self.picture)
         # xmin,xmax,ymin,xmax of the provided image
-        self.xminMap = 134.601389
-        self.xmaxMap = 134.956389
-        self.yminMap = 58.363611
-        self.ymaxMap = 58.989167
+        self.map_xmin = -134.956389
+        self.map_xmax = -134.601389
+        self.map_ymin = 58.363611
+        self.map_ymax = 58.989167
 
-        self.xdiff = self.xmaxMap - self.xminMap
-        self.ydiff = self.ymaxMap - self.yminMap
-        # draw a rectangle
-        with self.canvas:
-            Color(1, 0, 0, .5, mode='rgba')
-            absImageX = self.picture.center_x - \
-                self.picture.norm_image_size[0] / 2.0
-            absImageY = self.picture.center_y + \
-                self.picture.norm_image_size[1] / 2.0
+        self.x_diff = self.map_xmax - self.map_xmin
+        self.y_diff = self.map_ymax - self.map_ymin
 
-            self.rect = Rectangle(pos=(300, 400), size=(50, 50))
+    def get_image_size_x(self):
+        return self.center_x + self.norm_image_size[0] / 2.0
 
-        self.buttonBox = BoxLayout(orientation='vertical', spacing=5)
-        self.mainBox.add_widget(self.buttonBox)
-        btnCurrentBox = Button(text='Box to Current Data Set')
-        btnPullData = Button(text='Pull Box Data')
-        btnReturnToMain = Button(text='Return to Main Window')
-        self.buttonBox.add_widget(btnCurrentBox)
-        self.buttonBox.add_widget(btnPullData)
-        self.buttonBox.add_widget(btnReturnToMain)
-
-    def getImageAbsX(self):
-        return self.picture.center_x - self.picture.norm_image_size[0] / 2.0
-
-    def getImageAbsY(self):
-        return self.picture.center_y + self.picture.norm_image_size[1] / 2.0
+    def get_image_size_y(self):
+        return self.center_y + self.norm_image_size[1] / 2.0
 
     def on_touch_down(self, touch):
         if self.selectBox == True:
             # check if selection is being done outside of the actual image not just the image widget
             out_of_bounds = False
-            if (touch.x < self.picture.center_x - self.picture.norm_image_size[0] / 2) or (touch.x > self.picture.center_x - self.picture.norm_image_size[0] / 2.0 + self.picture.norm_image_size[0]):
+            if (touch.x < self.center_x - self.norm_image_size[0] / 2) or (touch.x > self.center_x - self.norm_image_size[0] / 2.0 + self.norm_image_size[0]):
                 out_of_bounds = True
-            if (touch.y < self.picture.center_y - self.picture.norm_image_size[1] / 2) or (touch.y > self.picture.center_y - self.picture.norm_image_size[1] / 2.0 + self.picture.norm_image_size[1]):
+            if (touch.y < self.center_y - self.norm_image_size[1] / 2) or (touch.y > self.center_y - self.norm_image_size[1] / 2.0 + self.norm_image_size[1]):
                 out_of_bounds = True
             if out_of_bounds:
                 pass
             else:
-                self.rect.pos = touch.pos
-                self.rect.size = (0, 0)
+                self.rect_pos = touch.pos
+                self.rect_size = [0, 0]
 
     def on_touch_move(self, touch):
+        print(self.rect_size)
         if self.selectBox == True:
             # check if selection is being done outside of the actual image not just the image widget
             out_of_bounds = False
-            if (touch.x < self.picture.center_x - self.picture.norm_image_size[0] / 2) or (touch.x > self.picture.center_x - self.picture.norm_image_size[0] / 2.0 + self.picture.norm_image_size[0]):
+            if (touch.x < self.center_x - self.norm_image_size[0] / 2) or (touch.x > self.center_x - self.norm_image_size[0] / 2.0 + self.norm_image_size[0]):
                 out_of_bounds = True
-            if (touch.y < self.picture.center_y - self.picture.norm_image_size[1] / 2) or (touch.y > self.picture.center_y - self.picture.norm_image_size[1] / 2.0 + self.picture.norm_image_size[1]):
+            if (touch.y < self.center_y - self.norm_image_size[1] / 2) or (touch.y > self.center_y - self.norm_image_size[1] / 2.0 + self.norm_image_size[1]):
                 out_of_bounds = True
             if out_of_bounds:
                 pass
             else:
-                self.rect.size = (touch.x - touch.ox, touch.y - touch.oy)
+                self.rect_size = [touch.x - touch.ox, touch.y - touch.oy]
 
     # set the box position and size based on xmin, xmax, ymin, ymax
     def set_box_pos(self, xmin, xmax, ymin, ymax):
+
         bottomX = 0
         bottomY = 0
         xsize = 0
@@ -733,7 +697,7 @@ class Map_Window(Screen):
 
         # Check if coords are within range of image
         inBounds = True
-        if (xmin >= self.xminMap) and (xmax < self.xmaxMap) and (ymin >= self.yminMap) and (ymax < self.ymaxMap):
+        if (xmin >= self.map_xmin) and (xmax < self.map_xmax) and (ymin >= self.map_ymin) and (ymax < self.map_ymax):
             inBounds = True
         else:
             inBounds = False
@@ -741,35 +705,175 @@ class Map_Window(Screen):
         if inBounds == True:
             # convert actual coords of bottom left of box to relative pixels on map image
             totalPixelsX = (
-                self.picture.center_x - self.picture.norm_image_size[0] / 2.0 + self.picture.norm_image_size[0])
-            totalPixelsY = (self.picture.center_y - self.picture.norm_image_size[1] / 2.0 + self.picture.norm_image_size[1]) - (
-                self.picture.center_y - self.picture.norm_image_size[1] / 2)
-            distanceRatioX = (self.xmaxMap - xmin) / \
-                (self.xmaxMap - self.xminMap)
-            distanceRatioY = (self.ymaxMap - ymin) / \
-                (self.ymaxMap - self.yminMap)
+                self.center_x - self.norm_image_size[0] / 2.0 + self.norm_image_size[0])
+            totalPixelsY = (self.center_y - self.norm_image_size[1] / 2.0 + self.norm_image_size[1]) - (
+                self.center_y - self.norm_image_size[1] / 2)
+            distanceRatioX = (self.map_xmax - xmin) / \
+                (self.map_xmax - self.map_xmin)
+            distanceRatioY = (self.map_ymax - ymin) / \
+                (self.map_ymax - self.map_ymin)
             bottomX = totalPixelsX * distanceRatioX
             bottomY = totalPixelsY * distanceRatioY
 
             # convert xmax and ymax for size
-            distanceRatioX = (self.xmaxMap - xmax) / \
-                (self.xmaxMap - self.xminMap)
-            distanceRatioY = (self.ymaxMap - ymax) / \
-                (self.ymaxMap - self.yminMap)
+            distanceRatioX = (self.map_xmax - xmax) / \
+                (self.map_xmax - self.map_xmin)
+            distanceRatioY = (self.map_ymax - ymax) / \
+                (self.map_ymax - self.map_ymin)
             xsize = (totalPixelsX * distanceRatioX) - bottomX
             ysize = (totalPixelsY * distanceRatioY) - bottomY
 
-        self.rect.pos = (bottomX, bottomY)
-        self.rect.size = (xsize, ysize)
+        self.rect_pos = (bottomX, bottomY)
+        self.rect_size = (xsize, ysize)
 
-    def pullData(self):
-        print("Pulling data from selected region on map")
+    def pull_data(self):
+        image_size = self.norm_image_size
 
-    def process_input(self, coord, start_date, end_date):
-        from icesat2.data.data_controller import create_data
+        image_bottom_left = (
+            self.center_x - self.norm_image_size[0] / 2.0, self.center_y - self.norm_image_size[1] / 2.0)
 
-        create_data(start_date=start_date, end_date=end_date, min_x=coord[0],
-                    min_y=coord[2], max_x=coord[1], max_y=coord[3])
+        map_coordinate_diff = (self.x_diff, self.y_diff)
+
+        map_bottom_left_coords = (self.map_xmin, self.map_ymin)
+
+        bottom_left_image_pos = None
+        top_right_image_pos = None
+
+        # no selection on the map
+        if self.rect_size[0] == 0 and self.rect_size[1] == 0:
+            e = ErrorPopup(error_message = "No map selection").open()
+            return None
+
+        # one of the dimensions is 0, thus the selection has no area
+        elif self.rect_size[0] == 0 or self.rect_size[1] == 0:
+            e = ErrorPopup(error_message = "Selection has no area").open()
+            return None
+
+        #selection is left and down
+        elif self.rect_size[0] < 0 and self.rect_size[1] < 0:
+            bottom_left_image_pos = (
+                self.rect_pos[0] + self.rect_size[0],
+                self.rect_pos[1] + self.rect_size[1])
+
+            top_right_image_pos = (self.rect_pos[0], self.rect_pos[1])
+
+        # selection is right and down
+        elif self.rect_size[0] > 0 and self.rect_size[1] < 0:
+            bottom_left_image_pos = (
+                self.rect_pos[0], self.rect_pos[1] + self.rect_size[1])
+
+            top_right_image_pos = (
+                self.rect_pos[0] + self.rect_size[0], self.rect_pos[1])
+
+        # selection is left and up
+        elif self.rect_size[0] < 0 and self.rect_size[1] > 0:
+            bottom_left_image_pos = (
+                self.rect_pos[0] + self.rect_size[0], self.rect_pos[1])
+
+            top_right_image_pos = (
+                self.rect_pos[0], self.rect_pos[1] + self.rect_size[1])
+
+        # selection is right and up
+        elif self.rect_size[0] > 0 and self.rect_size[1] > 0:
+            bottom_left_image_pos = (
+                self.rect_pos[0], self.rect_pos[1])
+
+            top_right_image_pos = (
+                self.rect_pos[0] + self.rect_size[0],
+                self.rect_pos[1] + self.rect_size[1])
+
+        # scale the images to the box they are in
+
+        bottom_left_image_pos_scaled = tuple(
+            ele1 - ele2 for ele1, ele2 in zip(bottom_left_image_pos, image_bottom_left))
+
+        top_right_image_pos_scaled = tuple(
+            ele1 - ele2 for ele1, ele2 in zip(top_right_image_pos, image_bottom_left))
+        # get percent of image they are in
+
+        bottom_left_image_percent = tuple(
+            ele1 / ele2 for ele1, ele2 in zip(bottom_left_image_pos_scaled, image_size))
+
+        top_right_image_percent = tuple(
+            ele1 / ele2 for ele1, ele2 in zip(top_right_image_pos_scaled, image_size))
+
+        # get coordinate offset of map for pos
+
+        bottom_left_map_coordinate_diff = tuple(
+            ele1 * ele2 for ele1, ele2 in zip(bottom_left_image_percent, map_coordinate_diff))
+
+        top_right_map_coordinate_diff = tuple(
+            ele1 * ele2 for ele1, ele2 in zip(top_right_image_percent, map_coordinate_diff))
+
+        # add coordinate offset to map to get coordinate value
+
+        bottom_left_scaled_coordinate = tuple(
+            ele1 + ele2 for ele1, ele2 in zip(bottom_left_map_coordinate_diff, map_bottom_left_coords))
+
+        top_right_scaled_coordinate = tuple(
+            ele1 + ele2 for ele1, ele2 in zip(top_right_map_coordinate_diff, map_bottom_left_coords))
+
+        _coords = (bottom_left_scaled_coordinate, top_right_scaled_coordinate)
+        coords = [element for tupl in _coords for element in tupl]
+        return coords
+
+
+class Main_Window(Screen):
+    def __init__(self, **kw):
+        super(Main_Window, self).__init__(**kw)
+
+    def openManual(self):
+        #print(">> Opening Manual")
+        os.startfile(os.path.normpath("resources/manuals/user_manual.pdf"))
+
+    def deleteCurrent(self):
+        os.remove("resources/csv")
+
+    def test_method(self):
+        coords = self.ids.map_widget.pull_data()
+
+        if coords == None:
+            return
+
+        c = CoordinatePopup()
+        c.open()
+
+        c.ids.topleft.text = str(round(coords[0], 5))
+        c.ids.bottomleft.text = str(round(coords[1], 5))
+        c.ids.topright.text = str(round(coords[2], 5))
+        c.ids.bottomright.text = str(round(coords[3], 5))
+
+
+class Graph_Window(Screen):
+    def __init__(self, **kw):
+        super(Graph_Window, self).__init__(**kw)
+
+
+# Josh - I know I need to format this to match the formatting standards
+
+
+class Map_Window(Screen):
+
+    def test_method(self):
+        coords = self.ids.map_widget.pull_data()
+
+        if coords == None:
+            return
+
+        c = CoordinatePopup()
+        c.open()
+
+        c.ids.topleft.text = str(round(coords[0], 5))
+        c.ids.bottomleft.text = str(round(coords[1], 5))
+        c.ids.topright.text = str(round(coords[2], 5))
+        c.ids.bottomright.text = str(round(coords[3], 5))
+
+
+    # def process_input(self, coord, start_date, end_date):
+    #     from icesat2.data.data_controller import create_data
+
+    #     create_data(start_date=start_date, end_date=end_date, min_x=coord[0],
+    #                 min_y=coord[2], max_x=coord[1], max_y=coord[3])
 
 
 class Map(MapView):
