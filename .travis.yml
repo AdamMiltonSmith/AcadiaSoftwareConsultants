@@ -1,0 +1,23 @@
+matrix:
+  include:
+    - name: "PythonWindows"
+      os: windows          
+      language: shell      
+      before_install:
+        - choco install python3 --version 3.7
+        - py -m pip install --upgrade pip
+      install:
+       py -m pip install -r travisRequirements.txt
+      script: py -m pytest
+  
+    - name: "PythonUnix"
+      language: python
+      python: 3.7
+      os: linux
+      dist: xenial
+      sudo: true
+      cache: pip
+      install:
+       - pip install -r travisRequirements.txt
+      script:
+       pytest

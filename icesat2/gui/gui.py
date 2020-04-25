@@ -876,8 +876,6 @@ class Map_Window(Screen):
     #                 min_y=coord[2], max_x=coord[1], max_y=coord[3])
 
 
-class Map(MapView):
-    pass
 
 
 class ScreenManagement(ScreenManager):
