@@ -3,6 +3,8 @@ import datetime
 import re
 import pandas as pd
 import requests
+import json
+import shutil
 
 from os import listdir
 from os.path import isfile, join
@@ -10,7 +12,7 @@ from datetime import datetime as dt
 
 from os import path
 
-from icesat2.gui.gui import ErrorPopup
+from icesat2.gui.gui import ErrorPopup, NotificationPopup
 
 # csv format:
 #   segment_id, longitude, latitude, height, quality, track_id, beam, file_name
@@ -21,9 +23,12 @@ DEFAULT_PROJECT_NAME = "Untitled"
 DEFAULT_REQUEST = "segment_id,longitude,latitude,h_li,atl06_quality_summary,\
 track_id,beam,file_name\n"
 
+DATE_JSON = "resources/data_tracks.json"
+
+
 class Data:
     def __init__(self, start_date, end_date, min_x, min_y,
-                 max_x, max_y, project_name=None, day_delta=None):
+                 max_x, max_y, project_name=None, day_delta=None, *, trackId):
 
         if isinstance(start_date, datetime.date):
             # list is already in datetime.date format, leave it as it is
@@ -60,24 +65,9 @@ class Data:
 
         self.project_name = project_name or DEFAULT_PROJECT_NAME
 
-        # looks for the first directory under DEFAULT_PROJECT_NAME (currently
-        # Untitled) and adds numbers until it finds a correct directory. As
-        # users can save projects under different names this should function
-        # correctly
-        dir_found = False
-        if not path.exists(DATA_DIR + f"/{self.project_name}"):
-            pass
-        else:
-            num = 1
-            while not dir_found:
-                if not path.exists(DATA_DIR + f"/{self.project_name}{num}"):
-                    dir_found = True
-                    self.project_name = f"{self.project_name}{num}"
-                    break
-                else:
-                    num += 1
+        self.trackId = trackId
 
-        self.path = DATA_DIR + "/" + self.project_name
+        self.path = DATA_DIR + "/" + self.project_name + "/" + self.trackId
 
         if not path.exists(self.path):
             os.makedirs(self.path)
@@ -89,33 +79,37 @@ class Data:
         """
         first_file, last_file = None, None
 
-        for i in range((self.end_date - self.start_date).days + 1):
-            day = (self.start_date + i*self.day_delta)
+        with open('resources/data_tracks.json') as f:
+            data = json.load(f)
 
-            parameters = {'date': day.strftime('%Y-%m-%d'),
-                          'minx': self.min_x,
-                          'miny': self.min_y,
-                          'maxx': self.max_x,
-                          'maxy': self.max_y,
-                          'trackId': '705',
-                          'client': 'jupyter',
-                          'outputFormat': 'csv'}
+        for date in data[self.trackId]:
+            if self.start_date <= dt.strptime(
+                    date, "%Y-%m-%d").date() <= self.end_date:
+                parameters = {'date': date,
+                              'minx': float(self.min_x),
+                              'miny': float(self.min_y),
+                              'maxx': float(self.max_x),
+                              'maxy': float(self.max_y),
+                              'trackId': int(self.trackId),
+                              'client': 'jupyter',
+                              'outputFormat': 'csv'}
 
-            url = "https://openaltimetry.org/data/api/icesat2/atl06"
+                url = "https://openaltimetry.org/data/api/icesat2/atl06"
 
-            r = requests.get(url, params=parameters)
-            write_file = self.path + "/" + day.strftime('%Y-%m-%d') + ".csv"
-
-            #print (r.text)
-            if r.text != DEFAULT_REQUEST:
-                with open(write_file, "w") as f:
-                    if self.file_count == 0:
-                        first_file = day.strftime('%Y-%m-%d')
-                    last_file = day.strftime('%Y-%m-%d')
-                    f.write(r.text)
-                    self.file_count += 1
-
-        #create metadata file
+                r = requests.get(url, params=parameters)
+                write_file = self.path + "/" + date + ".csv"
+                print(f"Trying {date}")
+                if r.text != DEFAULT_REQUEST:
+                    print("Successful data retrieval")
+                    with open(write_file, "w") as f:
+                        if self.file_count == 0:
+                            first_file = date
+                        last_file = date
+                        f.write(r.text)
+                        self.file_count += 1
+                else:
+                    print("Unsuccessful data retrieval")
+        # create metadata file
 
         if self.file_count is not 0:
             self.valid_start_date = dt.strptime(first_file, '%Y-%m-%d')
@@ -123,7 +117,6 @@ class Data:
         else:
             self.valid_start_date = dt.strptime('1970-01-01', '%Y-%m-%d')
             self.valid_end_date = dt.strptime('1970-01-01', '%Y-%m-%d')
-
 
         write_file = self.path + "/" + "object_info.txt"
 
@@ -142,8 +135,9 @@ class Data:
         get_height, will subtract height at lat x at time b from height at
         lat x from time a where a and b are start and end
         """
-        if self.file_count == 0:
-            return
+        if self.file_count == 0 or self.file_count == 1:
+            shutil.rmtree(self.path)
+            return False
         start_file = pd.read_csv(self.path + "/"
                                  + self.valid_start_date.strftime('%Y-%m-%d')
                                  + ".csv", header=0, index_col='segment_id')
@@ -175,6 +169,9 @@ class Data:
 
         df.to_csv(self.path + "/" + 'change_in_height.csv')
 
+        return True
+
+
 def get_metadata(project_name):
     with open(DATA_DIR + "/" + project_name + "/object_info.txt") as f:
         line = f.read()
@@ -182,30 +179,72 @@ def get_metadata(project_name):
 
         metadata = {}
 
-
         metadata['start_date'] = line_split[0]
         metadata['end_date'] = line_split[1]
         metadata['file_count'] = line_split[2]
 
         return metadata
 
-def create_data(start_date, end_date, min_x, min_y, max_x, max_y, project_name=None):
 
-    data = Data(start_date=start_date, end_date=end_date, min_x=min_x,
-                min_y=min_y, max_x=max_x, max_y=max_y, project_name = project_name)
-    data.get_data()
+def create_project_dir(project_n):
+    project_name = project_n or DEFAULT_PROJECT_NAME
 
-    if data.file_count == 0:
-        e = ErrorPopup(
-            error_message=f"No files generated for data comparison on project"\
-                f" {data.project_name}.\nProject deletion recommended").open()
-    elif data.file_count == 1:
-        e = ErrorPopup(
-            error_message=f"Only one file generated for project"\
-                f" {data.project_name}.\nNo data comparison possible").open()
+    # looks for the first directory under DEFAULT_PROJECT_NAME (currently
+    # Untitled) and adds numbers until it finds a correct directory. As
+    # users can save projects under different names this should function
+    # correctly
+    dir_found = False
+    if not path.exists(DATA_DIR + f"/{project_name}"):
+        pass
     else:
-        data.get_height_diff()
+        num = 1
+        while not dir_found:
+            if not path.exists(DATA_DIR + f"/{project_name}{num}"):
+                dir_found = True
+                project_name = f"{project_name}{num}"
+                break
+            else:
+                num += 1
+
+    p = DATA_DIR + "/" + project_name
+
+    if not path.exists(p):
+        os.makedirs(p)
+    return project_name
+
+
+def compile_diff_data(*data_objs):
+    # write function to compile changes in height by latitude
+    pass
+
+
+def create_data(start_date, end_date, min_x, min_y, max_x, max_y, project_name=None):
+    with open('resources/data_tracks.json') as f:
+        d = json.load(f)
+
+    new_project_name = create_project_dir(project_name)
+
+    data_vars = []
+
+    for key in d:
+        data = Data(start_date=start_date, end_date=end_date, min_x=min_x,
+                    min_y=min_y, max_x=max_x, max_y=max_y, project_name=new_project_name, trackId=key)
+        # data_vars.append(data)
+
+        data.get_data()
+
+        if data.get_height_diff():
+            data_vars.append(data)
+    pass
+
+    if len(data_vars) == 0:
+        e = ErrorPopup(error_message=f"No files generated for data comparison on project"
+                       f" {data.project_name}.\nProject deletion recommended").open()
+    else:
+        compile_diff_data(data_vars)
+        n = NotificationPopup(message = f"Project successfully created with name {self.project_name}").open()
+
 
 if __name__ == "__main__":
     create_data(datetime.date(2018, 11, 13), datetime.date(2019, 3, 12),
-             '105.25', '49.48', '106.06', '50.43', "test")
+                '105.25', '49.48', '106.06', '50.43', "test")
