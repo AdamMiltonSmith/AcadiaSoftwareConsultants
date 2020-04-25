@@ -878,7 +878,8 @@ class Map_Window(Screen):
         c.ids.topright.text = str(round(coords[2], 5))
         c.ids.bottomright.text = str(round(coords[3], 5))
 
-    def updateCoordsBox(self):
+    # updates the coordinates displayed on the bottom of the window to the box
+    def updateCoordsBar(self):
         coords = self.ids.map_widget.pull_data()
 
         if coords == None:
@@ -887,11 +888,6 @@ class Map_Window(Screen):
         self.ids.min_y_label.text = "Minimum Y: " + str(round(coords[1], 5))
         self.ids.max_x_label.text = "Maximum X: " + str(round(coords[2], 5))
         self.ids.max_y_label.text = "Maximum Y: " + str(round(coords[3], 5))
-
-
-        self.minY = str(round(coords[1], 5))
-        self.maxX = str(round(coords[2], 5))
-        self.maxY = str(round(coords[3], 5))
 
 
     # def process_input(self, coord, start_date, end_date):
