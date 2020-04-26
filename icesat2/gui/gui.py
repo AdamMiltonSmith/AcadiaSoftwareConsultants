@@ -547,11 +547,11 @@ class ProjectSavePopup(Popup):
         #os.rename(src, dst)
         global current_dataset, selected_graph
         if new_name == "":
-            e = ErrorPopup(error_message=f"No name specified for saving")
+            e = ErrorPopup(error_message=f"No name specified for saving").open()
             return
         # must do a precheck that the project name isn't already taken
         if path.exists(f"{DATA_DIRECTORY}/{new_name}"):
-            e = ErrorPopup(error_message = f"Data with name {new_name} already exists.\nExiting save operation.")
+            e = ErrorPopup(error_message = f"Data with name {new_name} already exists.\nExiting save operation.").open()
             return
         # rename image
         shutil.move(f"resources/graph_images/{current_dataset}.png",
