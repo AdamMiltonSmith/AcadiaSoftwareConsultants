@@ -36,10 +36,14 @@ This stopped some TIFF unknown field with tag warnings. I don't know how it
 works. Got it here:
 https://stackoverflow.com/questions/58279121/python-tiffreaddirectory-warning-unknown-field-with-tag
 """
-libbytiff = ctypes.CDLL("libtiff-5.dll")
-libbytiff.TIFFSetWarningHandler.argtypes = [ctypes.c_void_p]
-libbytiff.TIFFSetWarningHandler.restype = ctypes.c_void_p
-libbytiff.TIFFSetWarningHandler(None)
+try:
+    libbytiff = ctypes.CDLL("libtiff-5.dll")
+    libbytiff.TIFFSetWarningHandler.argtypes = [ctypes.c_void_p]
+    libbytiff.TIFFSetWarningHandler.restype = ctypes.c_void_p
+    libbytiff.TIFFSetWarningHandler(None)
+except:
+    pass
+
 
 """Removes red dots when right clicking."""
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
@@ -53,19 +57,10 @@ selected_graph = ""
 MONTH_DAY = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 DATA_DIRECTORY = "resources/csv_data_collection"
+LOG_DIRECTORY = "logs"
 
 DEFAULT_GRAPH = "resources/graph_images/no_dataset.png"
 ERROR_GRAPH = "resources/graph_images/items_missing.png"
-
-
-def getCurrDataSet():
-    return current_dataset
-
-
-def setCurrentDataSet(dataSet):
-    global current_data_set
-    current_data_set = dataSet
-
 
 def pre_init_screen():
     pass
@@ -690,7 +685,7 @@ class Map_Widget(Image):
             else:
                 self.rect_size = [touch.x - touch.ox, touch.y - touch.oy]
 
-        
+
 
     # set the box position and size based on xmin, xmax, ymin, ymax
     def set_box_pos(self, xmin, xmax, ymin, ymax):
@@ -903,4 +898,7 @@ class SetGraph(Widget):
 def main():
     if not path.exists(DATA_DIRECTORY):
         os.mkdir(DATA_DIRECTORY)
+    if not path.exists(LOG_DIRECTORY):
+        os.mkdir(LOG_DIRECTORY)
+
     MainApp().run()
