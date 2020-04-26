@@ -827,8 +827,8 @@ class Main_Window(Screen):
     def __init__(self, **kw):
         super(Main_Window, self).__init__(**kw)
 
+    #Launches the manual in default pdf viewer 
     def openManual(self):
-        #print(">> Opening Manual")
         os.startfile(os.path.normpath("resources/manuals/user_manual.pdf"))
 
     def deleteCurrent(self):
@@ -853,6 +853,9 @@ class Graph_Window(Screen):
     def __init__(self, **kw):
         super(Graph_Window, self).__init__(**kw)
 
+    #Launches the manual in default pdf viewer 
+    def openManual(self):
+        os.startfile(os.path.normpath("resources/manuals/user_manual.pdf"))
 
 # Josh - I know I need to format this to match the formatting standards
 
@@ -873,7 +876,7 @@ class Map_Window(Screen):
         c.ids.bottomright.text = str(round(coords[3], 5))
 
     # updates the coordinates displayed on the bottom of the window to the box
-    def updateCoordsBar(self):
+    def updateCoords(self):
         coords = self.ids.map_widget.pull_data()
 
         if coords == None:
@@ -883,7 +886,9 @@ class Map_Window(Screen):
         self.ids.max_x_label.text = "Maximum X: " + str(round(coords[2], 5))
         self.ids.max_y_label.text = "Maximum Y: " + str(round(coords[3], 5))
 
-
+    #Launches the manual in default pdf viewer 
+    def openManual(self):
+        os.startfile(os.path.normpath("resources/manuals/user_manual.pdf"))
 class Map(MapView):
     pass
 
