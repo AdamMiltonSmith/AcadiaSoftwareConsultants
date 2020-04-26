@@ -546,15 +546,21 @@ class ProjectSavePopup(Popup):
     def save(self, new_name):
         #os.rename(src, dst)
         global current_dataset, selected_graph
-
+        if new_name == "":
+            e = ErrorPopup(error_message=f"No name specified for saving")
+            return
+        # must do a precheck that the project name isn't already taken
+        if path.exists(f"{DATA_DIRECTORY}/{new_name}"):
+            e = ErrorPopup(error_message = f"Data with name {new_name} already exists.\nExiting save operation.")
+            return
         # rename image
-        os.rename(f"resources/graph_images/{current_dataset}.png",
+        shutil.move(f"resources/graph_images/{current_dataset}.png",
                   f"resources/graph_images/{new_name}.png")
 
         selected_graph = f"resources/graph_images/{new_name}.png"
 
         # rename project
-        os.rename(f"{DATA_DIRECTORY}/{current_dataset}",
+        shutil.move(f"{DATA_DIRECTORY}/{current_dataset}",
                   f"{DATA_DIRECTORY}/{new_name}")
 
         current_dataset = new_name
@@ -822,7 +828,7 @@ class Main_Window(Screen):
     def __init__(self, **kw):
         super(Main_Window, self).__init__(**kw)
 
-    #Launches the manual in default pdf viewer 
+    #Launches the manual in default pdf viewer
     def openManual(self):
         os.startfile(os.path.normpath("resources/manuals/user_manual.pdf"))
 
@@ -848,7 +854,7 @@ class Graph_Window(Screen):
     def __init__(self, **kw):
         super(Graph_Window, self).__init__(**kw)
 
-    #Launches the manual in default pdf viewer 
+    #Launches the manual in default pdf viewer
     def openManual(self):
         os.startfile(os.path.normpath("resources/manuals/user_manual.pdf"))
 
@@ -881,7 +887,7 @@ class Map_Window(Screen):
         self.ids.max_x_label.text = "Maximum X: " + str(round(coords[2], 5))
         self.ids.max_y_label.text = "Maximum Y: " + str(round(coords[3], 5))
 
-    #Launches the manual in default pdf viewer 
+    #Launches the manual in default pdf viewer
     def openManual(self):
         os.startfile(os.path.normpath("resources/manuals/user_manual.pdf"))
 class Map(MapView):
