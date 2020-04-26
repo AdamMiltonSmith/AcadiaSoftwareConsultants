@@ -132,12 +132,13 @@ class Data:
 
     def get_height_diff(self):
         """
-        get_height, will subtract height at lat x at time b from height at
+        This will subtract the height at lat x and time b from height at
         lat x from time a where a and b are start and end
         """
         if self.file_count == 0 or self.file_count == 1:
             shutil.rmtree(self.path)
             return False
+
         start_file = pd.read_csv(self.path + "/"
                                  + self.valid_start_date.strftime('%Y-%m-%d')
                                  + ".csv", header=0, index_col='segment_id')
@@ -165,7 +166,8 @@ class Data:
                            'h_li_start': start_file_grouped['h_li'],
                            'h_li_end': end_file_grouped['h_li'],
                            'h_li_diff': diff['start'] - diff['end'],
-                           'beam': end_file_grouped['beam']})
+                           'beam': end_file_grouped['beam'],
+                           'trackId': self.trackId})
 
         df.to_csv(self.path + "/" + 'change_in_height.csv')
 
@@ -218,6 +220,7 @@ def create_project_dir(project_n, start_date, end_date):
     This will help with allowing front-end interfaces fetch data objects
     Hopefully serialize in the future
     """
+
     with open(write_file, "w") as f:
         f.write(f"{start_date},")
         f.write(f"{end_date},")
@@ -236,6 +239,9 @@ def compile_diff_data(data_objs, project_name):
     result.to_csv(DATA_DIR + "/" + project_name + "/" + 'change_in_height.csv')
 
 def create_data(start_date, end_date, min_x, min_y, max_x, max_y, project_name=None):
+    """
+    Author: adamg
+    """
     with open('resources/data_tracks.json') as f:
         d = json.load(f)
 

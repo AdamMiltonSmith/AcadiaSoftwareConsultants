@@ -430,7 +430,7 @@ ScreenManager:
 
 <NotificationPopup>:
     id: notificationpopup
-    title: "Error"
+    title: "Message"
     size: 500, 200
     size_hint: None, None
     message: self.message
@@ -1114,6 +1114,6 @@ ScreenManager:
                 color: 0,0,0,1
             Button:
                 text: "Update Coords"
-                on_release: root.updateCoords()
+                on_release: root.updateCoordsBar()
             # on_touch_down: root.on_touch_down(*args[1].pos)
             # on_touch_move: root.on_touch_move(*args[1].pos)
