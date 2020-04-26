@@ -43,7 +43,7 @@ class Graph:
                      data=dict_of_regions[k], marker='', color=color_data[str(k)], linewidth=1, label = k)
         #plt.plot(csv_input[0], csv_input[1])
         plt.title(f"{self.output_image}\n({self.start_date}-{self.end_date})")
-        plt.legend(loc = "upper right", prop={'size': 6})
+        plt.legend(loc = "upper right", prop={'size': 6}, title="Track IDs", title_fontsize = 8)
         plt.ylabel('Elevation (Meters)')
         plt.xlabel('Latitude (Degrees)')
         plt.savefig('resources/graph_images/' + self.output_image, dpi=1000)
