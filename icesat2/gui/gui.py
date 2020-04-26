@@ -871,7 +871,7 @@ class Map_Window(Screen):
         c.ids.bottomright.text = str(round(coords[3], 5))
 
     # updates the coordinates displayed on the bottom of the window to the box
-    def updateCoords(self):
+    def updateCoordsBar(self):
         coords = self.ids.map_widget.pull_data()
 
         if coords == None:
